@@ -9,9 +9,6 @@ const route = useRoute();
 // 使用共享的路径解析工具
 const { pathInfo } = useSharedPathInfo();
 
-// 强制侧边导航在路由变化时重新挂载，以便 defaultOpen 生效
-const navKey = computed(() => route.fullPath);
-
 // 获取页面内容
 const { data: page } = await useAsyncData(
   kebabCase(route.path),
@@ -56,7 +53,6 @@ const menu = mapContentNavigation(
                 root: 'border-r border-default',
               }">
               <DocsNavigation
-                :key="navKey"
                 :navigation="navigation || []"
                 highlight
                 trailing-icon="i-lucide-chevron-right"

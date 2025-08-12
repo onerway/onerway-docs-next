@@ -82,14 +82,6 @@ const { data: page } = await useAsyncData(
   }
 );
 
-if (!page.value) {
-  throw createError({
-    statusCode: 404,
-    statusMessage: "Page not found",
-    fatal: true,
-  });
-}
-
 logger.info("page", page.value);
 
 // 获取周围导航（上一页/下一页）

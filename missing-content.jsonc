@@ -167,32 +167,32 @@
     "module": "get-started",
     "version": "v1",
     "file": ".navigation.yml",
-    "relativePath": "get-started/v1/3.start-building/4.use-stripe-without-code/.navigation.yml",
-    "_path": "/zh-cn/get-started/v1/3.start-building/4.use-stripe-without-code/.navigation"
+    "relativePath": "get-started/v1/3.start-building/4.use-onerway-without-code/.navigation.yml",
+    "_path": "/zh-cn/get-started/v1/3.start-building/4.use-onerway-without-code/.navigation"
   },
   {
     "lang": "zh-tw",
     "module": "get-started",
     "version": "v1",
     "file": ".navigation.yml",
-    "relativePath": "get-started/v1/3.start-building/4.use-stripe-without-code/.navigation.yml",
-    "_path": "/zh-tw/get-started/v1/3.start-building/4.use-stripe-without-code/.navigation"
+    "relativePath": "get-started/v1/3.start-building/4.use-onerway-without-code/.navigation.yml",
+    "_path": "/zh-tw/get-started/v1/3.start-building/4.use-onerway-without-code/.navigation"
   },
   {
     "lang": "zh-cn",
     "module": "get-started",
     "version": "v1",
     "file": "index.md",
-    "relativePath": "get-started/v1/3.start-building/4.use-stripe-without-code/index.md",
-    "_path": "/zh-cn/get-started/v1/3.start-building/4.use-stripe-without-code/index"
+    "relativePath": "get-started/v1/3.start-building/4.use-onerway-without-code/index.md",
+    "_path": "/zh-cn/get-started/v1/3.start-building/4.use-onerway-without-code/index"
   },
   {
     "lang": "zh-tw",
     "module": "get-started",
     "version": "v1",
     "file": "index.md",
-    "relativePath": "get-started/v1/3.start-building/4.use-stripe-without-code/index.md",
-    "_path": "/zh-tw/get-started/v1/3.start-building/4.use-stripe-without-code/index"
+    "relativePath": "get-started/v1/3.start-building/4.use-onerway-without-code/index.md",
+    "_path": "/zh-tw/get-started/v1/3.start-building/4.use-onerway-without-code/index"
   },
   {
     "lang": "zh-cn",

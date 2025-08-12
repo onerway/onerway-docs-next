@@ -8,6 +8,9 @@ export default defineNuxtConfig({
   compatibilityDate: "2025-05-15",
   devtools: { enabled: true },
 
+  // 开发环境禁用缓存
+  ssr: true,
+
   modules: [
     "@nuxt/ui-pro",
     "@nuxt/content",
@@ -18,6 +21,7 @@ export default defineNuxtConfig({
     "@nuxtjs/google-fonts",
     "@nuxtjs/i18n",
     "@vueuse/nuxt",
+    "@nuxtjs/mdc",
   ],
 
   // css
@@ -48,7 +52,7 @@ export default defineNuxtConfig({
     },
     serverBundle: {
       // Server-side bundle for dynamic icons and SSR support
-      collections: ["heroicons"],
+      collections: ["heroicons", "lucide"],
     },
     provider: "iconify",
   },
@@ -165,7 +169,7 @@ export default defineNuxtConfig({
 
   mdc: {
     highlight: {
-      noApiRoute: false,
+      // noApiRoute: false,
     },
   },
 

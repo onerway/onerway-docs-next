@@ -23,7 +23,7 @@
     "resources": "資源",
     "docs": "文檔",
     "guides": "指南",
-    "changelog": "更新日誌",
+    "developmentResources": "開發資源",
     "support": "支援",
     "contact": "聯絡我們",
     "help": "幫助中心",
@@ -189,14 +189,14 @@
           }
         ]
       },
-      "payout": {
-        "title": "提現服務",
-        "description": "我們的提現產品和解決方案",
+      "transfer": {
+        "title": "轉帳服務",
+        "description": "我們的轉帳產品和解決方案",
         "comingSoon": "即將推出",
         "items": [
           {
-            "title": "提現服務",
-            "description": "提現服務"
+            "title": "轉帳服務",
+            "description": "轉帳服務"
           }
         ]
       }
@@ -272,8 +272,10 @@
   "header": {
     "getStarted": "快速開始",
     "payments": "支付",
-    "payout": "提現",
+    "transfers": "轉帳",
     "acquiring": "收單業務",
+    "developmentResources": "開發資源",
+    "revenue": "營收",
     "releases": "版本發佈",
     "apisAndSdks": "APIs & SDKs",
     "help": "幫助",
@@ -319,6 +321,21 @@
     "retry": "重試",
     "updated": "更新",
     "docs": "文件"
+  },
+  "clipboard": {
+    "success": {
+      "title": "複製成功！",
+      "description": "內容已成功複製到剪貼簿"
+    },
+    "error": {
+      "title": "複製失敗",
+      "description": "無法複製內容到剪貼簿",
+      "notSupported": "不支援剪貼簿",
+      "notSupportedDesc": "您的瀏覽器不支援剪貼簿操作"
+    },
+    "validation": {
+      "textRequired": "複製內容不能為空"
+    }
   },
   "testCard": {
     "title": "測試卡",
@@ -438,9 +455,17 @@
         "title": "支付",
         "description": "支付文件和指南"
       },
-      "payouts": {
+      "transfers": {
         "title": "轉帳",
         "description": "轉帳和提現功能"
+      },
+      "developmentResources": {
+        "title": "開發資源",
+        "description": "開發資源和更新日誌"
+      },
+      "revenue": {
+        "title": "營收",
+        "description": "營收分析和報表"
       }
     },
     "meta": {

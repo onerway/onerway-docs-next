@@ -1,4 +1,5 @@
-import { readonly, ref } from "vue";
+import { useClipboard as useVueUseClipboard } from "@vueuse/core";
+import { readonly } from "vue";
 
 export interface ClipboardOptions {
   successTitle?: string;
@@ -7,7 +8,6 @@ export interface ClipboardOptions {
   errorDesc?: string;
   transform?: (text: string) => string;
   duration?: number;
-  resetDelay?: number;
 }
 
 export interface ClipboardResult {
@@ -17,28 +17,31 @@ export interface ClipboardResult {
   ) => Promise<boolean>;
   copied: Readonly<Ref<boolean>>;
   isSupported: Readonly<Ref<boolean>>;
+  text: Readonly<Ref<string>>;
+  copyCount: Readonly<Ref<number>>;
 }
 
 /**
- * Composable for clipboard operations with toast notifications
+ * 剪贴板操作组合式函数 - 基于 VueUse 最佳实践
  *
- * Features:
- * - Browser compatibility check
- * - Automatic success/error toast notifications
- * - Text transformation support
- * - Internationalization ready
- * - Customizable feedback messages
+ * 特性:
+ * - 直接使用 VueUse 的原生 useClipboard API
+ * - 响应式剪贴板内容同步
+ * - 可选的成功/错误提示
+ * - 文本转换支持
+ * - 完整的国际化支持
+ * - 内置防抖和优化
  *
  * @example
  * ```typescript
- * const { copy, copied } = useClipboard()
+ * const { copy, copied, text } = useClipboard()
  *
- * // Basic usage
+ * // 基础用法
  * await copy('Hello World')
  *
- * // With custom messages
+ * // 自定义消息和转换
  * await copy('4242 4242 4242 4242', {
- *   successTitle: 'Card copied!',
+ *   successTitle: t('clipboard.cardCopied'),
  *   transform: (text) => text.replace(/\s/g, '')
  * })
  * ```
@@ -47,21 +50,22 @@ export const useClipboard = (): ClipboardResult => {
   const { t } = useI18n();
   const toast = useToast();
 
-  // Reactive state
-  const copied = ref(false);
-  const isSupported = ref(
-    !!navigator?.clipboard?.writeText
-  );
+  // 直接使用 VueUse 的 useClipboard
+  const {
+    text,
+    copy: vueUseCopy,
+    copied,
+    isSupported,
+  } = useVueUseClipboard();
+
+  // SSR 安全的复制计数
+  const copyCount = useState("clipboard-count", () => 0);
 
   /**
-   * Copy text to clipboard with optional toast notifications
-   *
-   * @param text - Text to copy to clipboard
-   * @param options - Configuration options for the copy operation
-   * @returns Promise<boolean> - Returns true if copy was successful
+   * 复制文本到剪贴板 - 简化版本
    */
   const copy = async (
-    text: string,
+    inputText: string,
     options: ClipboardOptions = {}
   ): Promise<boolean> => {
     const {
@@ -71,19 +75,39 @@ export const useClipboard = (): ClipboardResult => {
       errorDesc,
       transform,
       duration = 3000,
-      resetDelay = 2000,
     } = options;
 
-    // Check browser support
-    if (!isSupported.value) {
-      console.warn("Clipboard API not available");
+    // 基础验证
+    if (!inputText || inputText.trim().length === 0) {
+      console.warn("[useClipboard] Empty text provided");
 
-      // Show error toast if error messages are provided
       if (errorTitle || errorDesc) {
         toast.add({
           title: errorTitle || t("common.error"),
           description:
-            errorDesc || "Clipboard not supported",
+            errorDesc ||
+            t("clipboard.validation.textRequired"),
+          color: "error",
+          icon: "i-heroicons-exclamation-triangle",
+          duration,
+        });
+      }
+
+      return false;
+    }
+
+    if (!isSupported.value) {
+      console.warn(
+        "[useClipboard] Clipboard API not supported"
+      );
+
+      if (errorTitle || errorDesc) {
+        toast.add({
+          title:
+            errorTitle || t("clipboard.error.notSupported"),
+          description:
+            errorDesc ||
+            t("clipboard.error.notSupportedDesc"),
           color: "error",
           icon: "i-heroicons-exclamation-triangle",
           duration,
@@ -94,42 +118,41 @@ export const useClipboard = (): ClipboardResult => {
     }
 
     try {
-      // Apply text transformation if provided
-      const textToCopy = transform ? transform(text) : text;
+      // 应用文本转换
+      const textToCopy = transform
+        ? transform(inputText)
+        : inputText;
 
-      // Copy to clipboard
-      await navigator.clipboard.writeText(textToCopy);
+      // 直接使用 VueUse 的 copy 方法（内置优化）
+      await vueUseCopy(textToCopy);
 
-      // Update state
-      copied.value = true;
+      // 更新计数
+      copyCount.value += 1;
 
-      // Show success toast if messages are provided
+      // 显示成功提示
       if (successTitle || successDesc) {
         toast.add({
-          title: successTitle || "Success",
+          title:
+            successTitle || t("clipboard.success.title"),
           description:
-            successDesc || "Text copied to clipboard",
+            successDesc ||
+            t("clipboard.success.description"),
           color: "success",
           icon: "i-heroicons-check-circle",
           duration,
         });
       }
 
-      // Reset copied state after delay
-      setTimeout(() => {
-        copied.value = false;
-      }, resetDelay);
-
       return true;
     } catch (error) {
-      console.error("Copy to clipboard failed:", error);
+      console.error("[useClipboard] Copy failed:", error);
 
-      // Show error toast if error messages are provided
+      // 显示错误提示
       if (errorTitle || errorDesc) {
         toast.add({
-          title: errorTitle || t("common.error"),
+          title: errorTitle || t("clipboard.error.title"),
           description:
-            errorDesc || "Failed to copy to clipboard",
+            errorDesc || t("clipboard.error.description"),
           color: "error",
           icon: "i-heroicons-x-circle",
           duration,
@@ -144,7 +167,7 @@ export const useClipboard = (): ClipboardResult => {
     copy,
     copied: readonly(copied),
     isSupported: readonly(isSupported),
+    text: readonly(text), // VueUse 原生的响应式剪贴板内容
+    copyCount: readonly(copyCount),
   };
 };
-
-// Types are already exported above, no need to re-export

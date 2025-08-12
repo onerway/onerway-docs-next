@@ -25,7 +25,6 @@ const handleCopyCardNumber = async () => {
     errorDesc: t("testCard.copyDescription"),
     transform: (text) => text.replace(/\s/g, ""), // Remove spaces from card number
     duration: 3000,
-    resetDelay: 2000,
   });
 };
 

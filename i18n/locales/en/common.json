@@ -17,7 +17,7 @@
     "resources": "Resources",
     "docs": "Documentation",
     "guides": "Guides",
-    "changelog": "Changelog",
+    "developmentResources": "Development Resources",
     "samples": "Code Samples",
     "developers": "Developers",
     "apiReference": "API Reference",
@@ -192,14 +192,14 @@
           }
         ]
       },
-      "payout": {
-        "title": "PAYOUT",
-        "description": "Our payout products and solutions",
+      "transfer": {
+        "title": "TRANSFER",
+        "description": "Our transfer products and solutions",
         "comingSoon": "Coming Soon",
         "items": [
           {
-            "title": "Payout",
-            "description": "Payout services"
+            "title": "Transfer",
+            "description": "Transfer services"
           }
         ]
       }
@@ -274,9 +274,11 @@
   },
   "header": {
     "getStarted": "Get Started",
-    "payments": "Payment Services",
-    "payout": "Payout Services",
+    "payments": "Payments",
+    "transfers": "Transfers",
     "acquiring": "Acquiring",
+    "developmentResources": "Development Resources",
+    "revenue": "Revenue",
     "releases": "Releases",
     "apisAndSdks": "APIs & SDKs",
     "help": "Help",
@@ -322,6 +324,21 @@
     "retry": "Retry",
     "updated": "Updated",
     "docs": "docs"
+  },
+  "clipboard": {
+    "success": {
+      "title": "Copied!",
+      "description": "Content copied to clipboard successfully"
+    },
+    "error": {
+      "title": "Copy Failed",
+      "description": "Failed to copy content to clipboard",
+      "notSupported": "Clipboard Not Supported",
+      "notSupportedDesc": "Your browser doesn't support clipboard operations"
+    },
+    "validation": {
+      "textRequired": "Content cannot be empty"
+    }
   },
   "testCard": {
     "title": "Test cards",
@@ -441,9 +458,17 @@
         "title": "Payments",
         "description": "Payment documentation and guides"
       },
-      "payouts": {
-        "title": "Payouts",
-        "description": "Transfer and withdrawal functionality"
+      "transfers": {
+        "title": "Transfers",
+        "description": "Transfer and withdrawal documentation"
+      },
+      "developmentResources": {
+        "title": "Development Resources",
+        "description": "Development resources documentation"
+      },
+      "revenue": {
+        "title": "Revenue",
+        "description": "Revenue analytics and reporting"
       }
     },
     "meta": {

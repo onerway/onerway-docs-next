@@ -17,7 +17,7 @@
     "resources": "资源",
     "docs": "文档",
     "guides": "指南",
-    "changelog": "更新日志",
+    "developmentResources": "开发资源",
     "samples": "代码示例",
     "developers": "开发者",
     "apiReference": "API 参考",
@@ -184,14 +184,14 @@
           }
         ]
       },
-      "payout": {
-        "title": "提现服务",
-        "description": "我们的提现产品和解决方案",
+      "transfer": {
+        "title": "转账服务",
+        "description": "我们的转账产品和解决方案",
         "comingSoon": "即将推出",
         "items": [
           {
-            "title": "提现服务",
-            "description": "提现服务"
+            "title": "转账服务",
+            "description": "转账服务"
           }
         ]
       }
@@ -267,8 +267,10 @@
   "header": {
     "getStarted": "快速开始",
     "payments": "支付",
-    "payout": "提现",
+    "transfers": "转账",
     "acquiring": "收单业务",
+    "developmentResources": "开发资源",
+    "revenue": "营收",
     "releases": "版本发布",
     "apisAndSdks": "APIs & SDKs",
     "help": "帮助",
@@ -314,6 +316,21 @@
     "retry": "重试",
     "updated": "更新",
     "docs": "文档"
+  },
+  "clipboard": {
+    "success": {
+      "title": "复制成功！",
+      "description": "内容已成功复制到剪贴板"
+    },
+    "error": {
+      "title": "复制失败",
+      "description": "无法复制内容到剪贴板",
+      "notSupported": "不支持剪贴板",
+      "notSupportedDesc": "您的浏览器不支持剪贴板操作"
+    },
+    "validation": {
+      "textRequired": "复制内容不能为空"
+    }
   },
   "testCard": {
     "title": "测试卡",
@@ -433,9 +450,17 @@
         "title": "支付",
         "description": "支付文档和指南"
       },
-      "payouts": {
+      "transfers": {
         "title": "转账",
         "description": "转账和提现功能"
+      },
+      "developmentResources": {
+        "title": "开发资源",
+        "description": "开发资源和更新日志"
+      },
+      "revenue": {
+        "title": "营收",
+        "description": "营收分析和报表"
       }
     },
     "meta": {

@@ -1,65 +1,8 @@
 <script setup lang="ts">
-import type { NavigationMenuItem } from "@nuxt/ui";
+const { locale, locales, setLocale } = useI18n();
 
-const { locale, locales, setLocale, t } = useI18n();
-const route = useRoute();
-
-// 导航菜单项
-const items = computed<NavigationMenuItem[][]>(() => [
-  [
-    {
-      label: t("header.getStarted"),
-      to: "/get-started",
-      active: route.path.startsWith("/get-started"),
-    },
-    {
-      label: t("header.payments"),
-      to: "/payments",
-      active: route.path.startsWith("/payments"),
-    },
-    {
-      label: t("header.payout"),
-      to: "/payouts",
-      active: route.path.startsWith("/payouts"),
-    },
-  ],
-  [
-    {
-      label: t("header.apisAndSdks"),
-      to: "https://docs.onerway.com/",
-      target: "_blank",
-      children: [
-        {
-          label: t("header.payments"),
-          to: "https://docs.onerway.com/apis/zh/",
-          target: "_blank",
-        },
-        {
-          label: t("header.payout"),
-          to: "https://docs.onerway.com/apis/payout/",
-          target: "_blank",
-        },
-      ],
-    },
-    {
-      label: t("header.help"),
-      to: "https://docs.onerway.com/",
-      target: "_blank",
-      children: [
-        {
-          label: t("header.support"),
-          to: "https://docs.onerway.com/",
-          target: "_blank",
-        },
-        {
-          label: t("header.contactUs"),
-          to: "https://docs.onerway.com/",
-          target: "_blank",
-        },
-      ],
-    },
-  ],
-]);
+// 使用 useNavigation 获取导航菜单项
+const { items } = useNavigation();
 
 // 当前语言标签
 const currentLocaleLabel = computed(() => {
@@ -99,12 +42,12 @@ const languageItems = computed(() => [
 </script>
 
 <template>
-  <div
-    class="sticky top-0 z-50 h-[var(--ui-header-height)]">
+  <div class="sticky top-0 z-50">
     <UHeader
       :ui="{
         root: 'border-none bg-muted backdrop-blur',
         container: 'max-w-full mx-auto',
+        toggle: 'cursor-pointer',
       }"
       toggle-side="right"
       :toggle="{
@@ -125,9 +68,7 @@ const languageItems = computed(() => [
       </template>
 
       <!-- 搜索按钮 -->
-      <UContentSearchButton
-        :collapsed="false"
-        shortcut="meta_k" />
+      <UContentSearchButton :collapsed="false" />
 
       <template #right>
         <div class="flex items-center gap-2">
@@ -151,10 +92,11 @@ const languageItems = computed(() => [
       </template>
 
       <template #body>
-        <UDashboardToolbar class="sm:hidden border-none">
+        <UDashboardToolbar class="lg:hidden border-none">
           <UNavigationMenu
             :items="items"
             highlight
+            arrow
             orientation="vertical"
             class="flex-1" />
         </UDashboardToolbar>
@@ -165,6 +107,8 @@ const languageItems = computed(() => [
           :items="items"
           content-orientation="vertical"
           collapsed
+          arrow
+          popover
           class="px-4 sm:px-6 bg-muted backdrop-blur max-sm:hidden border-b border-muted" />
       </template>
     </UHeader>

@@ -1,10 +1,52 @@
 {
-  "files.associations": { "*.css": "css" },
-  "editor.quickSuggestions": { "strings": "on" },
-  "tailwindCSS.classAttributes": ["class", "ui"],
-  "tailwindCSS.experimental.classRegex": [
-    ["ui:\\s*{([^)]*)\\s*}", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
+  "files.associations": {
+    "*.css": "tailwindcss",
+    "*.mdc": "markdown"
+  },
+  "editor.quickSuggestions": {
+    "strings": "on",
+    "other": "on",
+    "comments": "off"
+  },
+
+  // Tailwind CSS IntelliSense 配置
+  "tailwindCSS.includeLanguages": {
+    "mdc": "html",
+    "markdown": "html",
+    "vue": "html",
+    "typescript": "javascript",
+    "typescriptreact": "javascript"
+  },
+  "tailwindCSS.classAttributes": [
+    "class",
+    "ui",
+    "className",
+    "ngClass",
+    "class:list"
   ],
+  "tailwindCSS.experimental.classRegex": [
+    ["ui:\\s*{([^)]*)\\s*}", "(?:'|\"|`)([^']*)(?:'|\"|`)"],
+    [
+      "class:\\s*{([^)]*)\\s*}",
+      "(?:'|\"|`)([^']*)(?:'|\"|`)"
+    ],
+    ["class=\"([^\"]*)", "[^\"]*"],
+    ["class='([^']*)", "[^']*"],
+    ["class=`([^`]*)", "[^`]*"],
+    ["className=\"([^\"]*)", "[^\"]*"],
+    ["className='([^']*)", "[^']*"],
+    ["className=`([^`]*)", "[^`]*"],
+    // MDC 特殊语法支持
+    ["\\{class=\"([^\"]*)", "[^\"]*"],
+    ["\\{class='([^']*)", "[^']*"],
+    // 组件属性支持
+    ["class:([a-zA-Z0-9\\-:]+)", "[a-zA-Z0-9\\-:]+"]
+  ],
+  "tailwindCSS.emmetCompletions": true,
+  "tailwindCSS.validate": true,
+  "tailwindCSS.showPixelEquivalents": true,
+  "tailwindCSS.rootFontSize": 16,
+  "tailwindCSS.colorDecorators": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {

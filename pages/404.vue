@@ -1,9 +1,6 @@
 <script setup lang="ts">
+import type { RecentPage } from "~/composables/shared/types";
 import { useI18n } from "vue-i18n";
-import {
-  type RecentPage,
-  useRecentPages,
-} from "@/composables/useRecentPages";
 
 const { t } = useI18n();
 
@@ -13,14 +10,8 @@ const originalPath =
   (route.query.path as string) || route.path;
 
 // 获取最近访问的页面
-const {
-  recentThreePages,
-  getPageTitle,
-  getPageDescription,
-  getPageIcon,
-  getTimeColor,
-  formatTimeI18n,
-} = useRecentPages();
+const { recentThreePages, getTimeColor, formatTimeI18n } =
+  useRecentPages();
 
 // 推荐的页面链接
 const suggestedPages = computed(() => [
@@ -202,7 +193,7 @@ const handleSearch = async () => {
               class="group cursor-pointer hover:shadow-md transition-all duration-200 hover:border-primary/20 text-left overflow-hidden"
               :ui="{ body: 'p-3 sm:p-4' }"
               role="button"
-              :aria-label="`${t('recentlyViewed.visitPage')}: ${getPageTitle(page.path)}`"
+              :aria-label="`${t('recentlyViewed.visitPage')}: ${page.title}`"
               tabindex="0"
               @click="handleRecentPageClick(page)"
               @keyup.enter="handleRecentPageClick(page)"
@@ -210,16 +201,18 @@ const handleSearch = async () => {
               <div
                 class="flex items-start gap-3 sm:gap-4 min-w-0">
                 <UIcon
-                  :name="getPageIcon(page.path)"
+                  :name="
+                    page.icon || 'i-heroicons-document'
+                  "
                   class="w-4 h-4 sm:w-5 sm:h-5 mt-0.5 text-primary flex-shrink-0" />
                 <div class="flex-1 min-w-0 overflow-hidden">
                   <h3
                     class="font-medium text-gray-900 dark:text-white truncate group-hover:text-primary transition-colors text-sm sm:text-base">
-                    {{ getPageTitle(page.path) }}
+                    {{ page.title }}
                   </h3>
                   <p
                     class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 line-clamp-2 mt-1 leading-relaxed">
-                    {{ getPageDescription(page.path) }}
+                    {{ page.description }}
                   </p>
                   <div
                     class="flex flex-col gap-1 mt-2 sm:flex-row sm:items-center sm:gap-2">

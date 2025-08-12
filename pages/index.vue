@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { EnhancedProduct } from "~/components/business/ProductCard.vue";
 import { useI18n } from "vue-i18n";
+import { createSkeletonLayout } from "~/composables/shared/skeleton-utils";
 
 // Type definitions
 interface FeatureLink {
@@ -212,6 +213,9 @@ const handleProductClick = (product: EnhancedProduct) => {
   if (!product?.to) return;
   navigateTo(product.to);
 };
+
+// 骨架屏布局配置
+const heroSkeleton = createSkeletonLayout.hero();
 </script>
 
 <template>
@@ -270,42 +274,67 @@ const handleProductClick = (product: EnhancedProduct) => {
               </aside>
             </UPageHero>
             <template #fallback>
-              <!-- Hero section skeleton -->
+              <!-- Hero section skeleton with enhanced UX -->
               <div
                 class="relative isolate"
                 aria-label="Loading documentation homepage">
                 <div
                   class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:grid gap-16 sm:gap-y-24 lg:grid-cols-2 lg:items-center py-8 sm:py-12 lg:py-16">
                   <!-- Left side - Hero content skeleton -->
-                  <div class="space-y-6">
-                    <!-- Title skeleton -->
-                    <div class="space-y-3">
+                  <div :class="heroSkeleton.container">
+                    <!-- Title skeleton with staggered animation -->
+                    <div
+                      class="space-y-3"
+                      role="status"
+                      aria-label="Loading page title">
                       <div
-                        class="h-8 sm:h-10 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse w-3/4"></div>
+                        :class="heroSkeleton.title"
+                        style="animation-delay: 0.1s"></div>
                       <div
-                        class="h-8 sm:h-10 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse w-1/2"></div>
+                        :class="heroSkeleton.subtitle"
+                        style="animation-delay: 0.2s"></div>
                     </div>
+
                     <!-- Description skeleton -->
-                    <div class="space-y-2">
+                    <div
+                      class="space-y-2"
+                      role="status"
+                      aria-label="Loading page description">
                       <div
-                        class="h-6 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-full"></div>
-                      <div
-                        class="h-6 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-2/3"></div>
+                        v-for="(
+                          descClass, index
+                        ) in heroSkeleton.description"
+                        :key="index"
+                        :class="descClass"
+                        :style="`animation-delay: ${0.3 + index * 0.1}s`">
+                      </div>
                     </div>
+
                     <!-- Buttons skeleton -->
                     <div
-                      class="flex flex-wrap gap-x-6 gap-y-3 mt-10">
+                      class="flex flex-wrap gap-x-6 gap-y-3 mt-10"
+                      role="status"
+                      aria-label="Loading action buttons">
                       <div
-                        class="h-12 w-48 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse"></div>
-                      <div
-                        class="h-12 w-36 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse"></div>
+                        v-for="(
+                          buttonClass, index
+                        ) in heroSkeleton.buttons"
+                        :key="index"
+                        :class="buttonClass"
+                        :style="`animation-delay: ${0.5 + index * 0.1}s`">
+                      </div>
                     </div>
                   </div>
+
                   <!-- Right side - Sidebar skeleton -->
                   <div
                     class="relative sm:max-w-xs max-sm:hidden">
                     <div
-                      class="h-64 bg-gray-200 dark:bg-gray-700 rounded-xl animate-pulse"></div>
+                      class="skeleton-card h-64"
+                      style="animation-delay: 0.7s"
+                      role="status"
+                      aria-label="Loading sidebar content">
+                    </div>
                   </div>
                 </div>
               </div>
@@ -372,8 +401,41 @@ const handleProductClick = (product: EnhancedProduct) => {
                 </template>
               </UPageFeature>
               <template #fallback>
+                <!-- Features section skeleton with enhanced UX -->
                 <div
-                  class="relative sm:max-w-xs max-sm:hidden h-64 animate-pulse bg-gray-200 dark:bg-gray-700 rounded-xl" />
+                  class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3"
+                  role="status"
+                  aria-label="Loading feature cards">
+                  <div
+                    v-for="index in 3"
+                    :key="index"
+                    class="skeleton-card p-6 space-y-4"
+                    :style="`animation-delay: ${index * 0.15}s`">
+                    <!-- Feature icon skeleton -->
+                    <div
+                      class="skeleton-base bg-gray-200 dark:bg-gray-700 rounded-lg h-12 w-12"></div>
+
+                    <!-- Feature title skeleton -->
+                    <div
+                      class="skeleton-title h-6 w-3/4"></div>
+
+                    <!-- Feature description skeleton -->
+                    <div class="space-y-2">
+                      <div
+                        class="skeleton-text h-4 w-full"></div>
+                      <div
+                        class="skeleton-text h-4 w-5/6"></div>
+                    </div>
+
+                    <!-- Feature links skeleton -->
+                    <div class="space-y-2 pt-2">
+                      <div
+                        class="skeleton-text h-4 w-24"></div>
+                      <div
+                        class="skeleton-text h-4 w-32"></div>
+                    </div>
+                  </div>
+                </div>
               </template>
             </ClientOnly>
           </template>
@@ -426,18 +488,20 @@ const handleProductClick = (product: EnhancedProduct) => {
             </section>
           </div>
 
-          <section aria-labelledby="payout">
+          <section aria-labelledby="transfer">
             <ProseH3
-              id="payout"
+              id="transfer"
               class="text-muted">
-              {{ $t("home.products.payout.title") }}
+              {{ $t("home.products.transfer.title") }}
               <UBadge
                 class="font-bold rounded-lg ml-2 -translate-y-1"
                 trailing-icon="i-heroicons-clock"
                 :aria-label="
-                  $t('home.products.payout.comingSoon')
+                  $t('home.products.transfer.comingSoon')
                 ">
-                {{ $t("home.products.payout.comingSoon") }}
+                {{
+                  $t("home.products.transfer.comingSoon")
+                }}
               </UBadge>
             </ProseH3>
           </section>
@@ -450,6 +514,11 @@ const handleProductClick = (product: EnhancedProduct) => {
           <UPageCTA
             :title="$t('home.cta.title')"
             :description="$t('home.cta.description')"
+            :ui="{
+              container:
+                'flex flex-col lg:grid px-6 py-12 sm:px-12 sm:py-24 lg:px-16 lg:py-24 gap-8 sm:gap-16',
+              footer: 'mt-8',
+            }"
             :links="[
               {
                 label: $t('home.cta.start'),

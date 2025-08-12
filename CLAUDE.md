@@ -9,18 +9,21 @@ This is **Onerway Docs Next** - a multilingual documentation
 platform built with Nuxt 3 for payment product
 documentation. The project supports Chinese (Simplified &
 Traditional) and English with structured content collections
-for Get Started, Payments, and Payouts modules.
+for Get Started, Payments, and Transfers modules.
 
 ## Tech Stack & Architecture
 
 - **Framework**: Nuxt 3 (^3.17.5) with TypeScript
-- **Package Manager**: pnpm (version 10.12.2) - required
+- **Package Manager**: pnpm (version 10.13.1) - required
 - **Content**: Nuxt Content (3.5.1) with structured
   collections and Zod schemas
 - **UI**: Nuxt UI Pro (3.1.3) with Tailwind CSS
 - **Internationalization**: @nuxtjs/i18n for multi-language
   support
 - **3D Graphics**: Three.js integration for visual elements
+- **Code Quality**: ESLint + Prettier with Husky pre-commit
+  hooks
+- **Utilities**: VueUse for Vue composition utilities
 
 ## Development Commands
 
@@ -56,7 +59,7 @@ pnpm generate:missing # Generate missing content report (detects translation gap
 - **get_started_en/zh**: Getting started documentation
 - **payments_en/zh**: Payment API documentation with
   method/endpoint metadata
-- **payouts_en/zh**: Payout documentation
+- **transfers_en/zh**: Transfer documentation
 - **changelog_en/zh**: Version-controlled changelogs by
   domain
 - **metadata**: Version info and language completeness
@@ -83,7 +86,7 @@ pages/                    # Nuxt pages ([...slug].vue for docs routing)
 
 ### Version Management
 
-- Each module (get-started, payments, payouts) has
+- Each module (get-started, payments, transfers) has
   independent versioning
 - Version info stored in `content/metadata/*.yml`
 - Supports current/deprecated/legacy status tracking
@@ -169,6 +172,52 @@ development phases. When working on implementation tasks,
 refer to `.cursor/rules/onerway-docs-implementation.mdc` for
 phase-based development guidelines.
 
+## Composable Architecture
+
+This project uses a sophisticated three-tier composable
+architecture:
+
+### Tier 1: Core Services (Planned)
+
+- **useCoreCache()**: Shared caching with TTL management
+- **useCoreStorage()**: localStorage/sessionStorage
+  abstraction
+- **useDebounce()**: Unified debounce/throttle utilities
+
+### Tier 2: Feature Composables
+
+- **useDocumentation**: Document system with modular classes
+  - PathResolver: Content path resolution and caching
+  - NavigationProcessor: Navigation tree processing
+  - BreadcrumbBuilder: Breadcrumb generation
+- **useRecentPages**: Recent pages tracking with modular
+  classes
+  - CacheManager: Memory and TTL cache management
+  - ContentService: Content metadata fetching
+- **useClipboard**: Simple clipboard operations
+
+### Composable Complexity Guidelines
+
+- **Simple** (<200 lines): Single file (e.g.,
+  `useClipboard.ts`)
+- **Medium** (200-500 lines): Single file with sections
+- **Complex** (>500 lines): Modular directory structure
+  with:
+  - `index.ts`: Main composable export
+  - `types.ts`: Type definitions
+  - `constants.ts`: Configuration constants
+  - `classes/`: Business logic classes
+  - `utils/`: Utility functions
+  - Root-level re-export file (e.g., `useDocumentation.ts`)
+
+### Development Rules
+
+- Always check `.cursor/rules/COMPOSABLES.md` for existing
+  functionality
+- Use dependency injection for complex business logic
+- Follow SSR-safe patterns with `useState`
+- Implement proper cleanup in `onUnmounted`
+
 ## Key Files to Understand
 
 - `nuxt.config.ts`: Main Nuxt configuration and module setup
@@ -178,3 +227,7 @@ phase-based development guidelines.
 - `eslint.config.mjs`: Comprehensive linting rules
 - `scripts/generate-missing-content.js`: Content gap
   detection
+- `.cursor/rules/COMPOSABLES.md`: Composable registry and
+  guidelines
+- `.cursor/rules/frontend-development-guidelines.mdc`:
+  Complete development standards

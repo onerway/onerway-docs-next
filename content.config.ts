@@ -4,39 +4,23 @@ import {
   defineContentConfig,
   z,
 } from "@nuxt/content";
+import {
+  MODULE_CONFIG,
+  MODULE_ENUMS,
+  SUPPORTED_CONTENT_LOCALES,
+} from "./composables/shared/constants";
 
 // Constants for better maintainability
-const LOCALES = ["en", "zh-cn", "zh-tw"] as const;
-const DOMAINS = [
-  "get-started",
-  "payments",
-  "payouts",
-] as const;
-const HTTP_METHODS = [
-  "GET",
-  "POST",
-  "PUT",
-  "DELETE",
-  "PATCH",
-] as const;
-const CHANGELOG_TYPES = [
-  "major",
-  "minor",
-  "patch",
-] as const;
-const VERSION_STATUS = [
-  "current",
-  "deprecated",
-  "legacy",
-] as const;
+const LOCALES = SUPPORTED_CONTENT_LOCALES;
+const MODULES = MODULE_ENUMS;
 
-// Shared schema definitions
-const createBasePageSchema = () =>
+// 文档 schema 定义
+const createDocumentSchema = () =>
   z.object({
     title: z.string(),
     description: z.string().optional(),
     version: z.string().optional(),
-    category: z.string().optional(),
+    category: z.enum(MODULES).optional(),
     tags: z.array(z.string()).optional(),
     lastUpdated: z.string().optional(),
     order: z.number().optional(),
@@ -44,126 +28,72 @@ const createBasePageSchema = () =>
     showToc: z.boolean().optional().default(true),
     showNavigation: z.boolean().optional().default(true),
     layout: z.string().optional(),
-  });
-
-const createPaymentsSchema = () =>
-  createBasePageSchema().extend({
-    apiMethod: z.enum(HTTP_METHODS).optional(),
-    apiEndpoint: z.string().optional(),
-  });
-
-const createChangelogSchema = () =>
-  z.object({
-    title: z.string(),
-    version: z.string(),
-    releaseDate: z.string(),
-    type: z.enum(CHANGELOG_TYPES),
-    domain: z.enum(DOMAINS),
-    description: z.string().optional(),
-    breaking: z.boolean().optional().default(false),
-    features: z.array(z.string()).optional(),
-    fixes: z.array(z.string()).optional(),
-    improvements: z.array(z.string()).optional(),
-    showToc: z.boolean().optional().default(true),
-    showNavigation: z.boolean().optional().default(true),
-    layout: z.string().optional(),
-  });
-
-const createMetadataSchema = () =>
-  z.object({
-    domain: z.string(),
-    currentVersion: z.string(),
-    availableVersions: z.array(
-      z.object({
-        version: z.string(),
-        status: z.enum(VERSION_STATUS),
-        supportedUntil: z.string().optional(),
+    icon: z.string().optional(),
+    iconColor: z.string().optional(),
+    module: z.boolean().optional().default(false),
+    defaultOpen: z
+      .union([z.boolean(), z.number().int().min(0)])
+      .optional()
+      .default(false),
+    ui: z
+      .object({
+        itemWithChildren: z.string().optional(),
+        link: z.string().optional(),
+        linkTrailingIcon: z.string().optional(),
       })
-    ),
-    languages: z.array(
-      z.object({
-        code: z.string(),
-        name: z.string(),
-        completeness: z.number().min(0).max(100),
-      })
-    ),
+      .optional(),
   });
 
-// Collection factory functions
-const createDomainCollection = (
-  domain: string,
-  locale: string,
-  schema: ReturnType<
-    typeof createBasePageSchema
-  > = createBasePageSchema()
+// 获取本地化目录名
+const getLocaleDir = (locale: string): string => {
+  return locale === "zh-cn"
+    ? "zh-cn"
+    : locale === "zh-tw"
+      ? "zh-tw"
+      : "en";
+};
+
+// 统一的 Collection 工厂函数
+const createCollection = (
+  moduleKey: string,
+  locale: string
 ) => {
-  const localeDir =
-    locale === "zh-cn"
-      ? "zh-cn"
-      : locale === "zh-tw"
-        ? "zh-tw"
-        : "en";
+  const localeDir = getLocaleDir(locale);
 
   return defineCollection({
     type: "page",
-    source: {
-      include: `${localeDir}/${domain}/**/*.{md,yml}`,
-      exclude: [`${localeDir}/${domain}/changelog/**`],
-    },
-    schema,
+    source: `${localeDir}/${moduleKey}/**/*.{md,mdc,yml}`,
+    schema: createDocumentSchema(),
   });
 };
 
-const createChangelogCollection = (locale: string) => {
-  const localeDir =
-    locale === "zh-cn"
-      ? "zh-cn"
-      : locale === "zh-tw"
-        ? "zh-tw"
-        : "en";
-
-  return defineCollection({
-    type: "page",
-    source: `${localeDir}/**/changelog/*.md`,
-    schema: createChangelogSchema(),
-  });
+// 生成集合名称的辅助函数
+const buildCollectionName = (
+  moduleKey: string,
+  locale: string
+): string => {
+  return `${moduleKey.replace("-", "_")}_${locale.replace("-", "_")}`;
 };
 
-// Generate collections dynamically
+// 统一的集合生成器
 const generateCollections = () => {
   const collections: Record<
     string,
     ReturnType<typeof defineCollection>
   > = {};
 
-  // Generate domain collections for each locale
-  DOMAINS.forEach((domain) => {
+  // 基于 MODULE_CONFIG 统一生成所有模块的集合
+  Object.entries(MODULE_CONFIG).forEach(([moduleKey]) => {
     LOCALES.forEach((locale) => {
-      const collectionName = `${domain.replace("-", "_")}_${locale.replace("-", "_")}`;
-      const schema =
-        domain === "payments"
-          ? createPaymentsSchema()
-          : createBasePageSchema();
-      collections[collectionName] = createDomainCollection(
-        domain,
-        locale,
-        schema
+      const collectionName = buildCollectionName(
+        moduleKey,
+        locale
+      );
+      collections[collectionName] = createCollection(
+        moduleKey,
+        locale
       );
     });
-  });
-
-  // Generate changelog collections for each locale
-  LOCALES.forEach((locale) => {
-    const collectionName = `changelog_${locale.replace("-", "_")}`;
-    collections[collectionName] =
-      createChangelogCollection(locale);
-  });
-
-  // Add metadata collection
-  collections.metadata = defineCollection({
-    type: "data",
-    source: "metadata/*.yml",
-    schema: createMetadataSchema(),
   });
 
   return collections;

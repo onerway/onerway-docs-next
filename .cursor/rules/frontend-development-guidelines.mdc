@@ -53,14 +53,14 @@ const handleUserClick = async (userId: number) => {
 <template>
   <!-- ✅ Auto-unwrapping in templates -->
   <div>{{ user?.name || 'Guest' }}</div>
-  
+
   <!-- ✅ Accessibility + TailwindCSS + i18n -->
   <button
-    :aria-label="$t('buttons.loadUser')"
+    :aria-label="t('buttons.loadUser')"
     @click="handleUserClick"
     class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded focus:ring-2 focus:ring-blue-500"
   >
-    {{ $t('buttons.loadUser') }}
+    {{ t('buttons.loadUser') }}
   </button>
 </template>
 ```
@@ -83,14 +83,55 @@ const handleSubmit = async (data: FormData) => {
 ```
 
 ### Naming Conventions
+
+#### Project Structure Naming Standards
 ```typescript
-// ✅ Descriptive names
+// ✅ Collection Names (数据库集合): 使用下划线分隔
+"get_started_en", "payments_zh_cn", "development_resources_en"
+
+// ✅ File Paths & Routes (文件路径和路由): 使用连字符分隔
+"/get-started/v1/index", "/development-resources/changelog"
+"content/en/get-started/", "content/zh-cn/development-resources/"
+
+// ✅ Module Keys & Identifiers (模块键和标识符): 使用连字符分隔
+"get-started", "development-resources", "transfers"
+
+// ✅ i18n Translation Keys (国际化翻译键): 使用驼峰命名
+"developmentResources", "getStarted", "apiReference"
+```
+
+#### Code Naming Standards
+```typescript
+// ✅ Descriptive variable names
 const isUserAuthenticated = ref(false)
 const currentUserProfile = ref<UserProfile | null>(null)
 
 // ✅ Event handlers with "handle" prefix
 const handleButtonClick = () => {}
 const handleKeyDown = (event: KeyboardEvent) => {}
+
+// ✅ Composable naming
+const useContentNavigation = () => {}
+const useDocumentation = () => {}
+
+// ✅ Type and interface naming
+interface UserProfile { /* ... */ }
+type SupportedModule = "get-started" | "payments"
+```
+
+#### Configuration Object Keys
+```typescript
+// ✅ Configuration objects follow context-specific conventions
+const MODULE_CONFIG = {
+  "development-resources": {    // 模块键: 连字符
+    collection: "development_resources",  // 集合前缀: 下划线
+    i18nKey: "developmentResources",     // i18n键: 驼峰
+    routePath: "/development-resources", // 路由: 连字符
+  }
+}
+
+// ✅ Generated collection names
+"development_resources_en"  // 集合名: 下划线分隔
 ```
 
 ## Composable Architecture Guidelines
@@ -102,11 +143,11 @@ const handleKeyDown = (event: KeyboardEvent) => {}
 // composables/useCounter.ts
 export const useCounter = (initial = 0) => {
   const count = ref(initial)
-  
+
   const increment = () => count.value++
   const decrement = () => count.value--
   const reset = () => count.value = initial
-  
+
   return {
     count: readonly(count),
     increment,
@@ -132,18 +173,18 @@ export const useForm = <T extends Record<string, any>>(
 ) => {
   // State management section
   const state = reactive<FormState<T>>({ /* ... */ })
-  
+
   // Validation logic section
   const validateField = (field: keyof T) => { /* ... */ }
-  
+
   // Form actions section
   const handleSubmit = async (onSubmit: (values: T) => Promise<void>) => { /* ... */ }
-  
+
   return {
     // State
     values: readonly(toRefs(state.values)),
     isValid: readonly(toRef(state, 'isValid')),
-    
+
     // Actions
     validateField,
     handleSubmit
@@ -178,18 +219,18 @@ export const useComplexFeature = <T>(config: FeatureConfig<T>) => {
   // Initialize with dependency injection
   const cache = new CacheManager()
   const processor = new DataProcessor(config, cache)
-  
+
   const data = ref<T[]>([])
   const isLoading = ref(false)
-  
+
   return {
     // State
     data: readonly(data),
     isLoading: readonly(isLoading),
-    
+
     // Actions
     processData: processor.process.bind(processor),
-    
+
     // Utils (dev only)
     ...(import.meta.dev ? { debugInfo: cache.getDebugInfo } : {})
   }
@@ -201,24 +242,24 @@ export const useComplexFeature = <T>(config: FeatureConfig<T>) => {
 // ✅ Use classes for complex business logic with dependency injection
 class DataProcessor<T> {
   private cache = new Map<string, T>()
-  
+
   constructor(
     private config: ProcessorConfig,
     private cacheManager: CacheManager
   ) {
     this.validateConfig()
   }
-  
+
   async process(input: RawData): Promise<T> {
     const cacheKey = this.generateCacheKey(input)
     const cached = this.cache.get(cacheKey)
     if (cached) return cached
-    
+
     const processed = await this.performProcessing(input)
     this.cache.set(cacheKey, processed)
     return processed
   }
-  
+
   private validateConfig(): void {
     if (!this.config.apiKey) {
       throw new Error('API key is required')
@@ -234,7 +275,7 @@ class DataProcessor<T> {
 // ✅ Debounce user input
 const searchDebounced = debounce(async (query: string) => {
   if (!query.trim()) return
-  
+
   isSearching.value = true
   try {
     results.value = await searchAPI(query)
@@ -246,11 +287,11 @@ const searchDebounced = debounce(async (query: string) => {
 // ✅ Cache expensive computations
 const expensiveComputation = computed(() => {
   if (!data.value) return null
-  
+
   const cacheKey = generateHash(data.value)
   const cached = computationCache.get(cacheKey)
   if (cached) return cached
-  
+
   const result = performExpensiveOperation(data.value)
   computationCache.set(cacheKey, result)
   return result
@@ -277,13 +318,13 @@ onUnmounted(() => {
     <!-- ✅ Status colors -->
     <div class="text-green-600 dark:text-green-400">Success</div>
     <div class="text-red-600 dark:text-red-400">Error</div>
-    
+
     <!-- ✅ Interactive elements with i18n -->
     <button
-      :aria-label="$t('a11y.primaryAction')"
+      :aria-label="t('a11y.primaryAction')"
       class="bg-primary-500 hover:bg-primary-600 dark:bg-primary-400 dark:hover:bg-primary-500 focus:ring-2 focus:ring-primary-500"
     >
-      {{ $t('buttons.action') }}
+      {{ t('buttons.action') }}
     </button>
   </div>
 </template>
@@ -351,12 +392,12 @@ const switchLocale = (newLocale: SupportedLocale) => {
 <template>
   <div>
     <!-- ✅ Template translation -->
-    <h1>{{ $t('page.title') }}</h1>
-    
+    <h1>{{ t('page.title') }}</h1>
+
     <!-- ✅ Pluralization and interpolation -->
-    <p>{{ $t('items.count', { count: items.length }, items.length) }}</p>
-    <p>{{ $t('welcome.message', { name: user.name }) }}</p>
-    
+    <p>{{ t('items.count', { count: items.length }, items.length) }}</p>
+    <p>{{ t('welcome.message', { name: user.name }) }}</p>
+
     <!-- ❌ Wrong - hardcoded text -->
     <span>Click here</span>
   </div>
@@ -367,16 +408,16 @@ const switchLocale = (newLocale: SupportedLocale) => {
 ```json
 {
   "nav": { "docs": "Documentation", "api": "API", "home": "Home" },
-  "buttons": { 
-    "save": "Save", 
-    "cancel": "Cancel", 
+  "buttons": {
+    "save": "Save",
+    "cancel": "Cancel",
     "submit": "Submit",
     "loadUser": "Load User"
   },
   "messages": { "success": "Success", "error": "Error", "warning": "Warning" },
-  "forms": { 
-    "email": "Email", 
-    "password": "Password", 
+  "forms": {
+    "email": "Email",
+    "password": "Password",
     "confirm": "Confirm",
     "emailHelp": "We'll never share your email with anyone else."
   },
@@ -432,6 +473,66 @@ const switchLocale = (newLocale: SupportedLocale) => {
 - [ ] Error handling, loading states managed
 - [ ] Responsive design, cross-browser compatibility
 - [ ] Build process completes successfully
+
+## Composable Code Reuse & Anti-Duplication Guidelines
+
+> 📚 **详细信息**: 完整的组合式函数清单、API 文档和依赖关系请参阅 [COMPOSABLES.md](./COMPOSABLES.md)
+
+### Core Architecture Principles
+
+**Three-Tier Architecture**
+```typescript
+// Tier 1: Core Services (composables/core/)
+// - Shared utilities: cache, storage, debounce, validation
+// - SSR-safe with useState
+// - Singleton pattern for heavy resources
+
+// Tier 2: Feature Composables
+// - Business logic specific to domains
+// - Depend on core services
+// - Complex (>500L) → modular directory structure
+
+// Tier 3: Page/Component Usage
+// - Import and compose feature composables
+// - No direct core service usage
+```
+
+**Anti-Duplication Checklist**
+- [ ] 🔍 **Search [COMPOSABLES.md](./COMPOSABLES.md)** for existing functionality
+- [ ] 📋 **Check `composables/core/`** for reusable utilities
+- [ ] 🏗️ **Architecture Decision**: Simple (<200L) | Medium (200-500L) | Complex (>500L)
+- [ ] 🔄 **Reuse Assessment**: Extend existing vs. create new
+- [ ] 📚 **Update [COMPOSABLES.md](./COMPOSABLES.md)** registry
+
+### Code Quality Standards
+
+**Dependency Injection Pattern**
+```typescript
+// ✅ Good: Inject shared services
+export const useMyFeature = () => {
+  const cache = useCoreCache()
+  const storage = useCoreStorage()
+  // Feature-specific logic using shared services
+}
+
+// ❌ Avoid: Recreating existing functionality
+export const useMyFeature = () => {
+  const myCache = new Map() // Don't reinvent caching
+}
+```
+
+**Essential Quality Checks**
+- **SSR Safety**: Use `useState` for persistent state
+- **Memory Management**: Cleanup in `onUnmounted`
+- **Error Handling**: Proper async error handling
+- **Type Safety**: Full TypeScript coverage
+- **Documentation**: JSDoc with dependencies and examples
+
+**Red Flags in Code Review**
+- Duplicate caching/storage logic without using core services
+- Missing TypeScript types or excessive `any` usage
+- No cleanup logic for stateful operations
+- State management bypassing `useState` pattern
 
 ## Communication Style
 - **Concise**: Minimize prose, focus on code solutions

@@ -19,7 +19,7 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const { t } = useI18n();
-const { copy } = useClipboard();
+const { copy, copied } = useClipboard();
 
 interface CarouselItem {
   label: string;
@@ -392,7 +392,7 @@ const isAutoPlaying = ref(true);
 const autoPlayInterval = ref<NodeJS.Timeout | null>(null);
 const isHovering = ref(false);
 const userManuallyStopped = ref(false);
-const copySuccess = ref(false);
+// copySuccess 状态已由 useClipboard 的 copied 状态替代
 const isContentExpanded = ref(false); // 控制内容展开状态
 
 // 进度条相关状态
@@ -485,9 +485,9 @@ const themeClasses = computed(() => ({
   ],
 }));
 
-// Enhanced copy to clipboard using useClipboard composable
+// Enhanced copy to clipboard using useClipboard composable - 已优化
 const copyToClipboard = async () => {
-  const success = await copy(currentDisplayContent.value, {
+  await copy(currentDisplayContent.value, {
     successTitle: t(
       "home.tryItOut.carousel.feedback.copySuccess"
     ),
@@ -501,17 +501,8 @@ const copyToClipboard = async () => {
       "home.tryItOut.carousel.feedback.copyErrorDesc"
     ),
     duration: 3000,
-    resetDelay: 2000,
   });
-
-  // Update local state based on composable result
-  copySuccess.value = success;
-
-  if (success) {
-    setTimeout(() => {
-      copySuccess.value = false;
-    }, 2000);
-  }
+  // 状态由 useClipboard 的 copied 自动管理，无需手动处理
 };
 
 // 切换内容展开状态
@@ -953,16 +944,16 @@ watch(
             <UButton
               v-if="props.showCopyButton"
               :icon="
-                copySuccess
+                copied
                   ? 'i-heroicons-check'
                   : 'i-heroicons-clipboard-document'
               "
               size="xs"
-              :color="copySuccess ? 'success' : 'neutral'"
+              :color="copied ? 'success' : 'neutral'"
               variant="ghost"
               class="transition-all duration-200 hover:cursor-pointer"
               :class="[
-                copySuccess
+                copied
                   ? 'text-green-400'
                   : 'text-gray-400 hover:text-highlighted',
               ]"

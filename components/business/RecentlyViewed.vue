@@ -3,25 +3,20 @@ const { t } = useI18n();
 const {
   recentThreePages,
   formatTimeI18n,
-  getPageIcon,
-  getPageIconColor,
   getTimeColor,
-  getPageTitle,
-  getPageDescription,
-  removeRecentPage,
-  clearRecentPages,
+  removePage,
+  clearPages,
 } = useRecentPages();
 
 // Performance optimization: use computed data to avoid repeated calculations
 const displayData = computed(() => {
   return recentThreePages.value.map((page) => ({
     ...page,
-    // 优先使用已存储的标题和描述，避免重复计算
-    displayTitle: page.title || getPageTitle(page.path),
-    displayDescription:
-      page.description || getPageDescription(page.path),
-    icon: getPageIcon(page.path),
-    iconColor: getPageIconColor(page.path),
+    // 直接使用已存储的数据，避免异步调用
+    displayTitle: page.title,
+    displayDescription: page.description,
+    icon: page.icon || "i-heroicons-document",
+    iconColor: page.iconColor || "text-primary",
     timeColor: getTimeColor(page.timestamp),
     formattedTime: formatTimeI18n(page.timestamp),
   }));
@@ -29,11 +24,11 @@ const displayData = computed(() => {
 
 // Event handlers
 const handleRemovePage = (path: string) => {
-  removeRecentPage(path);
+  removePage(path);
 };
 
 const handleClearAll = () => {
-  clearRecentPages();
+  clearPages();
 };
 </script>
 

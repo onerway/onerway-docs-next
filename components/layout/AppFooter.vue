@@ -47,8 +47,8 @@ const quickLinks = computed(() => [
         icon: "i-heroicons-academic-cap",
       },
       {
-        label: "footer.changelog",
-        to: "/changelog",
+        label: "footer.developmentResources",
+        to: "/development-resources",
         icon: "i-heroicons-clock",
       },
       {

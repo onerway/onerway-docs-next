@@ -1,9 +1,14 @@
 @import "tailwindcss";
+@source "../../content/**/*.md";
+@source "../../content/**/*.mdc";
 @import "@nuxt/ui-pro";
 
 :root {
-  --ui-header-height: --spacing(16);
-  --ui-header-height-bottom: --spacing(12);
+  --ui-header-height: theme(spacing.16);
+  --ui-header-height-bottom: theme(spacing.12);
+  --ui-header-total-height: calc(
+    var(--ui-header-height) + var(--ui-header-height-bottom)
+  );
 }
 
 /* 字体 */
@@ -37,4 +42,109 @@
     "Liberation Mono", "Menlo", "Courier New",
     /* 中文等宽支持 */ "Microsoft YaHei Mono",
     "Source Han Sans CN", /* 通用回退 */ monospace;
+}
+
+/* Skeleton animations and styles */
+.skeleton-base {
+  @apply relative overflow-hidden;
+}
+
+/* Wave animation */
+.skeleton-wave {
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton-wave::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+  animation: skeleton-wave 1.6s ease-in-out infinite;
+}
+
+.dark .skeleton-wave::after {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+}
+
+/* Shimmer animation */
+.skeleton-shimmer {
+  background: linear-gradient(
+    110deg,
+    #e2e8f0 8%,
+    #f1f5f9 18%,
+    #e2e8f0 33%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s ease-in-out infinite;
+}
+
+.dark .skeleton-shimmer {
+  background: linear-gradient(
+    110deg,
+    #374151 8%,
+    #4b5563 18%,
+    #374151 33%
+  );
+  background-size: 200% 100%;
+}
+
+/* Skeleton container for better spacing */
+.skeleton-container {
+  @apply animate-pulse;
+}
+
+/* Animations */
+@keyframes skeleton-wave {
+  0% {
+    transform: translateX(-100%);
+  }
+  50% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Utility classes for common skeleton patterns */
+.skeleton-text {
+  @apply bg-gray-200 dark:bg-gray-700 rounded animate-pulse;
+  height: 1em;
+}
+
+.skeleton-title {
+  @apply bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse;
+  height: 2em;
+}
+
+.skeleton-button {
+  @apply bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse h-10 px-6;
+}
+
+.skeleton-card {
+  @apply bg-gray-200 dark:bg-gray-700 rounded-xl animate-pulse;
 }

@@ -5,6 +5,7 @@ import { mapContentNavigation } from "@nuxt/ui-pro/utils/content";
 import { useDebounceFn, whenever } from "@vueuse/core";
 import { kebabCase } from "scule";
 import {
+  buildCollectionName,
   createLogger,
   useSharedPathInfo,
 } from "~/composables/shared/utils";
@@ -26,7 +27,7 @@ const { pathInfo } = useSharedPathInfo();
 
 logger.info("pathInfo", pathInfo.value);
 
-// 获取页面内容
+// 获取页面内容（带英文回退）
 const { data: page } = await useAsyncData(
   `${kebabCase(route.path)}-${locale.value}`,
   async () => {
@@ -43,11 +44,38 @@ const { data: page } = await useAsyncData(
       pathInfo.value.collectionName
     );
 
-    return queryCollection(
+    // 1) 尝试当前语言内容
+    let doc = await queryCollection(
       pathInfo.value.collectionName as any
     )
       .path(pathInfo.value.contentPath)
       .first();
+
+    // 2) 若不存在，回退到英文内容
+    if (!doc && pathInfo.value.module) {
+      const fallbackLocale = "en";
+      const fallbackCollection = buildCollectionName(
+        pathInfo.value.module,
+        fallbackLocale as any
+      );
+      // 将内容路径的首个语言段替换为 /en/
+      const fallbackPath =
+        pathInfo.value.contentPath.replace(
+          /^\/[a-z]{2}(?:-[a-z]{2})?\//i,
+          `/${fallbackLocale}/`
+        );
+
+      logger.info("fallback to EN", {
+        fallbackCollection,
+        fallbackPath,
+      });
+
+      doc = await queryCollection(fallbackCollection as any)
+        .path(fallbackPath)
+        .first();
+    }
+
+    return doc;
   },
   {
     watch: [() => route.path, locale], // 监听路径和语言

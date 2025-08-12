@@ -133,6 +133,13 @@ export default defineNuxtConfig({
   nitro: {
     prerender: {
       // 排除无效的路由，避免预渲染错误
+      ignore: [
+        "/mock",
+        "/mock/**",
+        "/**/mock",
+        "/**/mock/**",
+      ],
+      failOnError: false,
     },
   },
 

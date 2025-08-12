@@ -19,7 +19,7 @@ integration.
 Before you start developing, make sure you have:
 
 - [ ] **Onerway Account** -
-      [Create an account](../set-up-onerway/create-an-account)
+      [Create an account](/mock/set-up-onerway/create-an-account)
       if you haven't already
 - [ ] **API Keys** - Retrieved from your developer dashboard
 - [ ] **Development Environment** - Your preferred IDE and
@@ -211,8 +211,8 @@ ngrok http 3000
 
 Test API endpoints directly in your browser:
 
-- [Payments API Explorer](../../../payments/api-reference)
-- [Transfers API Explorer](../../../transfers/api-reference)
+- [Payments API Explorer](../../../mock/payments/api-reference)
+- [Transfers API Explorer](../../../mock/transfers/api-reference)
 
 ## Common Development Patterns
 
@@ -291,18 +291,18 @@ app.post(
 
 Now that you've started developing:
 
-1. 🔍 [Learn About the APIs](../about-the-apis) - Understand
+1. 🔍 [Learn About the APIs](../mock/about-the-apis) - Understand
    our API architecture
-2. 🤖 [Build with an LLM](../build-with-llm) - AI-powered
+2. 🤖 [Build with an LLM](../mock/build-with-llm) - AI-powered
    development
 3. 🎯 [Use Without Code](../use-stripe-without-code) -
    No-code solutions
-4. 📚 [Explore Payment Methods](../../../payments/) - Accept
+4. 📚 [Explore Payment Methods](../../.../mock/payments/) - Accept
    various payment types
 
 ## Need Help?
 
-- 📖 [API Documentation](../../../payments/) - Complete
+- 📖 [API Documentation](../../../mock/payments/) - Complete
   reference
 - 💬 [Developer Community](https://community.onerway.com) -
   Connect with other developers
@@ -312,4 +312,4 @@ Now that you've started developing:
   Direct technical support
 
 Ready to dive deeper? Continue to
-[About the APIs](../about-the-apis).
+[About the APIs](../mock/about-the-apis).

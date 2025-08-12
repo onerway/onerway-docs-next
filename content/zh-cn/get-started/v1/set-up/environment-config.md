@@ -277,5 +277,5 @@ services:
 
 环境配置完成？太好了！现在了解：
 
-- [安全最佳实践](./security) - 保护您的集成
-- [进行首次支付](./first-payment) - 处理测试支付
+- [安全最佳实践](./mock/security) - 保护您的集成
+- [进行首次支付](./mock/first-payment) - 处理测试支付

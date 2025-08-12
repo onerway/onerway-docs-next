@@ -394,7 +394,9 @@
     "open": "打开",
     "edit": "编辑",
     "delete": "删除",
-    "confirm": "确认"
+    "confirm": "确认",
+    "back": "返回",
+    "home": "首页"
   },
   "forms": {
     "email": "邮箱",
@@ -422,7 +424,8 @@
     "sortAscending": "升序排列",
     "sortDescending": "降序排列",
     "searchInput": "搜索输入框",
-    "toggleTheme": "切换主题模式"
+    "toggleTheme": "切换主题模式",
+    "backToHome": "返回首页"
   },
   "docs": {
     "navigation": {
@@ -467,5 +470,12 @@
       "defaultTitle": "文档中心",
       "defaultDescription": "Onerway 集成的全面指南和示例。"
     }
+  },
+  "mock": {
+    "title": "即将推出",
+    "description": "该页面为临时占位，内容尚未提供。",
+    "noticeTitle": "暂不可用",
+    "noticeDescription": "当前访问的 mock 路由是临时占位页面。",
+    "pathLabel": "路径"
   }
 }

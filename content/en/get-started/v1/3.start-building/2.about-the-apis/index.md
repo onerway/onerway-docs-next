@@ -386,7 +386,7 @@ Ready to start building with our APIs?
 
 1. 🚀 [Start Developing](../start-developing) - Set up your
    development environment
-2. 🤖 [Build with an LLM](../build-with-llm) - AI-assisted
+2. 🤖 [Build with an LLM](../mock/build-with-llm) - AI-assisted
    development
 3. 🎯 [Use Without Code](../use-stripe-without-code) -
    No-code integrations
@@ -397,7 +397,7 @@ Ready to start building with our APIs?
 
 ## Resources
 
-- 📖 [API Reference](../../../payments/api-reference) -
+- 📖 [API Reference](../../../mock/payments/api-reference) -
   Complete API documentation
 - 🔧 [API Status](https://status.onerway.com) - Service
   status and uptime

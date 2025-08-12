@@ -399,7 +399,9 @@
     "open": "開啟",
     "edit": "編輯",
     "delete": "刪除",
-    "confirm": "確認"
+    "confirm": "確認",
+    "back": "返回",
+    "home": "首頁"
   },
   "forms": {
     "email": "信箱",
@@ -427,7 +429,8 @@
     "sortAscending": "升序排列",
     "sortDescending": "降序排列",
     "searchInput": "搜尋輸入框",
-    "toggleTheme": "切換主題模式"
+    "toggleTheme": "切換主題模式",
+    "backToHome": "返回首頁"
   },
   "docs": {
     "navigation": {
@@ -472,5 +475,12 @@
       "defaultTitle": "文件中心",
       "defaultDescription": "Onerway 整合的全面指南和範例。"
     }
+  },
+  "mock": {
+    "title": "即將推出",
+    "description": "此頁面為臨時佔位，內容尚未提供。",
+    "noticeTitle": "暫不可用",
+    "noticeDescription": "目前存取的 mock 路由為臨時佔位頁面。",
+    "pathLabel": "路徑"
   }
 }

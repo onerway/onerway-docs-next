@@ -402,7 +402,9 @@
     "open": "Open",
     "edit": "Edit",
     "delete": "Delete",
-    "confirm": "Confirm"
+    "confirm": "Confirm",
+    "back": "Back",
+    "home": "Home"
   },
   "forms": {
     "email": "Email",
@@ -430,7 +432,8 @@
     "sortAscending": "Sort ascending",
     "sortDescending": "Sort descending",
     "searchInput": "Search input field",
-    "toggleTheme": "Toggle theme mode"
+    "toggleTheme": "Toggle theme mode",
+    "backToHome": "Back to home"
   },
   "docs": {
     "navigation": {
@@ -475,5 +478,12 @@
       "defaultTitle": "Documentation Center",
       "defaultDescription": "Comprehensive guides and examples for integrating Onerway."
     }
+  },
+  "mock": {
+    "title": "Coming soon",
+    "description": "This is a placeholder page for content that is not yet available.",
+    "noticeTitle": "Not available yet",
+    "noticeDescription": "The requested mock route is a temporary placeholder.",
+    "pathLabel": "Path"
   }
 }

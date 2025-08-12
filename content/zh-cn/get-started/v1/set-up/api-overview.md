@@ -182,5 +182,5 @@ X-RateLimit-Reset: 1640995260
 
 准备配置您的环境？继续阅读：
 
-- [环境配置](./environment-config) - 详细设置指南
-- [安全最佳实践](./security) - 保持您的集成安全
+- [环境配置](./mock/environment-config) - 详细设置指南
+- [安全最佳实践](./mock/security) - 保持您的集成安全

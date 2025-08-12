@@ -81,8 +81,8 @@ composer require onerway/onerway-php
 
 #### 移動 SDK
 
-- [iOS SDK 文檔](../../../payments/mobile/ios)
-- [Android SDK 文檔](../../../payments/mobile/android)
+- [iOS SDK 文檔](../../.../mock/payments/mobile/ios)
+- [Android SDK 文檔](../../../mock/payments/mobile/ios)
 
 ## 快速測試
 
@@ -117,9 +117,9 @@ createPayment();
 現在您已經完成了所有設置：
 
 1. 📖 [閱讀 API 概覽](./api-overview) - 了解我們的 API 結構
-2. 🔧 [環境配置](./environment-config) - 詳細的環境設置
-3. 🔒 [安全最佳實踐](./security) - 保持您的集成安全
-4. 🚀 [進行首次支付](./first-payment) - 處理真實支付
+2. 🔧 [環境配置](./mock/environment-config) - 詳細的環境設置
+3. 🔒 [安全最佳實踐](./mock/security) - 保持您的集成安全
+4. 🚀 [進行首次支付](./mock/first-payment) - 處理真實支付
 
 ## 需要幫助？
 

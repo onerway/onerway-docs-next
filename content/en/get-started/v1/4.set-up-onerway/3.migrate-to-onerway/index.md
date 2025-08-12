@@ -83,8 +83,8 @@ composer require onerway/onerway-php
 
 #### Mobile SDKs
 
-- [iOS SDK Documentation](../../../payments/mobile/ios)
-- [Android SDK Documentation](../../../payments/mobile/android)
+- [iOS SDK Documentation](../../.../mock/payments/mobile/ios)
+- [Android SDK Documentation](../../../mock/payments/mobile/ios)
 
 ## Quick Test
 
@@ -121,11 +121,11 @@ Now that you have everything set up:
 
 1. 📖 [Read the API Overview](./api-overview) - Understand
    our API structure
-2. 🔧 [Environment Configuration](./environment-config) -
+2. 🔧 [Environment Configuration](./mock/environment-config) -
    Detailed environment setup
-3. 🔒 [Security Best Practices](./security) - Keep your
+3. 🔒 [Security Best Practices](./mock/security) - Keep your
    integration secure
-4. 🚀 [Make Your First Payment](./first-payment) - Process a
+4. 🚀 [Make Your First Payment](./mock/first-payment) - Process a
    real payment
 
 ## Need Help?

@@ -454,9 +454,9 @@ Need more advanced features?
 
 1. 🔧 [Start Developing](../start-developing) - Custom
    integration
-2. 🔍 [About the APIs](../about-the-apis) - Technical
+2. 🔍 [About the APIs](../mock/about-the-apis) - Technical
    overview
-3. 🤖 [Build with AI](../build-with-llm) - AI-assisted
+3. 🤖 [Build with AI](../mock/build-with-llm) - AI-assisted
    development
 
 ## Support Resources

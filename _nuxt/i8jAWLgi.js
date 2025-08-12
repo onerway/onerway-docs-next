@@ -1,1 +1,0 @@
-import{K as n}from"./BOEjTd95.js";function r(r,t,o){const s=r.findIndex((r=>n(r,t))),e=r.findIndex((r=>n(r,o)));if(-1===s||-1===e)return[];const[f,i]=[s,e].sort(((n,r)=>n-r));return r.slice(f,i+1)}export{r as f};

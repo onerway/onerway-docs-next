@@ -22,25 +22,33 @@
     "lang": "zh-cn",
     "module": "development-resources",
     "version": "v1",
-    "file": "1.index.md",
-    "relativePath": "development-resources/v1/1.index.md",
-    "_path": "/zh-cn/development-resources/v1/1.index"
+    "file": "1.overview.md",
+    "relativePath": "development-resources/v1/1.overview.md",
+    "_path": "/zh-cn/development-resources/v1/1.overview"
   },
   {
     "lang": "zh-tw",
     "module": "development-resources",
     "version": "v1",
-    "file": "1.index.md",
-    "relativePath": "development-resources/v1/1.index.md",
-    "_path": "/zh-tw/development-resources/v1/1.index"
+    "file": "1.overview.md",
+    "relativePath": "development-resources/v1/1.overview.md",
+    "_path": "/zh-tw/development-resources/v1/1.overview"
+  },
+  {
+    "lang": "zh-cn",
+    "module": "get-started",
+    "version": "v1",
+    "file": "1.overview.md",
+    "relativePath": "get-started/v1/1.overview.md",
+    "_path": "/zh-cn/get-started/v1/1.overview"
   },
   {
     "lang": "zh-tw",
     "module": "get-started",
     "version": "v1",
-    "file": "1.index.md",
-    "relativePath": "get-started/v1/1.index.md",
-    "_path": "/zh-tw/get-started/v1/1.index"
+    "file": "1.overview.md",
+    "relativePath": "get-started/v1/1.overview.md",
+    "_path": "/zh-tw/get-started/v1/1.overview"
   },
   {
     "lang": "zh-cn",
@@ -318,17 +326,17 @@
     "lang": "zh-cn",
     "module": "payments",
     "version": "v1",
-    "file": "1.index.md",
-    "relativePath": "payments/v1/1.index.md",
-    "_path": "/zh-cn/payments/v1/1.index"
+    "file": "1.overview.md",
+    "relativePath": "payments/v1/1.overview.md",
+    "_path": "/zh-cn/payments/v1/1.overview"
   },
   {
     "lang": "zh-tw",
     "module": "payments",
     "version": "v1",
-    "file": "1.index.md",
-    "relativePath": "payments/v1/1.index.md",
-    "_path": "/zh-tw/payments/v1/1.index"
+    "file": "1.overview.md",
+    "relativePath": "payments/v1/1.overview.md",
+    "_path": "/zh-tw/payments/v1/1.overview"
   },
   {
     "lang": "zh-cn",
@@ -398,17 +406,17 @@
     "lang": "zh-cn",
     "module": "revenue",
     "version": "v1",
-    "file": "index.md",
-    "relativePath": "revenue/v1/index.md",
-    "_path": "/zh-cn/revenue/v1/index"
+    "file": "1.overview.md",
+    "relativePath": "revenue/v1/1.overview.md",
+    "_path": "/zh-cn/revenue/v1/1.overview"
   },
   {
     "lang": "zh-tw",
     "module": "revenue",
     "version": "v1",
-    "file": "index.md",
-    "relativePath": "revenue/v1/index.md",
-    "_path": "/zh-tw/revenue/v1/index"
+    "file": "1.overview.md",
+    "relativePath": "revenue/v1/1.overview.md",
+    "_path": "/zh-tw/revenue/v1/1.overview"
   },
   {
     "lang": "zh-cn",
@@ -430,16 +438,16 @@
     "lang": "zh-cn",
     "module": "transfers",
     "version": "v1",
-    "file": "index.md",
-    "relativePath": "transfers/v1/index.md",
-    "_path": "/zh-cn/transfers/v1/index"
+    "file": "1.overview.md",
+    "relativePath": "transfers/v1/1.overview.md",
+    "_path": "/zh-cn/transfers/v1/1.overview"
   },
   {
     "lang": "zh-tw",
     "module": "transfers",
     "version": "v1",
-    "file": "index.md",
-    "relativePath": "transfers/v1/index.md",
-    "_path": "/zh-tw/transfers/v1/index"
+    "file": "1.overview.md",
+    "relativePath": "transfers/v1/1.overview.md",
+    "_path": "/zh-tw/transfers/v1/1.overview"
   }
 ]

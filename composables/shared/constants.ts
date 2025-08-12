@@ -73,7 +73,7 @@ export const MODULE_CONFIG: Record<string, ModuleConfig> = {
     order: 1,
     icon: "",
     color: "text-blue-500",
-    routePath: "/get-started",
+    routePath: "/get-started/overview",
   },
   payments: {
     collection: "payments",
@@ -88,7 +88,7 @@ export const MODULE_CONFIG: Record<string, ModuleConfig> = {
     order: 2,
     icon: "",
     color: "text-green-500",
-    routePath: "/payments",
+    routePath: "/payments/overview",
   },
   transfers: {
     collection: "transfers",
@@ -103,7 +103,7 @@ export const MODULE_CONFIG: Record<string, ModuleConfig> = {
     order: 3,
     icon: "",
     color: "text-purple-500",
-    routePath: "/transfers",
+    routePath: "/transfers/overview",
   },
   "development-resources": {
     collection: "development_resources",
@@ -118,7 +118,7 @@ export const MODULE_CONFIG: Record<string, ModuleConfig> = {
     order: 4,
     icon: "",
     color: "text-indigo-500",
-    routePath: "/development-resources",
+    routePath: "/development-resources/overview",
   },
   revenue: {
     collection: "revenue",
@@ -133,7 +133,7 @@ export const MODULE_CONFIG: Record<string, ModuleConfig> = {
     order: 5,
     icon: "",
     color: "text-amber-500",
-    routePath: "/revenue",
+    routePath: "/revenue/overview",
   },
 } as const;
 

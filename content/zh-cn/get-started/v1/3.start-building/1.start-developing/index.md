@@ -1,37 +1,32 @@
 ---
-title: Overview
-description: Begin your journey with Onerway development tools and get your first integration running
+title: 概览
+description: 使用 Onerway 的开发工具开启你的集成之旅，并完成第一个集成
 order: 1
 showToc: true
 showNavigation: true
 ---
 
-## Get Started with Development
+## 开发入门
 
-Ready to build with Onerway? This guide will help you set up
-your development environment and create your first
-integration.
+准备好与 Onerway 一起构建了吗？本指南将帮助你完成开发环境配置，并创建你的第一个集成。
 
-## Prerequisites
+## 前置条件
 
-Before you start developing, make sure you have:
+在开始开发之前，请确保你已具备：
 
-- [ ] **Onerway Account** -
-[Create an account](/mock/set-up-onerway/create-an-account)
-if you haven't already
-- [ ] **API Keys** - Retrieved from your developer dashboard
-- [ ] **Development Environment** - Your preferred IDE and
-programming language
-- [ ] **Basic HTTP Knowledge** - Understanding of REST APIs
-and JSON
+- [ ] **Onerway 账户** —— 如果尚未注册，请先
+[创建账户](/mock/set-up-onerway/create-an-account)
+- [ ] **API 密钥** —— 从开发者控制台获取
+- [ ] **开发环境** —— 你偏好的 IDE 与编程语言
+- [ ] **基础 HTTP 知识** —— 了解 REST API 与 JSON
 
-## Choose Your Development Path
+## 选择你的开发路径
 
-### Quick Start Options
+### 快速入门选项
 
-#### 🚀 **Express Integration**
+#### 🚀 **快捷集成（Express Integration）**
 
-Perfect for getting started quickly with minimal setup.
+适合以最少配置快速上手。
 
 ```javascript
 // Install the Onerway SDK
@@ -46,9 +41,9 @@ const payment = await onerway.paymentIntents.create({
 });
 ```
 
-#### 🔧 **Custom Integration**
+#### 🔧 **自定义集成**
 
-Build a tailored solution using our REST APIs directly.
+直接使用我们的 REST API 构建定制化方案。
 
 ```bash
 curl -X POST https://api.onerway.com/v1/payment_intents \
@@ -57,11 +52,11 @@ curl -X POST https://api.onerway.com/v1/payment_intents \
   -d '{"amount": 2000, "currency": "usd"}'
 ```
 
-## Development Workflow
+## 开发流程
 
-### 1. Setup Your Project
+### 1. 初始化项目
 
-Choose your preferred language and framework:
+选择你偏好的语言与框架：
 
 ::code-group
 
@@ -84,9 +79,9 @@ composer require onerway/onerway-php
 
 ::
 
-### 2. Configure Environment
+### 2. 配置环境
 
-Create your environment configuration:
+创建你的环境配置：
 
 ```bash
 # .env file
@@ -95,7 +90,7 @@ ONERWAY_PUBLISHABLE_KEY=pk_test_your_publishable_key
 ONERWAY_WEBHOOK_SECRET=whsec_your_webhook_secret
 ```
 
-### 3. Create Your First Payment
+### 3. 创建你的第一笔支付
 
 ::code-group
 
@@ -166,9 +161,9 @@ if __name__ == '__main__':
 
 ::
 
-### 4. Test Your Integration
+### 4. 测试你的集成
 
-Use Onerway's test mode to verify your implementation:
+使用 Onerway 的测试模式验证你的实现：
 
 ```javascript
 // Test with sample data
@@ -185,15 +180,15 @@ const testCards = {
 };
 ```
 
-## Development Tools
+## 开发工具
 
-### **Onerway CLI** (Coming Soon)
+### **Onerway CLI**（即将推出）
 
-Command-line tools for rapid development and testing.
+用于快速开发与测试的命令行工具。
 
-### **Webhook Testing**
+### **Webhook 测试**
 
-Use tools like ngrok to test webhooks locally:
+使用 ngrok 等工具进行本地 Webhook 测试：
 
 ```bash
 # Install ngrok
@@ -207,14 +202,14 @@ ngrok http 3000
 
 ### **API Explorer**
 
-Test API endpoints directly in your browser:
+在浏览器中直接测试 API 端点：
 
 - [Payments API Explorer](../../../mock/payments/api-reference)
 - [Transfers API Explorer](../../../mock/transfers/api-reference)
 
-## Common Development Patterns
+## 常见开发模式
 
-### Error Handling
+### 错误处理
 
 ```javascript
 try {
@@ -224,22 +219,22 @@ try {
 } catch (error) {
   switch (error.type) {
     case "card_error":
-      // Handle card-related errors
+      // 处理卡类错误
       break;
     case "rate_limit_error":
-      // Handle rate limiting
+      // 处理速率限制
       break;
     case "api_error":
-      // Handle API errors
+      // 处理 API 错误
       break;
     default:
-      // Handle other errors
+      // 处理其他错误
       break;
   }
 }
 ```
 
-### Webhook Verification
+### Webhook 验证
 
 ```javascript
 const express = require("express");
@@ -268,13 +263,13 @@ app.post(
         .send(`Webhook Error: ${err.message}`);
     }
 
-    // Handle the event
+    // 处理事件
     switch (event.type) {
       case "payment_intent.succeeded":
-        // Handle successful payment
+        // 处理支付成功
         break;
       case "payment_intent.payment_failed":
-        // Handle failed payment
+        // 处理支付失败
         break;
       default:
         console.log(`Unhandled event type ${event.type}`);
@@ -285,29 +280,23 @@ app.post(
 );
 ```
 
-## Next Steps
+## 下一步
 
-Now that you've started developing:
+既然你已经开始开发：
 
-1. 🔍 [Learn About the APIs](../mock/about-the-apis) - Understand
-our API architecture
-2. 🤖 [Build with an LLM](../mock/build-with-llm) - AI-powered
-development
-3. 🎯 [Use Without Code](../use-stripe-without-code) -
-No-code solutions
-4. 📚 [Explore Payment Methods](../../.../mock/payments/) - Accept
-various payment types
+1. 🔍 [了解 API](/mock/about-the-apis) —— 理解我们的 API 架构
+2. 🤖 [使用 LLM 构建](/mock/build-with-llm) —— AI 驱动的开发
+3. 🎯 [无代码使用](/use-stripe-without-code) —— 无代码方案
+4. 📚 [浏览支付方式](../../.../mock/payments/) —— 支持多种支付类型
 
-## Need Help?
+## 需要帮助？
 
-- 📖 [API Documentation](../../../mock/payments/) - Complete
-reference
-- 💬 [Developer Community](https://community.onerway.com) -
-Connect with other developers
-- 🐛 [GitHub Issues](https://github.com/onerway/issues) -
-Report bugs or request features
-- 📧 [Developer Support](mailto:dev-support@onerway.com) -
-Direct technical support
+- 📖 [API 文档](../../../mock/payments/) —— 完整参考
+- 💬 [开发者社区](https://community.onerway.com) —— 与其他开发者交流
+- 🐛 [GitHub Issues](https://github.com/onerway/issues) —— 提交问题与需求
+- 📧 [开发者支持](mailto:dev-support@onerway.com) —— 获得技术支持
 
-Ready to dive deeper? Continue to
-[About the APIs](../mock/about-the-apis).
+准备更深入？前往
+[关于 API](/mock/about-the-apis)。
+
+

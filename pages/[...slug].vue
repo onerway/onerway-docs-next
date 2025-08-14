@@ -110,7 +110,7 @@ logger.info("page", page.value);
 const navigation =
   inject<Ref<ContentNavigationItem[]>>("navigation");
 
-logger.info("navigation", navigation?.value);
+logger.info("slug-navigation", navigation?.value);
 
 // 生成面包屑导航
 const breadcrumb = computed(() =>
@@ -123,7 +123,7 @@ const breadcrumb = computed(() =>
   ).map(({ ...link }) => link)
 );
 
-logger.info("breadcrumb", breadcrumb.value);
+logger.info("slug-breadcrumb", breadcrumb.value);
 
 // ==================== 计算属性 ====================
 

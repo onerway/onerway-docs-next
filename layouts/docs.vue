@@ -2,13 +2,18 @@
 import type { ContentNavigationItem } from "@nuxt/content";
 import { mapContentNavigation } from "@nuxt/ui-pro/utils/content";
 import { kebabCase } from "scule";
-import { useSharedPathInfo } from "~/composables/shared/utils";
+import {
+  createLogger,
+  useSharedPathInfo,
+} from "~/composables/shared/utils";
 
 const route = useRoute();
+const logger = createLogger("docs-layout");
 
 // 使用共享的路径解析工具
 const { pathInfo } = useSharedPathInfo();
 
+logger.info("module信息", pathInfo.value.module);
 // 获取页面内容
 const { data: page } = await useAsyncData(
   kebabCase(route.path),
@@ -33,6 +38,8 @@ const { data: page } = await useAsyncData(
 const navigation =
   inject<Ref<ContentNavigationItem[]>>("navigation");
 
+logger.info("docs-layout-navigation", navigation?.value);
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars, unused-imports/no-unused-vars
 const menu = mapContentNavigation(
   navigation?.value as ContentNavigationItem[]
@@ -53,6 +60,7 @@ const menu = mapContentNavigation(
                 root: 'border-r border-default',
               }">
               <DocsNavigation
+                :key="`${pathInfo?.module || 'root'}:${navigation && navigation && navigation.length ? 'ready' : 'loading'}`"
                 :navigation="navigation || []"
                 highlight
                 trailing-icon="i-lucide-chevron-right"

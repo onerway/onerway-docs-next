@@ -1,8 +1,6 @@
 ---
 title: Overview
-description:
-  Accept payments and manage transactions using no-code and
-  low-code solutions with Onerway
+description: Accept payments and manage transactions using no-code and low-code solutions with Onerway
 order: 4
 showToc: true
 showNavigation: true
@@ -26,16 +24,16 @@ Create shareable payment links in minutes.
 2. **Navigate to Payment Links**
 3. **Click "Create Payment Link"**
 4. **Configure your payment:**
-   - Product/service name
-   - Amount (or allow custom amounts)
-   - Currency
-   - Description
+  - Product/service name
+  - Amount (or allow custom amounts)
+  - Currency
+  - Description
 5. **Customize appearance:**
-   - Logo and branding
-   - Colors and styling
-   - Thank you page
+  - Logo and branding
+  - Colors and styling
+  - Thank you page
 6. **Share your link** via email, social media, or embed on
-   your website
+your website
 
 #### **Payment Link Features**
 
@@ -244,21 +242,21 @@ WordPress form builder with payment integration.
 #### **Dashboard Configuration:**
 
 1. **Create Product Catalog**
-   - Define subscription plans
-   - Set pricing tiers
-   - Configure trial periods
+  - Define subscription plans
+  - Set pricing tiers
+  - Configure trial periods
 
 2. **Customer Portal**
-   - Self-service cancellation
-   - Plan upgrades/downgrades
-   - Billing history
-   - Payment method updates
+  - Self-service cancellation
+  - Plan upgrades/downgrades
+  - Billing history
+  - Payment method updates
 
 3. **Automation Rules**
-   - Dunning management
-   - Churn prevention
-   - Upgrade prompts
-   - Cancellation surveys
+  - Dunning management
+  - Churn prevention
+  - Upgrade prompts
+  - Cancellation surveys
 
 #### **Subscription Link Example:**
 
@@ -441,35 +439,35 @@ Start with no-code solutions and add custom code as needed:
 Ready to start accepting payments?
 
 1. 🚀
-   [Create Payment Links](https://dashboard.onerway.com/payment-links) -
-   Start immediately
+[Create Payment Links](https://dashboard.onerway.com/payment-links) -
+Start immediately
 2. 🛒 [E-commerce Integration](https://apps.onerway.com) -
-   Connect your store
+Connect your store
 3. ⚡ [Zapier Automation](https://zapier.com/apps/onerway) -
-   Automate workflows
+Automate workflows
 4. 📚 [Developer Docs](../../../payments/) - When ready to
-   code
+code
 
 Need more advanced features?
 
 1. 🔧 [Start Developing](../start-developing) - Custom
-   integration
+integration
 2. 🔍 [About the APIs](../mock/about-the-apis) - Technical
-   overview
+overview
 3. 🤖 [Build with AI](../mock/build-with-llm) - AI-assisted
-   development
+development
 
 ## Support Resources
 
 - 📖 [No-Code Guide](../../../guides/no-code) -
-  Comprehensive tutorials
+Comprehensive tutorials
 - 💬
-  [Community Forum](https://community.onerway.com/no-code) -
-  Get help from others
+[Community Forum](https://community.onerway.com/no-code) -
+Get help from others
 - 🎥
-  [Video Tutorials](https://www.youtube.com/onerway-nocode) -
-  Step-by-step guides
+[Video Tutorials](https://www.youtube.com/onerway-nocode) -
+Step-by-step guides
 - 📧 [Business Support](mailto:business@onerway.com) -
-  Non-technical assistance
+Non-technical assistance
 
 Start accepting payments today - no coding required!

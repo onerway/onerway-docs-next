@@ -1,5 +1,9 @@
 <script setup lang="ts">
 import type { ContentNavigationItem } from "@nuxt/content";
+import {
+  createLogger,
+  useSharedPathInfo,
+} from "~/composables/shared/utils";
 
 type ColorName =
   | "error"
@@ -28,6 +32,12 @@ const props = withDefaults(defineProps<Props>(), {
   trailingIcon: "i-lucide-chevron-right",
 });
 
+const logger = createLogger("DocsNavigation");
+const route = useRoute();
+const { pathInfo } = useSharedPathInfo();
+
+logger.info("contentPath", pathInfo.value.subPath);
+
 type NavItem = ContentNavigationItem & {
   module?: boolean;
   ui?: {
@@ -55,6 +65,11 @@ function enhanceItems(
       cloned.children = enhanceItems(link.children);
     }
 
+    // 如果当前 route 的 path 与 item 的 path 相同，则默认展开
+    if (route.path === item.path) {
+      cloned.defaultOpen = true;
+    }
+
     if (link.module) {
       // 为模块项直接覆盖 ui：统一默认样式
       cloned.ui = {
@@ -73,6 +88,8 @@ function enhanceItems(
 const enhancedNavigation = computed<
   ContentNavigationItem[]
 >(() => enhanceItems(props.navigation));
+
+logger.info("enhancedNavigation", enhancedNavigation.value);
 </script>
 
 <template>

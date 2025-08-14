@@ -1,8 +1,6 @@
 ---
 title: Overview
-description:
-  Learn about Onerway's API architecture, design principles,
-  and how to effectively use our REST APIs
+description: Learn about Onerway's API architecture, design principles, and how to effectively use our REST APIs
 order: 2
 showToc: true
 showNavigation: true
@@ -385,26 +383,26 @@ const testCards = {
 Ready to start building with our APIs?
 
 1. 🚀 [Start Developing](../start-developing) - Set up your
-   development environment
+development environment
 2. 🤖 [Build with an LLM](../mock/build-with-llm) - AI-assisted
-   development
+development
 3. 🎯 [Use Without Code](../use-stripe-without-code) -
-   No-code integrations
+No-code integrations
 4. 📚 [Explore Payments API](../../../payments/) - Deep dive
-   into payments
+into payments
 5. 💸 [Explore Transfers API](../../../transfers/) - Learn
-   about transfers
+about transfers
 
 ## Resources
 
 - 📖 [API Reference](../../../mock/payments/api-reference) -
-  Complete API documentation
+Complete API documentation
 - 🔧 [API Status](https://status.onerway.com) - Service
-  status and uptime
+status and uptime
 - 📊 [Rate Limit Guide](../../../guides/rate-limits) -
-  Detailed rate limiting info
+Detailed rate limiting info
 - 🔒 [Security Guide](../../../guides/security) - Security
-  best practices
+best practices
 
 Questions about our APIs?
 [Contact our developer support team](mailto:dev-support@onerway.com).

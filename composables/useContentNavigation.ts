@@ -880,6 +880,14 @@ export function useContentNavigation(
 
   // 根据当前模块和状态过滤导航数据
   const filteredNavigation = computed(() => {
+    logger.info(
+      "filteredNavigation",
+      mappedNavigation.value
+    );
+    logger.info(
+      "currentModule(当前模块)",
+      currentModule.value
+    );
     return mappedNavigation.value.filter(
       (navigationItem) =>
         !shouldFilterNavigationItem(

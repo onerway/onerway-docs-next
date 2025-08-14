@@ -1,8 +1,6 @@
 ---
 title: Overview
-description:
-  Get your development environment ready for Onerway
-  integration
+description: Get your development environment ready for Onerway integration
 order: 1
 showToc: true
 showNavigation: true
@@ -14,17 +12,17 @@ Before you begin, ensure you have:
 
 - [ ] **API Credentials** - Sign up for a developer account
 - [ ] **Development Environment** - Your preferred
-      programming language
+programming language
 - [ ] **HTTPS Support** - Required for webhook endpoints
 - [ ] **Basic Knowledge** - Understanding of REST APIs and
-      HTTP
+HTTP
 
 ## Setup Steps
 
 ### 1. Create Your Account
 
 1. Visit the
-   [Onerway Developer Portal](https://developers.onerway.com)
+[Onerway Developer Portal](https://developers.onerway.com)
 2. Sign up for a free developer account
 3. Verify your email address
 4. Complete your profile information
@@ -33,9 +31,9 @@ Before you begin, ensure you have:
 
 1. Navigate to the **API Keys** section
 2. Generate your **Test Mode** credentials:
-   - **Publishable Key** - Used in your frontend code
-   - **Secret Key** - Used in your backend code (keep
-     secure!)
+  - **Publishable Key** - Used in your frontend code
+  - **Secret Key** - Used in your backend code (keep
+secure!)
 3. Save these keys securely
 
 ### 3. Environment Configuration
@@ -120,22 +118,22 @@ createPayment();
 Now that you have everything set up:
 
 1. 📖 [Read the API Overview](./api-overview) - Understand
-   our API structure
+our API structure
 2. 🔧 [Environment Configuration](./mock/environment-config) -
-   Detailed environment setup
+Detailed environment setup
 3. 🔒 [Security Best Practices](./mock/security) - Keep your
-   integration secure
+integration secure
 4. 🚀 [Make Your First Payment](./mock/first-payment) - Process a
-   real payment
+real payment
 
 ## Need Help?
 
 - 📚 [API Documentation](../../../payments/) - Complete API
-  reference
+reference
 - 💬 [Developer Support](mailto:dev-support@onerway.com) -
-  Get technical help
+Get technical help
 - 🐛 [Report Issues](https://github.com/onerway/issues) -
-  Bug reports and feature requests
+Bug reports and feature requests
 
 Ready to dive deeper? Continue to
 [API Overview](./api-overview).

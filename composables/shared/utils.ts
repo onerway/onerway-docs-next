@@ -211,6 +211,7 @@ export const normalizeModuleName = useMemoize(
     const moduleMap: Record<string, string> = {
       transfer: "transfers",
       payment: "payments",
+      root: "",
       "get-started": "get-started",
       "getting-started": "get-started",
     };
@@ -1118,7 +1119,7 @@ function createRootPathInfo(): PathInfo {
   return {
     isRoot: true,
     isSimplified: false,
-    module: "",
+    module: "root",
     version: "",
     subPath: "",
     contentPath: "/",
@@ -1139,11 +1140,33 @@ function parseSimplifiedPath(
   defaultVersion: string
 ) {
   const module = segments[0] || "";
-  const subPath = segments.slice(1).join("/");
-  const contentPath = `/${contentLocale}/${module}/${defaultVersion}/${subPath}`;
+  const rawSubPath = segments.slice(1).join("/");
+
+  // 当仅访问 "/{module}" 时，补全默认子路径
+  // 优先使用 MODULE_CONFIG[module].routePath 中的默认子路径（如 /get-started/overview → overview）
+  // 否则回退到 "overview"
+  const normalizedModule = normalizeModuleName(module);
+  const configuredRoutePath =
+    MODULE_CONFIG[
+      normalizedModule as keyof typeof MODULE_CONFIG
+    ]?.routePath || "";
+
+  let inferredDefaultSubPath = "overview";
+  if (
+    configuredRoutePath &&
+    configuredRoutePath.startsWith(`/${normalizedModule}/`)
+  ) {
+    inferredDefaultSubPath = configuredRoutePath.replace(
+      new RegExp(`^/${normalizedModule}/`),
+      ""
+    );
+  }
+
+  const subPath = rawSubPath || inferredDefaultSubPath;
+  const contentPath = `/${contentLocale}/${normalizedModule}/${defaultVersion}/${subPath}`;
 
   return {
-    module,
+    module: normalizedModule,
     version: defaultVersion,
     subPath,
     contentPath,
@@ -1166,11 +1189,35 @@ function parseFullPath(
     ? version
     : defaultVersion;
 
+  // 若未提供子路径，则按模块配置或回退到 overview
+  const normalizedModule = normalizeModuleName(
+    module || ""
+  );
+  const configuredRoutePath =
+    MODULE_CONFIG[
+      normalizedModule as keyof typeof MODULE_CONFIG
+    ]?.routePath || "";
+  let inferredDefaultSubPath = "overview";
+  if (
+    configuredRoutePath &&
+    configuredRoutePath.startsWith(`/${normalizedModule}/`)
+  ) {
+    inferredDefaultSubPath = configuredRoutePath.replace(
+      new RegExp(`^/${normalizedModule}/`),
+      ""
+    );
+  }
+
+  const providedSubPath = rest.join("/");
+  const subPath = providedSubPath || inferredDefaultSubPath;
+
   return {
-    module: module || "",
+    module: normalizedModule,
     version: resolvedVersion,
-    subPath: rest.join("/"),
-    contentPath: originalPath,
+    subPath,
+    contentPath: providedSubPath
+      ? originalPath
+      : `/${segments[0]}/${normalizedModule}/${resolvedVersion}/${subPath}`,
   };
 }
 
@@ -1192,7 +1239,7 @@ export function parsePathInfo(
   contentLocale: ContentLocale
 ): PathInfo {
   const segments = path.split("/").filter(Boolean);
-  const logger = createLogger("parsePathInfo");
+  const logger = createLogger("utils-parsePathInfo");
 
   // 处理根路径
   if (path === "/" || segments.length === 0) {
@@ -1217,6 +1264,7 @@ export function parsePathInfo(
       )
     : parseFullPath(segments, path, defaultVersion);
 
+  logger.info("pathData", pathData);
   // 标准化模块名并构建集合信息
   const normalizedModule =
     normalizeModuleName(pathData.module) || undefined;

@@ -1,8 +1,13 @@
 <script setup lang="ts">
+import { createLogger } from "~/composables/shared/utils";
+
 const { locale, locales, setLocale } = useI18n();
+const logger = createLogger("app-header");
 
 // 使用 useNavigation 获取导航菜单项
 const { items } = useNavigation();
+
+logger.info("items", items.value);
 
 // 当前语言标签
 const currentLocaleLabel = computed(() => {

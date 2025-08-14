@@ -16,9 +16,7 @@ export function useNavigation() {
       .map(([module, config]) => ({
         label: t(getModuleI18nKey(module)),
         to: config.routePath,
-        active:
-          route.path === "/{module}" ||
-          route.path.startsWith("/{module}/"),
+        active: route.path.startsWith(`/${module}/`),
         icon: config.icon,
       }));
   });

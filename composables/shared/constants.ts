@@ -47,12 +47,6 @@ export const COLLECTION_TYPES = ["standard"] as const;
 // Schema 类型枚举
 export const SCHEMA_TYPES = ["document"] as const;
 
-export const VERSION_STATUS = [
-  "current",
-  "deprecated",
-  "legacy",
-] as const;
-
 // ==================== 模块配置中心 ====================
 
 /**
@@ -147,31 +141,16 @@ export const MODULE_ENUMS = Object.keys(MODULE_CONFIG) as [
 
 // 域名到集合的映射（向后兼容）
 export const DOMAIN_COLLECTION_MAP = Object.fromEntries(
-  Object.entries(MODULE_CONFIG).map(([domain, config]) => [
-    domain,
+  Object.entries(MODULE_CONFIG).map(([module, config]) => [
+    module,
     config.collection,
   ])
 ) as Record<keyof typeof MODULE_CONFIG, string>;
-
-// 模块版本配置（向后兼容）
-export const MODULE_VERSIONS = Object.fromEntries(
-  Object.entries(MODULE_CONFIG).map(([domain, config]) => [
-    domain,
-    config.versions,
-  ])
-) as Record<
-  keyof typeof MODULE_CONFIG,
-  (typeof MODULE_CONFIG)[keyof typeof MODULE_CONFIG]["versions"]
->;
 
 // ==================== 版本相关常量 ====================
 
 // 版本正则表达式
 export const VERSION_REGEX = /^v\d+(?:\.\d+)*$/;
-
-// 语言包装器检测正则表达式
-export const LANGUAGE_WRAPPER_REGEX =
-  /^(En|Zh|Zh\s+(Cn|Tw))$/i;
 
 // ==================== 默认配置 ====================
 

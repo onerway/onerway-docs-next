@@ -1,6 +1,6 @@
 import type { NavigationMenuItem } from "@nuxt/ui";
 import { MODULE_CONFIG } from "~/composables/shared/constants";
-import { getModuleI18nKey } from "~/composables/shared/utils";
+import { getModuleI18nKey } from "~/composables/shared/module";
 
 /**
  * 基于 MODULE_CONFIG 生成导航菜单的 composable
@@ -16,7 +16,7 @@ export function useNavigation() {
       .map(([module, config]) => ({
         label: t(getModuleI18nKey(module)),
         to: config.routePath,
-        active: route.path.startsWith(`/${module}/`),
+        active: route.path.startsWith(`/${module}`),
         icon: config.icon,
       }));
   });

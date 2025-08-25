@@ -27,6 +27,7 @@ const createDocumentSchema = () =>
     draft: z.boolean().optional().default(false),
     showToc: z.boolean().optional().default(true),
     showNavigation: z.boolean().optional().default(true),
+    showFooter: z.boolean().optional().default(true),
     layout: z.string().optional(),
     icon: z.string().optional(),
     iconColor: z.string().optional(),

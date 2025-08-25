@@ -1,5 +1,5 @@
 <script setup lang="ts">
-definePageMeta({ layout: "docs" });
+definePageMeta({ layout: "default" });
 
 const router = useRouter();
 const route = useRoute();

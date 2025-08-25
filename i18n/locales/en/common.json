@@ -193,7 +193,7 @@
         ]
       },
       "transfer": {
-        "title": "TRANSFER",
+        "title": "TRANSFERS",
         "description": "Our transfer products and solutions",
         "comingSoon": "Coming Soon",
         "items": [
@@ -323,7 +323,8 @@
     "error": "Error",
     "retry": "Retry",
     "updated": "Updated",
-    "docs": "docs"
+    "docs": "docs",
+    "ellipsis": "..."
   },
   "clipboard": {
     "success": {
@@ -451,6 +452,17 @@
       "tryingToAccess": "Trying to access",
       "collectionName": "Collection name",
       "backToHome": "Back to Home"
+    },
+    "surround": {
+      "navigation": "Page navigation",
+      "previous": "Previous",
+      "next": "Next",
+      "previousPage": "Previous page",
+      "nextPage": "Next page",
+      "noNavigation": "No page navigation available",
+      "goToPrevious": "Go to previous page: {title}",
+      "goToNext": "Go to next page: {title}",
+      "truncated": "Title truncated"
     },
     "sections": {
       "getStarted": {

@@ -13,16 +13,15 @@ import type {
   ContentLocale,
   SupportedLocale,
 } from "./shared/types";
+import { useMemoize, useStorage } from "@vueuse/core";
+import { createLogger } from "~/composables/shared/logger";
 import {
-  createLogger,
   getCollectionLocaleSuffix,
   getContentLocale,
   normalizeModuleName,
-  simplifyNavigationPaths,
-  useMemoize,
-  useSharedPathInfo,
-  useStorage,
-} from "~/composables/shared/utils";
+} from "~/composables/shared/module";
+import { simplifyNavigationPaths } from "~/composables/shared/navigation";
+import { useSharedPathInfo } from "~/composables/shared/path";
 import {
   LANGUAGE_CONTAINER_IDENTIFIERS,
   LANGUAGE_SUFFIX_REGEX,

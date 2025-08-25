@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import type { ContentNavigationItem } from "@nuxt/content";
-import {
-  createLogger,
-  useSharedPathInfo,
-} from "~/composables/shared/utils";
+import type { mapContentNavigation } from "@nuxt/ui-pro/utils/content";
+import { createLogger } from "~/composables/shared/logger";
 
 type ColorName =
   | "error"
@@ -13,113 +11,187 @@ type ColorName =
   | "info"
   | "warning"
   | "neutral";
-type VariantName = "link" | "pill";
+
+type Orientation = "vertical" | "horizontal";
+
+type MenuType = "single" | "multiple";
 
 interface Props {
   navigation: ContentNavigationItem[];
-  inheritModuleStyling?: boolean;
   color?: ColorName;
-  variant?: VariantName;
   highlight?: boolean;
-  trailingIcon?: string;
+  orientation?: Orientation;
+  collapsible?: boolean;
+  type?: MenuType;
+  moduleUi?: {
+    group?: string;
+    label?: string;
+  };
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  inheritModuleStyling: true,
-  color: "primary",
-  variant: "link",
+  color: "primary" as ColorName,
   highlight: true,
-  trailingIcon: "i-lucide-chevron-right",
+  orientation: "vertical" as Orientation,
+  type: "multiple" as MenuType,
+  moduleUi: () => ({
+    group:
+      "border-t border-default mt-3 py-2 text-highlighted font-semibold",
+    label: "",
+  }),
 });
 
 const logger = createLogger("DocsNavigation");
-const route = useRoute();
-const { pathInfo } = useSharedPathInfo();
 
-logger.info("contentPath", pathInfo.value.subPath);
+type NavigationMenuItem = ReturnType<
+  typeof mapContentNavigation
+>[number];
 
-type NavItem = ContentNavigationItem & {
-  module?: boolean;
-  ui?: {
-    itemWithChildren?: string;
-    link?: string;
-    linkTrailingIcon?: string;
-  };
-};
-
-const DEFAULT_MODULE_UI = {
-  itemWithChildren: "border-t-1 border-default mt-3 py-2",
-  link: "text-medium font-semibold",
-  linkTrailingIcon: "hidden",
-} as const;
-
-function enhanceItems(
-  items: ContentNavigationItem[] | undefined
-): ContentNavigationItem[] {
-  if (!items) return [];
-  return items.map((item) => {
-    const link = item as NavItem;
-    const cloned: any = { ...link };
-
-    if (link.children?.length) {
-      cloned.children = enhanceItems(link.children);
-    }
-
-    // 如果当前 route 的 path 与 item 的 path 相同，则默认展开
-    if (route.path === item.path) {
-      cloned.defaultOpen = true;
-    }
-
-    if (link.module) {
-      // 为模块项直接覆盖 ui：统一默认样式
-      cloned.ui = {
-        itemWithChildren:
-          DEFAULT_MODULE_UI.itemWithChildren,
-        link: DEFAULT_MODULE_UI.link,
-        linkTrailingIcon:
-          DEFAULT_MODULE_UI.linkTrailingIcon,
-      };
-    }
-
-    return cloned;
-  });
+function collectModulePaths(
+  items: ContentNavigationItem[] | undefined,
+  set: Set<string>
+) {
+  if (!items) return;
+  for (const item of items) {
+    const maybeModule = (
+      item as unknown as { module?: boolean }
+    ).module;
+    if (maybeModule && item.path) set.add(item.path);
+    if (item.children?.length)
+      collectModulePaths(item.children, set);
+  }
 }
 
-const enhancedNavigation = computed<
-  ContentNavigationItem[]
->(() => enhanceItems(props.navigation));
+function enhanceMenuItemsForModuleStyles(
+  menuItems: NavigationMenuItem[] | undefined,
+  modulePathSet: Set<string>
+): NavigationMenuItem[] | undefined {
+  if (!menuItems) return menuItems;
+  return menuItems.map((mi) => {
+    const cloned: NavigationMenuItem &
+      Record<string, unknown> = {
+      ...(mi as unknown as NavigationMenuItem),
+    };
+    if (cloned.to && modulePathSet.has(cloned.to)) {
+      cloned.class = [cloned.class, props.moduleUi.group]
+        .filter(Boolean)
+        .join(" ");
+      cloned.labelClass = [
+        cloned.labelClass,
+        props.moduleUi.label,
+      ]
+        .filter(Boolean)
+        .join(" ");
+      cloned["data-module"] = true;
+      cloned.ui = {
+        linkTrailingIcon: "hidden",
+      };
+    }
+    if (
+      Array.isArray(cloned.children) &&
+      cloned.children.length
+    ) {
+      cloned.children = enhanceMenuItemsForModuleStyles(
+        cloned.children,
+        modulePathSet
+      );
+    }
+    return cloned;
+  }) as NavigationMenuItem[];
+}
 
-logger.info("enhancedNavigation", enhancedNavigation.value);
+const items = computed(() => {
+  function mapNavigationItems(
+    srcItems: ContentNavigationItem[]
+  ): (NavigationMenuItem & Record<string, unknown>)[] {
+    return srcItems.map((item) => {
+      const hasChildren =
+        Array.isArray(item.children) &&
+        item.children.length > 0;
+      const childHasSamePath = hasChildren
+        ? (item.children as ContentNavigationItem[]).some(
+            (c) => c.path === item.path
+          )
+        : false;
+
+      const mapped: NavigationMenuItem &
+        Record<string, unknown> = {
+        label: String(item.title || ""),
+        value: String(item.path || ""),
+      };
+
+      // 叶子节点：绑定路由；父级：根据“子项路径是否等于自身路径”决定是否保留 to
+      if (!hasChildren) {
+        (mapped as unknown as { to?: string }).to = String(
+          item.path || ""
+        );
+      } else if (!childHasSamePath) {
+        (mapped as unknown as { to?: string }).to = String(
+          item.path || ""
+        );
+      }
+
+      if (hasChildren) {
+        (
+          mapped as unknown as {
+            children?: NavigationMenuItem[];
+          }
+        ).children = mapNavigationItems(
+          item.children as ContentNavigationItem[]
+        );
+        // 默认使用 defaultOpen，后续需要受控再切换为 open
+        (
+          mapped as unknown as { defaultOpen?: boolean }
+        ).defaultOpen = true;
+      }
+
+      const itemWithIcon = item as unknown as {
+        icon?: string;
+      };
+      if (itemWithIcon.icon) {
+        (mapped as unknown as { icon?: string }).icon =
+          itemWithIcon.icon;
+      }
+
+      return mapped;
+    });
+  }
+
+  const base = mapNavigationItems(
+    props.navigation as ContentNavigationItem[]
+  );
+  const modulePathSet = new Set<string>();
+  collectModulePaths(props.navigation, modulePathSet);
+  return enhanceMenuItemsForModuleStyles(
+    base,
+    modulePathSet
+  ) as NavigationMenuItem[];
+});
+
+logger.info("navigation", items?.value);
+
+const handleUpdateModelValue = (
+  value: string | string[] | undefined
+) => {
+  logger.info("navigation model-value changed", value);
+};
 </script>
 
 <template>
-  <UContentNavigation
-    :navigation="enhancedNavigation || []"
+  <UNavigationMenu
+    trailing-icon="i-lucide-chevron-right"
+    :items="items"
     :highlight="highlight"
-    :trailing-icon="trailingIcon"
     :color="color"
-    :variant="variant"
-    class="sm:mt-8">
-    <template #link-title="{ link }">
-      <!-- 外层包裹用于模拟分组容器样式（当该项为模块分组或处于继承范围且有子项时） -->
-      <div :data-module="(link as any)?.module === true">
-        <UTooltip
-          :text="link.title"
-          :delay-duration="500"
-          :content="{ side: 'right' }"
-          class="block w-full text-left">
-          <span
-            class="block w-full truncate"
-            :data-module="(link as any)?.module === true"
-            :class="
-              (link as any)?.module
-                ? (link as any)?.ui?.link
-                : ''
-            ">
-            {{ link.title }}
-          </span>
-        </UTooltip>
-      </div>
-    </template>
-  </UContentNavigation>
+    :orientation="orientation"
+    variant="link"
+    :type="type"
+    :ui="{
+      link: 'cursor-pointer',
+      linkTrailingIcon: 'group-data-[state=open]:rotate-90',
+      linkLabel: 'line-clamp-2 text-wrap',
+      childLinkLabel: 'line-clamp-2 text-wrap',
+    }"
+    class="sm:mt-8"
+    @update:model-value="handleUpdateModelValue" />
 </template>

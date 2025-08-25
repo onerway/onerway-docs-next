@@ -151,6 +151,8 @@ export interface RecentPage {
   timestamp: number;
   icon?: string;
   iconColor?: string;
+  module?: string; // 模块名称，如 "get-started", "payments", "transfers"
+  moduleName?: string; // 模块显示名称，如 "Get Started", "Payments", "Transfers"
 }
 
 // 最近页面项接口（兼容旧版本）
@@ -170,6 +172,24 @@ export interface RecentPagesConfig {
   maxItems?: number;
   debounceDelay?: number;
   enablePersistence?: boolean;
+}
+
+// 最近页面记录可选参数（行为配置）
+export interface RecentPagesOptions {
+  useFullPath?: boolean; // 记录 fullPath（包含 query），默认 false 仅记录 path
+  includeHash?: boolean; // 是否包含 hash，默认 false
+  normalizeTrailingSlash?: boolean; // 归一尾斜杠（根路径除外），默认 true
+  skipPredicates?: Array<(path: string) => boolean>; // 额外跳过规则
+}
+
+// 最近页面元信息（可由调用方覆盖）
+export interface RecentPageMeta {
+  title?: string;
+  description?: string;
+  icon?: string;
+  iconColor?: string;
+  module?: string;
+  moduleName?: string;
 }
 
 // 格式化的最近页面接口（包含展示信息）

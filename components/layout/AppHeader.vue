@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { createLogger } from "~/composables/shared/utils";
+import { createLogger } from "~/composables/shared/logger";
 
 const { locale, locales, setLocale } = useI18n();
 const logger = createLogger("app-header");

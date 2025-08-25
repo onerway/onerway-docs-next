@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import type { ContentNavigationItem } from "@nuxt/content";
-import { findPageBreadcrumb } from "@nuxt/content/utils";
-import { mapContentNavigation } from "@nuxt/ui-pro/utils/content";
-import { useDebounceFn, whenever } from "@vueuse/core";
-import { kebabCase } from "scule";
 import {
-  buildCollectionName,
-  createLogger,
-  useSharedPathInfo,
-} from "~/composables/shared/utils";
+  useBreakpoints,
+  useDebounceFn,
+  whenever,
+} from "@vueuse/core";
+import { kebabCase } from "scule";
+import { createLogger } from "~/composables/shared/logger";
+import { buildCollectionName } from "~/composables/shared/module";
+import { useSharedPathInfo } from "~/composables/shared/path";
 
 // ==================== 路由和基础信息 ====================
 
@@ -29,7 +29,7 @@ logger.info("pathInfo", pathInfo.value);
 
 // 获取页面内容（带英文回退）
 const { data: page } = await useAsyncData(
-  `${kebabCase(route.path)}-${locale.value}`,
+  `${kebabCase(pathInfo.value.contentPath)}`,
   async () => {
     // 根据路径信息获取集合名称
     if (!pathInfo.value.collectionName) {
@@ -46,7 +46,8 @@ const { data: page } = await useAsyncData(
 
     // 1) 尝试当前语言内容
     let doc = await queryCollection(
-      pathInfo.value.collectionName as any
+      // @ts-expect-error: Dynamic collection name from pathInfo
+      pathInfo.value.collectionName
     )
       .path(pathInfo.value.contentPath)
       .first();
@@ -56,7 +57,7 @@ const { data: page } = await useAsyncData(
       const fallbackLocale = "en";
       const fallbackCollection = buildCollectionName(
         pathInfo.value.module,
-        fallbackLocale as any
+        fallbackLocale as "en"
       );
       // 将内容路径的首个语言段替换为 /en/
       const fallbackPath =
@@ -70,7 +71,10 @@ const { data: page } = await useAsyncData(
         fallbackPath,
       });
 
-      doc = await queryCollection(fallbackCollection as any)
+      doc = await queryCollection(
+        // @ts-expect-error: Dynamic collection name from buildCollectionName
+        fallbackCollection
+      )
         .path(fallbackPath)
         .first();
     }
@@ -85,24 +89,32 @@ const { data: page } = await useAsyncData(
 logger.info("page", page.value);
 
 // 获取周围导航（上一页/下一页）
-// const { data: surround } = await useAsyncData(
-//   `${kebabCase(route.path)}-surround`,
-//   async () => {
-//     const info = pathInfo.value;
+const { data: surround } = await useAsyncData(
+  `${kebabCase(route.path)}-surround`,
+  async () => {
+    const info = pathInfo.value;
 
-//     if (!info.collectionName) {
-//       return null;
-//     }
+    if (!info.collectionName) {
+      return null;
+    }
 
-//     return queryCollectionItemSurroundings(
-//       info.collectionName as any,
-//       info.contentPath,
-//       {
-//         fields: ["description", "title"],
-//       }
-//     );
-//   }
-// );
+    const surroundings =
+      await queryCollectionItemSurroundings(
+        // @ts-expect-error: Dynamic collection name from pathInfo
+        info.collectionName,
+        info.contentPath,
+        {
+          fields: ["description", "title"],
+        }
+      );
+
+    logger.info("surroundings", surroundings);
+    return surroundings;
+  },
+  {
+    watch: [() => route.path, locale], // 监听路径和语言
+  }
+);
 
 // ==================== 导航数据处理 ====================
 
@@ -110,20 +122,13 @@ logger.info("page", page.value);
 const navigation =
   inject<Ref<ContentNavigationItem[]>>("navigation");
 
-logger.info("slug-navigation", navigation?.value);
+logger.info("slug-navigation", navigation);
 
-// 生成面包屑导航
-const breadcrumb = computed(() =>
-  mapContentNavigation(
-    findPageBreadcrumb(
-      navigation?.value,
-      page.value?.path,
-      { indexAsChild: true }
-    )
-  ).map(({ ...link }) => link)
-);
-
-logger.info("slug-breadcrumb", breadcrumb.value);
+// 生成 headline（暂时未使用）
+// const headline = findPageHeadline(
+//   navigation.value,
+//   page.value?.path
+// );
 
 // ==================== 计算属性 ====================
 
@@ -134,9 +139,7 @@ const hasNavigation = computed(() => {
     (page.value as { showNavigation?: boolean })
       ?.showNavigation ?? true;
   return (
-    showNav &&
-    !!navigation?.value &&
-    navigation.value.length > 0
+    showNav && !!navigation && navigation.value.length > 0
   );
 });
 
@@ -154,6 +157,23 @@ const currentVersion = computed(
   () => pathInfo.value.version || "v1"
 );
 
+// ==================== 响应式布局 ====================
+
+// 定义断点（与 Tailwind CSS 保持一致）
+const breakpoints = useBreakpoints({
+  sm: 640,
+  md: 768,
+  lg: 1024,
+  xl: 1280,
+});
+
+// 响应式方向：小屏幕垂直，大屏幕水平
+const surroundDirection = computed(() => {
+  return breakpoints.smaller("md").value
+    ? "vertical"
+    : "horizontal";
+});
+
 // ==================== TOC 重新渲染控制 ====================
 
 const tocKey = ref(0);
@@ -170,14 +190,19 @@ whenever(
 
 // ==================== SEO 设置 ====================
 
-const title =
-  page.value?.navigation?.title || page.value?.title;
+const title = computed(() => {
+  if (!page.value) return "";
+  return typeof page.value.navigation === "object" &&
+    page.value.navigation?.title
+    ? page.value.navigation.title
+    : page.value.title || "";
+});
 const description = page.value?.description;
 
 useSeoMeta({
   titleTemplate: "%s - Onerway Docs",
   title,
-  ogTitle: `${title} - Onerway Docs`,
+  ogTitle: computed(() => `${title.value} - Onerway Docs`),
   description,
   ogDescription: description,
 });
@@ -191,38 +216,44 @@ if (import.meta.dev) {
     hasNavigation: hasNavigation.value,
     hasToc: hasToc.value,
     tocCount: tocLinks.value.length,
-    breadcrumbCount: breadcrumb.value.length,
   });
 }
 </script>
 
 <template>
-  <UPage v-if="page">
-    <UContainer class="px-12 sm:px-18 lg:px-24">
+  <UContainer class="px-6 sm:px-16 lg:px-20">
+    <UPage v-if="page">
+      <!-- 粘性面包屑导航 -->
+      <DocsBreadcrumb
+        v-if="!isHomePage && page"
+        :navigation="navigation"
+        :current-path="route.path"
+        :show-home-icon="true"
+        :show-icons="true"
+        :sticky="true" />
       <!-- 页面标题区域 -->
       <UPageHeader
         v-if="!isHomePage"
-        v-bind="page"
+        :ui="{
+          root: 'border-none',
+        }"
         class="sm:mt-12">
-        <template #headline>
-          <UBreadcrumb
-            v-if="breadcrumb.length"
-            :items="breadcrumb" />
-        </template>
-
         <template #description>
           {{ page.description }}
         </template>
 
         <template #title>
-          {{ page.title }}
-          <UBadge
-            v-if="currentVersion && currentVersion !== 'v1'"
-            :label="currentVersion"
-            color="primary"
-            variant="soft"
-            size="sm"
-            class="ml-2" />
+          <div class="flex items-center gap-2">
+            <p class="">
+              {{ page.title }}
+            </p>
+            <UBadge
+              v-if="currentVersion"
+              :label="currentVersion"
+              color="primary"
+              variant="soft"
+              size="md" />
+          </div>
         </template>
       </UPageHeader>
 
@@ -235,48 +266,55 @@ if (import.meta.dev) {
             :value="page" />
 
           <!-- 分隔线和上下页导航 -->
-          <!-- <USeparator
-            v-if="surround?.filter(Boolean).length"
-            class="my-8" /> -->
-          <!-- 
-          <UContentSurround
-            v-if="surround"
-            :surround="surround" /> -->
+          <USeparator
+            v-if="
+              surround?.filter(Boolean).length &&
+              page.showFooter
+            "
+            class="my-8" />
+
+          <PageSurround
+            v-if="surround && page.showFooter"
+            :key="`${surround}-${locale}`"
+            :surround="surround"
+            show-descriptions
+            variant="elevated"
+            :direction="surroundDirection" />
         </div>
       </UPageBody>
-    </UContainer>
 
-    <!-- 右侧目录 -->
-    <template
-      #right
-      v-if="!isHomePage && hasToc">
-      <UPageAside
-        :ui="{
-          root: 'overflow-y-hidden',
-        }">
-        <UContentToc
-          :key="tocKey"
-          class="overflow-auto"
-          :links="tocLinks"
-          highlight
-          highlight-color="primary"
-          color="primary">
-          <template #link="{ link }">
-            <UTooltip
-              arrow
-              :text="link.text"
-              :delay-duration="1000"
-              :content="{
-                side: 'right',
-              }"
-              class="block w-full text-left">
-              <span class="block w-full truncate">
-                {{ link.text }}
-              </span>
-            </UTooltip>
-          </template>
-        </UContentToc>
-      </UPageAside>
-    </template>
-  </UPage>
+      <!-- 右侧目录 -->
+      <template
+        #right
+        v-if="!isHomePage && hasToc">
+        <UPageAside
+          :ui="{
+            root: 'overflow-y-hidden',
+          }">
+          <UContentToc
+            :key="tocKey"
+            class="overflow-auto"
+            :links="tocLinks"
+            highlight
+            highlight-color="primary"
+            color="primary">
+            <template #link="{ link }">
+              <UTooltip
+                arrow
+                :text="link.text"
+                :delay-duration="1000"
+                :content="{
+                  side: 'right',
+                }"
+                class="block w-full text-left">
+                <span class="block w-full truncate">
+                  {{ link.text }}
+                </span>
+              </UTooltip>
+            </template>
+          </UContentToc>
+        </UPageAside>
+      </template>
+    </UPage>
+  </UContainer>
 </template>

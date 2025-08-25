@@ -1,5 +1,5 @@
 <script setup lang="ts">
-type ResponsiveCols = 1 | 2 | 3 | 4;
+type ResponsiveCols = 1 | 2 | 3;
 
 interface DocsPageGridProps {
   cols?: {
@@ -19,14 +19,14 @@ interface DocsPageGridProps {
 const props = withDefaults(
   defineProps<DocsPageGridProps>(),
   {
-    cols: () => ({ base: 1, md: 2, lg: 3, xl: 4 }),
+    cols: () => ({ base: 1, md: 2, lg: 2, xl: 3 }),
     gap: "gap-6",
     as: "div",
   }
 );
 
 const gridClass = computed<string>(() => {
-  const classes = ["grid", props.gap];
+  const classes = ["grid", "items-stretch", props.gap];
   const { base, sm, md, lg, xl } = props.cols;
   if (base) classes.push(`grid-cols-${base}`);
   if (sm) classes.push(`sm:grid-cols-${sm}`);

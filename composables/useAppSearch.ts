@@ -1,7 +1,7 @@
 import {
   generateSearchLinks,
   getAllCollectionNames,
-} from "~/composables/shared/utils";
+} from "~/composables/shared/module";
 
 export function useAppSearch() {
   const { locale, t } = useI18n();

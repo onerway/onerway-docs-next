@@ -10,26 +10,34 @@
 import type {
   FormattedRecentPage,
   RecentPage,
+  RecentPageMeta,
+  RecentPagesOptions,
   SupportedLocale,
 } from "./shared/types";
 import {
+  CONTENT_LOCALE_MAP,
   MAX_RECENT_PAGES,
+  MODULE_CONFIG,
   PAGE_ADD_DEBOUNCE_DELAY,
 } from "./shared/constants";
+import { createLogger } from "./shared/logger";
 import {
-  cleanTitle,
-  createLogger,
-  formatTime,
-  formatTimeI18n,
-  generateDescriptionFromPath,
-  generateTitleFromPath,
   getModuleColor,
   getModuleIcon,
-  getTimeColor,
+} from "./shared/module";
+import {
+  cleanTitle,
+  generateDescriptionFromPath,
+  generateTitleFromPath,
+  normalizePath,
   shouldSkipPath,
-  useDebounceFn,
-  useStorage,
-} from "./shared/utils";
+} from "./shared/path";
+import { useRecentPagesStorage } from "./shared/storage";
+import {
+  formatTime,
+  formatTimeI18n,
+  getTimeColor,
+} from "./shared/time";
 
 // 创建日志记录器实例
 const logger = createLogger("useRecentPages");
@@ -40,26 +48,70 @@ const logger = createLogger("useRecentPages");
  * 使用 VueUse 的 useStorage 创建响应式最近页面存储
  * SSR 安全：在服务器端使用内存存储，客户端使用 localStorage
  */
-const recentPagesStorage = useStorage<RecentPage[]>(
-  "onerway-recent-pages",
-  [],
-  import.meta.client ? localStorage : undefined,
-  {
-    mergeDefaults: true,
-    serializer: {
-      read: (value: string) => {
-        try {
-          return JSON.parse(value);
-        } catch {
-          return [];
-        }
-      },
-      write: (value: RecentPage[]) => JSON.stringify(value),
-    },
-  }
-);
+const recentPagesStorage = useRecentPagesStorage() as Ref<
+  RecentPage[]
+>;
 
 // ==================== 页面信息生成工具函数 ====================
+
+/**
+ * 从路径提取模块名
+ */
+function extractModuleFromPath(
+  path: string
+): string | undefined {
+  const segments = path.split("/").filter(Boolean);
+
+  // 跳过语言前缀（如 zh-cn, en）
+  let moduleIndex = 0;
+  if (
+    segments.length > 0 &&
+    CONTENT_LOCALE_MAP[
+      segments[0] as keyof typeof CONTENT_LOCALE_MAP
+    ]
+  ) {
+    moduleIndex = 1;
+  }
+
+  if (segments.length > moduleIndex) {
+    const module = segments[moduleIndex];
+    // 标准化模块名
+    const moduleMap: Record<string, string> = {
+      transfer: "transfers",
+      payment: "payments",
+      root: "",
+      "get-started": "get-started",
+      "getting-started": "get-started",
+    };
+    return moduleMap[module!] || module;
+  }
+
+  return undefined;
+}
+
+/**
+ * 获取模块的显示名称
+ */
+function getModuleDisplayName(
+  module: string | undefined
+): string | undefined {
+  if (!module) return undefined;
+
+  const config =
+    MODULE_CONFIG[module as keyof typeof MODULE_CONFIG];
+  if (!config) return undefined;
+
+  // 默认显示名称映射
+  const displayNameMap: Record<string, string> = {
+    "get-started": "Get Started",
+    payments: "Payments",
+    transfers: "Transfers",
+    "development-resources": "Development Resources",
+    revenue: "Revenue",
+  };
+
+  return displayNameMap[module] || module;
+}
 
 /**
  * 生成完整的页面信息
@@ -80,12 +132,18 @@ function generatePageInfo(
   const icon = getModuleIcon(path);
   const iconColor = getModuleColor(path);
 
+  // 提取模块信息
+  const module = extractModuleFromPath(path);
+  const moduleName = getModuleDisplayName(module);
+
   return {
     path,
     title: cleanTitle(title),
     description,
     icon,
     iconColor,
+    module,
+    moduleName,
   };
 }
 
@@ -155,7 +213,9 @@ function tryGetPageHeadInfo(): {
  *   stats               // 统计信息
  * } = useRecentPages();
  */
-export function useRecentPages() {
+export function useRecentPages(
+  options: RecentPagesOptions = {}
+) {
   const route = useRoute();
   const { locale } = useI18n();
 
@@ -166,20 +226,50 @@ export function useRecentPages() {
    * 避免快速连续的页面访问导致重复记录
    */
   const addCurrentPage = useDebounceFn(
-    async (currentPath?: string) => {
+    async (currentPath?: string, meta?: RecentPageMeta) => {
       if (!route && !currentPath) return;
 
-      const path = currentPath || route?.path;
-      if (!path) return;
+      // 选择记录源：fullPath 或 path
+      const rawPath =
+        currentPath ||
+        (options.useFullPath
+          ? (route as unknown as { fullPath?: string })
+              ?.fullPath
+          : route?.path);
+      if (!rawPath) return;
 
-      if (shouldSkipPath(path)) {
-        logger.warn(`跳过路径记录: ${path}`);
+      // 统一路径：移除尾斜杠（根除外）、按需包含 hash
+      const normalizedPath = normalizePath(rawPath, {
+        normalizeTrailingSlash:
+          options.normalizeTrailingSlash !== false,
+        includeHash: options.includeHash === true,
+        fullPath: options.useFullPath ? rawPath : undefined,
+      });
+
+      // 跳过规则：内置 + 外部自定义
+      if (shouldSkipPath(normalizedPath)) {
+        logger.warn(`跳过路径记录: ${normalizedPath}`);
+        return;
+      }
+      if (
+        options.skipPredicates?.some((fn) =>
+          fn(normalizedPath)
+        )
+      ) {
+        logger.warn(
+          `命中自定义跳过规则: ${normalizedPath}`
+        );
         return;
       }
 
       try {
         // 生成页面信息
-        const pageInfo = generatePageInfo(path);
+        const pageInfoBase =
+          generatePageInfo(normalizedPath);
+        const pageInfo = {
+          ...pageInfoBase,
+          ...(meta || {}),
+        } as Omit<RecentPage, "timestamp">;
 
         // 创建页面对象
         const page: RecentPage = {
@@ -188,19 +278,38 @@ export function useRecentPages() {
         };
 
         logger.info(`添加页面: ${page.title}`, {
-          path: page.path,
+          path: normalizedPath,
           timestamp: page.timestamp,
         });
 
-        // 更新存储：移除重复项，添加到开头，限制总数
-        recentPagesStorage.value = [
-          page,
-          ...recentPagesStorage.value.filter(
-            (p) => p.path !== page.path
-          ),
-        ].slice(0, MAX_RECENT_PAGES);
+        // 更新存储：同路径仅更新时间并置顶；否则插入并裁剪
+        const existingIndex =
+          recentPagesStorage.value.findIndex(
+            (p) => p.path === normalizedPath
+          );
+
+        if (existingIndex >= 0) {
+          const updated = {
+            ...recentPagesStorage.value[existingIndex]!,
+            ...pageInfo,
+            timestamp: page.timestamp,
+            path: normalizedPath,
+          } satisfies RecentPage;
+
+          const next = [...recentPagesStorage.value];
+          next.splice(existingIndex, 1);
+          recentPagesStorage.value = [updated, ...next];
+        } else {
+          recentPagesStorage.value = [
+            { ...page, path: normalizedPath },
+            ...recentPagesStorage.value,
+          ].slice(0, MAX_RECENT_PAGES);
+        }
       } catch (error) {
-        logger.error(`添加页面失败: ${path}`, error);
+        logger.error(
+          `添加页面失败: ${normalizedPath}`,
+          error
+        );
       }
     },
     PAGE_ADD_DEBOUNCE_DELAY
@@ -273,18 +382,21 @@ export function useRecentPages() {
       addCurrentPage();
     });
 
-    // 监听路由变化
+    // 监听路由变化（支持 fullPath 可选）
     watch(
-      () => route.path,
-      (newPath, oldPath) => {
+      () =>
+        options.useFullPath
+          ? (route as unknown as { fullPath?: string })
+              .fullPath
+          : route.path,
+      (newVal, oldVal) => {
         logger.info("路由变化监听", {
-          newPath,
-          oldPath,
-          shouldSkip: shouldSkipPath(newPath || ""),
+          newVal,
+          oldVal,
         });
 
-        if (newPath && !shouldSkipPath(newPath)) {
-          addCurrentPage(newPath);
+        if (newVal) {
+          addCurrentPage(newVal as string);
         }
       },
       { immediate: false }
@@ -323,6 +435,8 @@ export function useRecentPages() {
               recentPagesStorage.value[0]?.title ||
               "No pages",
             locale: locale.value,
+            lastRecordedPath:
+              recentPagesStorage.value[0]?.path,
           }),
         }
       : {}),

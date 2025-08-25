@@ -1,11 +1,8 @@
 <script setup lang="ts">
 import type { ContentNavigationItem } from "@nuxt/content";
-import { mapContentNavigation } from "@nuxt/ui-pro/utils/content";
 import { kebabCase } from "scule";
-import {
-  createLogger,
-  useSharedPathInfo,
-} from "~/composables/shared/utils";
+import { createLogger } from "~/composables/shared/logger";
+import { useSharedPathInfo } from "~/composables/shared/path";
 
 const route = useRoute();
 const logger = createLogger("docs-layout");
@@ -38,12 +35,24 @@ const { data: page } = await useAsyncData(
 const navigation =
   inject<Ref<ContentNavigationItem[]>>("navigation");
 
-logger.info("docs-layout-navigation", navigation?.value);
+const navKey = computed(() => {
+  const module = pathInfo.value.module || "root";
+  const ready =
+    navigation?.value && navigation.value.length
+      ? "ready"
+      : "loading";
+  return `${module}:${ready}`;
+});
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars, unused-imports/no-unused-vars
-const menu = mapContentNavigation(
-  navigation?.value as ContentNavigationItem[]
+const safeNavigation = computed(
+  () => (navigation?.value as ContentNavigationItem[]) || []
 );
+
+logger.info("safeNavigation", safeNavigation.value);
+
+const asideUi = {
+  root: "border-r border-default",
+} as const;
 </script>
 
 <template>
@@ -52,31 +61,22 @@ const menu = mapContentNavigation(
     <UMain>
       <UContainer class="max-w-8xl">
         <UPage>
-          <template
-            #left
-            v-if="page?.showNavigation">
+          <template #left>
             <UPageAside
-              :ui="{
-                root: 'border-r border-default',
-              }">
+              v-if="
+                page?.showNavigation &&
+                safeNavigation.length > 0
+              "
+              :ui="asideUi"
+              class="-translate-y-6">
               <DocsNavigation
-                :key="`${pathInfo?.module || 'root'}:${navigation && navigation && navigation.length ? 'ready' : 'loading'}`"
-                :navigation="navigation || []"
+                :key="navKey"
+                :navigation="safeNavigation"
                 highlight
-                trailing-icon="i-lucide-chevron-right"
                 color="primary"
-                variant="link" />
-              <!-- <UNavigationMenu
-                :ui="{
-                  linkLabel: 'text-pretty md:text-balance',
-                }"
                 orientation="vertical"
-                :items="menu"
-                highlight
-                :collapsible="false"
                 type="multiple"
-                color="primary"
-                class="sm:mt-12" /> -->
+                class="sm:mt-12" />
             </UPageAside>
           </template>
           <slot />

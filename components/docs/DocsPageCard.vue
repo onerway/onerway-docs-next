@@ -27,6 +27,8 @@ interface DocsPageCardProps {
   lineClampDescription?: number;
   externalIndicator?: boolean;
   externalA11yLabel?: string;
+  reverse?: boolean;
+  orientation?: "horizontal" | "vertical";
   analytics?:
     | Record<string, unknown>
     | ((payload: {
@@ -45,6 +47,8 @@ const props = withDefaults(
     clickable: undefined,
     disabled: false,
     external: false,
+    reverse: false,
+    orientation: "vertical",
   }
 );
 
@@ -230,6 +234,7 @@ const extendedAriaLabel = computed<string | undefined>(
     :title="title"
     :description="description"
     :to="to as any"
+    :orientation="orientation"
     :icon="icon as any"
     :spotlight="spotlight"
     :spotlight-color="spotlightColor"
@@ -241,6 +246,11 @@ const extendedAriaLabel = computed<string | undefined>(
     :rel="computedRel"
     :class="containerClass"
     :role="roleAttr"
+    :reverse="reverse"
     @click="handleClick"
-    @keydown="handleKeydown" />
+    @keydown="handleKeydown">
+    <template #default>
+      <slot />
+    </template>
+  </UPageCard>
 </template>

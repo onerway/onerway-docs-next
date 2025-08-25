@@ -60,7 +60,7 @@ const handleClearAll = () => {
           icon="i-heroicons-x-mark"
           :aria-label="t('recentlyViewed.clearAll')"
           :title="t('recentlyViewed.clearAll')"
-          class="opacity-60 hover:opacity-100 transition-opacity"
+          class="opacity-60 hover:opacity-100 transition-opacity cursor-pointer"
           @click="handleClearAll" />
       </div>
     </template>
@@ -103,27 +103,37 @@ const handleClearAll = () => {
                   side: 'right',
                   sideOffset: 30,
                 }">
-                <div>
-                  <div class="flex items-center gap-1">
+                <div
+                  class="flex items-center justify-between gap-1">
+                  <div class="flex-1">
                     <h4
-                      class="text-sm font-medium text-primary/90 group-hover:text-highlighted transition-colors duration-200 truncate">
+                      class="text-sm font-medium text-primary/90 group-hover:text-highlighted transition-colors duration-200 line-clamp-2 text-wrap">
                       {{ item.displayTitle }}
                     </h4>
-                    <!-- 页面描述图标 - 仅作为视觉提示 -->
-                    <UIcon
-                      name="i-heroicons-information-circle"
-                      class="size-3 text-gray-400 hover:text-primary transition-colors duration-200 flex-shrink-0 opacity-60 group-hover:opacity-100"
-                      :aria-label="
-                        t('recentlyViewed.showDescription')
-                      "
-                      aria-hidden="true" />
+                    <p
+                      class="text-xs mt-1 font-medium transition-colors duration-200 group-hover:opacity-80"
+                      :class="item.timeColor"
+                      :aria-label="`${t('recentlyViewed.lastVisited')}: ${item.formattedTime}`">
+                      {{ item.formattedTime }}
+                    </p>
                   </div>
-                  <p
-                    class="text-xs mt-1 font-medium transition-colors duration-200 group-hover:opacity-80"
-                    :class="item.timeColor"
-                    :aria-label="`${t('recentlyViewed.lastVisited')}: ${item.formattedTime}`">
-                    {{ item.formattedTime }}
-                  </p>
+                  <!-- 模块名称标签 -->
+                  <UBadge
+                    v-if="item.moduleName"
+                    variant="soft"
+                    color="primary"
+                    class="line-clamp-2"
+                    size="sm">
+                    {{ item.moduleName }}
+                  </UBadge>
+                  <!-- 页面描述图标 - 仅作为视觉提示 -->
+                  <UIcon
+                    name="i-heroicons-information-circle"
+                    class="size-3 text-gray-400 hover:text-primary transition-colors duration-200 flex-shrink-0 opacity-60 group-hover:opacity-100"
+                    :aria-label="
+                      t('recentlyViewed.showDescription')
+                    "
+                    aria-hidden="true" />
                 </div>
 
                 <template #content>
@@ -140,10 +150,18 @@ const handleClearAll = () => {
 
               <!-- 没有描述时的内容 -->
               <div v-else>
-                <h4
-                  class="text-sm font-medium text-primary/90 group-hover:text-highlighted transition-colors duration-200 truncate">
-                  {{ item.displayTitle }}
-                </h4>
+                <div class="flex items-center gap-1">
+                  <h4
+                    class="text-sm font-medium text-primary/90 group-hover:text-highlighted transition-colors duration-200 line-clamp-2 text-wrap">
+                    {{ item.displayTitle }}
+                  </h4>
+                  <!-- 模块名称标签 -->
+                  <span
+                    v-if="item.moduleName"
+                    class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 flex-shrink-0">
+                    {{ item.moduleName }}
+                  </span>
+                </div>
                 <p
                   class="text-xs mt-1 font-medium transition-colors duration-200 group-hover:opacity-80"
                   :class="item.timeColor"

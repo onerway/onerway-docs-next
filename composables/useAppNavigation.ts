@@ -1,7 +1,5 @@
-import {
-  createLogger,
-  getAllCollectionNames,
-} from "~/composables/shared/utils";
+import { createLogger } from "~/composables/shared/logger";
+import { getAllCollectionNames } from "~/composables/shared/module";
 
 export function useAppNavigation() {
   const logger = createLogger("app-navigation");
@@ -26,6 +24,7 @@ export function useAppNavigation() {
             "module",
             "defaultOpen",
             "ui",
+            "showFooter",
           ])
             .where("draft", "<>", true)
             .catch(() => [])

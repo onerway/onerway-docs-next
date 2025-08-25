@@ -320,7 +320,8 @@
     "error": "錯誤",
     "retry": "重試",
     "updated": "更新",
-    "docs": "文件"
+    "docs": "文件",
+    "ellipsis": "..."
   },
   "clipboard": {
     "success": {
@@ -448,6 +449,17 @@
       "tryingToAccess": "嘗試訪問的路徑",
       "collectionName": "集合名稱",
       "backToHome": "返回首頁"
+    },
+    "surround": {
+      "navigation": "頁面導覽",
+      "previous": "上一頁",
+      "next": "下一頁",
+      "previousPage": "上一頁",
+      "nextPage": "下一頁",
+      "noNavigation": "暫無頁面導覽",
+      "goToPrevious": "前往上一頁：{title}",
+      "goToNext": "前往下一頁：{title}",
+      "truncated": "標題已截斷"
     },
     "sections": {
       "getStarted": {

@@ -67,12 +67,20 @@
     "_path": "/zh-tw/get-started/v1/3.start-building/1.start-developing/.navigation"
   },
   {
+    "lang": "zh-cn",
+    "module": "get-started",
+    "version": "v1",
+    "file": "1.index.md",
+    "relativePath": "get-started/v1/3.start-building/1.start-developing/1.index.md",
+    "_path": "/zh-cn/get-started/v1/3.start-building/1.start-developing/1.index"
+  },
+  {
     "lang": "zh-tw",
     "module": "get-started",
     "version": "v1",
-    "file": "index.md",
-    "relativePath": "get-started/v1/3.start-building/1.start-developing/index.md",
-    "_path": "/zh-tw/get-started/v1/3.start-building/1.start-developing/index"
+    "file": "1.index.md",
+    "relativePath": "get-started/v1/3.start-building/1.start-developing/1.index.md",
+    "_path": "/zh-tw/get-started/v1/3.start-building/1.start-developing/1.index"
   },
   {
     "lang": "zh-tw",
@@ -145,6 +153,38 @@
     "file": ".navigation.yml",
     "relativePath": "get-started/v1/4.set-up-onerway/2.web-dashboard/.navigation.yml",
     "_path": "/zh-tw/get-started/v1/4.set-up-onerway/2.web-dashboard/.navigation"
+  },
+  {
+    "lang": "zh-cn",
+    "module": "get-started",
+    "version": "v1",
+    "file": ".navigation.yml",
+    "relativePath": "get-started/v1/4.set-up-onerway/2.web-dashboard/deeper/.navigation.yml",
+    "_path": "/zh-cn/get-started/v1/4.set-up-onerway/2.web-dashboard/deeper/.navigation"
+  },
+  {
+    "lang": "zh-tw",
+    "module": "get-started",
+    "version": "v1",
+    "file": ".navigation.yml",
+    "relativePath": "get-started/v1/4.set-up-onerway/2.web-dashboard/deeper/.navigation.yml",
+    "_path": "/zh-tw/get-started/v1/4.set-up-onerway/2.web-dashboard/deeper/.navigation"
+  },
+  {
+    "lang": "zh-cn",
+    "module": "get-started",
+    "version": "v1",
+    "file": "1.overview.md",
+    "relativePath": "get-started/v1/4.set-up-onerway/2.web-dashboard/deeper/1.overview.md",
+    "_path": "/zh-cn/get-started/v1/4.set-up-onerway/2.web-dashboard/deeper/1.overview"
+  },
+  {
+    "lang": "zh-tw",
+    "module": "get-started",
+    "version": "v1",
+    "file": "1.overview.md",
+    "relativePath": "get-started/v1/4.set-up-onerway/2.web-dashboard/deeper/1.overview.md",
+    "_path": "/zh-tw/get-started/v1/4.set-up-onerway/2.web-dashboard/deeper/1.overview"
   },
   {
     "lang": "zh-tw",

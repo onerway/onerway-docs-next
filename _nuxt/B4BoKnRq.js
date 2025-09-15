@@ -1,0 +1,1 @@
+import{z as s,A as e,ae as a,d as t,e as r,U as o,n as l}from"#entry";const n={base:""},p={__name:"ProseEm",props:{class:{type:String,required:!1}},setup(p){const u=p,c=s(),m=e(()=>a({extend:a(n),...c.ui?.prose?.em||{}}));return(s,e)=>(r(),t("em",{class:l(m.value({class:u.class}))},[o(s.$slots,"default")],2))}};export{p as default};

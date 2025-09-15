@@ -434,7 +434,10 @@
     "sortDescending": "Sort descending",
     "searchInput": "Search input field",
     "toggleTheme": "Toggle theme mode",
-    "backToHome": "Back to home"
+    "backToHome": "Back to home",
+    "externalLink": "External link",
+    "externalLinkDescription": "Opens in new tab",
+    "internalLink": "Internal link"
   },
   "docs": {
     "navigation": {
@@ -463,6 +466,10 @@
       "goToPrevious": "Go to previous page: {title}",
       "goToNext": "Go to next page: {title}",
       "truncated": "Title truncated"
+    },
+    "accordion": {
+      "copyAnchor": "Copy anchor link",
+      "anchorCopied": "copied to clipboard"
     },
     "sections": {
       "getStarted": {

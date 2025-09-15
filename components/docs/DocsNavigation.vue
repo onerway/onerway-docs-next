@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { ContentNavigationItem } from "@nuxt/content";
-import type { mapContentNavigation } from "@nuxt/ui-pro/utils/content";
+import type { mapContentNavigation } from "@nuxt/ui/utils/content";
 import { createLogger } from "~/composables/shared/logger";
 
 type ColorName =

@@ -1,7 +1,7 @@
 @import "tailwindcss";
 @source "../../content/**/*.md";
 @source "../../content/**/*.mdc";
-@import "@nuxt/ui-pro";
+@import "@nuxt/ui";
 
 :root {
   --ui-header-height: theme(spacing.16);

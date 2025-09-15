@@ -431,7 +431,10 @@
     "sortDescending": "降序排列",
     "searchInput": "搜尋輸入框",
     "toggleTheme": "切換主題模式",
-    "backToHome": "返回首頁"
+    "backToHome": "返回首頁",
+    "externalLink": "外部連結",
+    "externalLinkDescription": "在新分頁中開啟",
+    "internalLink": "內部連結"
   },
   "docs": {
     "navigation": {
@@ -460,6 +463,10 @@
       "goToPrevious": "前往上一頁：{title}",
       "goToNext": "前往下一頁：{title}",
       "truncated": "標題已截斷"
+    },
+    "accordion": {
+      "copyAnchor": "複製錨點連結",
+      "anchorCopied": "已複製到剪貼簿"
     },
     "sections": {
       "getStarted": {

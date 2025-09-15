@@ -235,7 +235,7 @@ if (import.meta.dev) {
       <UPageHeader
         v-if="!isHomePage"
         :ui="{
-          root: 'border-none',
+          root: 'border-b border-default',
         }"
         class="sm:mt-12">
         <template #description>

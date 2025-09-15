@@ -14,8 +14,6 @@ export default defineAppConfig({
         },
       ],
     },
-  },
-  uiPro: {
     contentNavigation: {
       slots: {
         link: "cursor-pointer",

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Html } from "#components";
-import * as locales from "@nuxt/ui-pro/locale";
+import * as locales from "@nuxt/ui/locale";
 import { getCurrentUILocale } from "~/composables/shared/module";
 // ==================== 应用配置 ====================
 

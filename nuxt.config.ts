@@ -3,6 +3,7 @@
 // 导入 Node.js 子进程模块的 execSync 函数，用于同步执行系统命令
 // 在这个项目中用于构建时运行 generate-missing-content.js 脚本来检测多语言内容缺失项
 import { execSync } from "node:child_process";
+import process from "node:process";
 
 export default defineNuxtConfig({
   compatibilityDate: "2025-05-15",
@@ -11,8 +12,23 @@ export default defineNuxtConfig({
   // 开发环境禁用缓存
   ssr: true,
 
+  // 开发环境缓存控制
+  ...(process.env.NODE_ENV === "development" && {
+    // 开发环境禁用服务端渲染缓存
+    routeRules: {
+      "/**": {
+        headers: {
+          "Cache-Control":
+            "no-cache, no-store, must-revalidate",
+          Pragma: "no-cache",
+          Expires: "0",
+        },
+      },
+    },
+  }),
+
   modules: [
-    "@nuxt/ui-pro",
+    "@nuxt/ui",
     "@nuxt/content",
     "@nuxt/eslint",
     "@nuxt/icon",
@@ -141,19 +157,38 @@ export default defineNuxtConfig({
       ],
       failOnError: false,
     },
+    // 开发环境禁用存储和缓存
+    ...(process.env.NODE_ENV === "development" && {
+      storage: {
+        cache: {
+          driver: "memory", // 使用内存存储，重启即清空
+        },
+      },
+      // 禁用预渲染缓存
+      experimental: {
+        wasm: false,
+      },
+    }),
   },
 
   // content
   content: {
-    experimental: { nativeSqlite: true },
+    experimental: {
+      nativeSqlite: process.env.NODE_ENV === "production", // 仅生产环境启用 SQLite 缓存
+    },
     preview: {
       api: "https://api.nuxt.studio",
     },
+    // 开发环境禁用内容缓存
+    ...(process.env.NODE_ENV === "development" && {
+      ignores: [],
+    }),
     build: {
       markdown: {
         highlight: {
           langs: [
             "bash",
+            "yaml",
             "ts",
             "typescript",
             "diff",
@@ -170,6 +205,11 @@ export default defineNuxtConfig({
             light: "catppuccin-latte",
           },
         },
+        remarkPlugins: {},
+        toc: {
+          depth: 4,
+          searchDepth: 8,
+        },
       },
     },
   },
@@ -177,6 +217,16 @@ export default defineNuxtConfig({
   mdc: {
     highlight: {
       // noApiRoute: false,
+    },
+    headings: {
+      anchorLinks: {
+        h1: true,
+        h2: true,
+        h3: true,
+        h4: true,
+        h5: true,
+        h6: true,
+      },
     },
   },
 
@@ -205,6 +255,10 @@ export default defineNuxtConfig({
   vite: {
     optimizeDeps: {
       include: ["three"],
+      // 开发环境强制重新优化依赖
+      ...(process.env.NODE_ENV === "development" && {
+        force: true,
+      }),
     },
     build: {
       minify: "terser",
@@ -223,7 +277,6 @@ export default defineNuxtConfig({
           // 在服务端渲染时排除 Three.js
           return (
             id === "three" &&
-            // eslint-disable-next-line node/prefer-global/process
             process.env.NODE_ENV === "production"
           );
         },

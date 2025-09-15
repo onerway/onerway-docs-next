@@ -100,10 +100,10 @@
   "i18n-ally.autoImport": true,
   "i18n-ally.keystyle": "nested",
   "window.autoDetectColorScheme": true,
-  "[mdc]": {
-    "editor.defaultFormatter": "Nuxt.mdc"
-  },
   "[jsonc]": {
     "editor.defaultFormatter": "vscode.json-language-features"
+  },
+  "[markdown]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   }
 }

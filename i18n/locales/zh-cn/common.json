@@ -426,7 +426,10 @@
     "sortDescending": "降序排列",
     "searchInput": "搜索输入框",
     "toggleTheme": "切换主题模式",
-    "backToHome": "返回首页"
+    "backToHome": "返回首页",
+    "externalLink": "外部链接",
+    "externalLinkDescription": "在新标签页中打开",
+    "internalLink": "内部链接"
   },
   "docs": {
     "navigation": {
@@ -455,6 +458,10 @@
       "goToPrevious": "前往上一页：{title}",
       "goToNext": "前往下一页：{title}",
       "truncated": "标题已截断"
+    },
+    "accordion": {
+      "copyAnchor": "复制锚点链接",
+      "anchorCopied": "已复制到剪贴板"
     },
     "sections": {
       "getStarted": {

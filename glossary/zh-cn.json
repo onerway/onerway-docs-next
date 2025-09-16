@@ -1,0 +1,42 @@
+{
+  "api": {
+    "term": "API",
+    "definition": "应用程序编程接口 - 用于构建软件应用程序的协议和工具集",
+    "category": "technical"
+  },
+  "webhook": {
+    "term": "Webhook",
+    "definition": "HTTP 回调，当特定事件发生时向您的应用程序发送实时数据",
+    "category": "integration"
+  },
+  "oauth": {
+    "term": "OAuth",
+    "definition": "开放授权 - 无需共享密码即可安全进行 API 授权的标准",
+    "category": "security"
+  },
+  "sandbox": {
+    "term": "沙箱环境",
+    "definition": "模拟生产环境但使用虚假数据和交易的测试环境",
+    "category": "development"
+  },
+  "bearer-token": {
+    "term": "Bearer Token",
+    "definition": "安全令牌，包含在 API 请求中时可授予对受保护资源的访问权限",
+    "category": "security"
+  },
+  "payment-intent": {
+    "term": "支付意图",
+    "definition": "表示您从客户那里收取付款意图的对象",
+    "category": "payments"
+  },
+  "settlement": {
+    "term": "结算",
+    "definition": "将资金从支付处理方转移到您银行账户的过程",
+    "category": "payments"
+  },
+  "chargeback": {
+    "term": "拒付",
+    "definition": "由客户银行发起的付款撤销，通常是由于争议",
+    "category": "disputes"
+  }
+}

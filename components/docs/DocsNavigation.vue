@@ -189,7 +189,7 @@ const handleUpdateModelValue = (
     :ui="{
       link: 'cursor-pointer',
       linkTrailingIcon: 'group-data-[state=open]:rotate-90',
-      linkLabel: 'line-clamp-2 text-wrap',
+      linkLabel: 'line-clamp-2 text-wrap text-sm',
       childLinkLabel: 'line-clamp-2 text-wrap',
     }"
     class="sm:mt-8"

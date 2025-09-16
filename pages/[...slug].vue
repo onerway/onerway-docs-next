@@ -221,7 +221,7 @@ if (import.meta.dev) {
 </script>
 
 <template>
-  <UContainer class="px-6 sm:px-16 lg:px-20">
+  <UContainer class="px-6 sm:px-8 lg:px-12">
     <UPage v-if="page">
       <!-- 粘性面包屑导航 -->
       <DocsBreadcrumb
@@ -293,7 +293,7 @@ if (import.meta.dev) {
           }">
           <UContentToc
             :key="tocKey"
-            class="overflow-auto"
+            class="overflow-auto text-sm"
             :links="tocLinks"
             highlight
             highlight-color="primary"
@@ -307,7 +307,7 @@ if (import.meta.dev) {
                   side: 'right',
                 }"
                 class="block w-full text-left">
-                <span class="block w-full truncate">
+                <span class="block w-full line-clamp-2">
                   {{ link.text }}
                 </span>
               </UTooltip>

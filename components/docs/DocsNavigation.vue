@@ -23,6 +23,7 @@ interface Props {
   orientation?: Orientation;
   collapsible?: boolean;
   type?: MenuType;
+  trailingIcon?: string;
   moduleUi?: {
     group?: string;
     label?: string;
@@ -34,12 +35,15 @@ const props = withDefaults(defineProps<Props>(), {
   highlight: true,
   orientation: "vertical" as Orientation,
   type: "multiple" as MenuType,
+  trailingIcon: "i-lucide-chevron-right",
   moduleUi: () => ({
     group:
-      "border-t border-default mt-3 py-2 text-highlighted font-semibold",
+      "border-t border-default mt-3 py-2 text-highlighted font-bold aria-[disabled=true]:text-default aria-[disabled=true]:cursor-not-allowed",
     label: "",
   }),
 });
+
+const route = useRoute();
 
 const logger = createLogger("DocsNavigation");
 
@@ -86,6 +90,8 @@ function enhanceMenuItemsForModuleStyles(
       cloned.ui = {
         linkTrailingIcon: "hidden",
       };
+      cloned.disabled = true;
+      cloned.defaultOpen = true;
     }
     if (
       Array.isArray(cloned.children) &&
@@ -142,7 +148,7 @@ const items = computed(() => {
         // 默认使用 defaultOpen，后续需要受控再切换为 open
         (
           mapped as unknown as { defaultOpen?: boolean }
-        ).defaultOpen = true;
+        ).defaultOpen = route.path.startsWith(item.path);
       }
 
       const itemWithIcon = item as unknown as {
@@ -181,18 +187,19 @@ const handleUpdateModelValue = (
   <UNavigationMenu
     :items="items"
     :highlight="highlight"
+    :trailing-icon="trailingIcon"
     :color="color"
     :orientation="orientation"
     variant="link"
     :type="type"
     :ui="{
       label: 'px-0 py-0',
-      link: 'cursor-pointer px-0.5 py-1',
-      linkLeadingIcon: 'group-data-[state=open]:rotate-90',
-      linkLabel:
-        'line-clamp-2 text-wrap text-sm font-normal text-left ',
-      childLinkLabel: 'line-clamp-2 text-wrap',
+      link: 'cursor-pointer px-0.5 py-1 font-normal data-[state=open]:font-medium',
+      linkLabel: 'line-clamp-2 text-wrap text-sm text-left',
       childList: 'ms-1.5 border-none',
+      childItem: 'font-bold',
+      linkTrailing: 'self-start',
+      linkTrailingIcon: 'group-data-[state=open]:rotate-90',
     }"
     class="sm:mt-8"
     @update:model-value="handleUpdateModelValue" />

@@ -67,12 +67,20 @@
     "_path": "/zh-tw/get-started/v1/3.start-building/1.start-developing/.navigation"
   },
   {
+    "lang": "zh-cn",
+    "module": "get-started",
+    "version": "v1",
+    "file": "1.index.md",
+    "relativePath": "get-started/v1/3.start-building/1.start-developing/1.index.md",
+    "_path": "/zh-cn/get-started/v1/3.start-building/1.start-developing/1.index"
+  },
+  {
     "lang": "zh-tw",
     "module": "get-started",
     "version": "v1",
-    "file": "1.development-environment.md",
-    "relativePath": "get-started/v1/3.start-building/1.start-developing/1.development-environment.md",
-    "_path": "/zh-tw/get-started/v1/3.start-building/1.start-developing/1.development-environment"
+    "file": "1.index.md",
+    "relativePath": "get-started/v1/3.start-building/1.start-developing/1.index.md",
+    "_path": "/zh-tw/get-started/v1/3.start-building/1.start-developing/1.index"
   },
   {
     "lang": "zh-tw",
@@ -99,12 +107,36 @@
     "_path": "/zh-tw/get-started/v1/3.start-building/2.about-the-apis/.navigation"
   },
   {
+    "lang": "zh-cn",
+    "module": "get-started",
+    "version": "v1",
+    "file": "1.index.md",
+    "relativePath": "get-started/v1/3.start-building/2.about-the-apis/1.index.md",
+    "_path": "/zh-cn/get-started/v1/3.start-building/2.about-the-apis/1.index"
+  },
+  {
     "lang": "zh-tw",
     "module": "get-started",
     "version": "v1",
-    "file": "index.md",
-    "relativePath": "get-started/v1/3.start-building/2.about-the-apis/index.md",
-    "_path": "/zh-tw/get-started/v1/3.start-building/2.about-the-apis/index"
+    "file": "1.index.md",
+    "relativePath": "get-started/v1/3.start-building/2.about-the-apis/1.index.md",
+    "_path": "/zh-tw/get-started/v1/3.start-building/2.about-the-apis/1.index"
+  },
+  {
+    "lang": "zh-cn",
+    "module": "get-started",
+    "version": "v1",
+    "file": "1.overview.md",
+    "relativePath": "get-started/v1/3.start-building/2.about-the-apis/1.overview.md",
+    "_path": "/zh-cn/get-started/v1/3.start-building/2.about-the-apis/1.overview"
+  },
+  {
+    "lang": "zh-tw",
+    "module": "get-started",
+    "version": "v1",
+    "file": "1.overview.md",
+    "relativePath": "get-started/v1/3.start-building/2.about-the-apis/1.overview.md",
+    "_path": "/zh-tw/get-started/v1/3.start-building/2.about-the-apis/1.overview"
   },
   {
     "lang": "zh-tw",

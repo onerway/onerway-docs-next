@@ -207,7 +207,7 @@ export default defineNuxtConfig({
         },
         remarkPlugins: {},
         toc: {
-          depth: 4,
+          depth: 5,
           searchDepth: 8,
         },
       },

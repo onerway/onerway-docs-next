@@ -51,7 +51,7 @@ const safeNavigation = computed(
 logger.info("safeNavigation", safeNavigation.value);
 
 const asideUi = {
-  root: "border-r border-default",
+  root: "border-r border-default max-w-3xs",
 } as const;
 </script>
 
@@ -59,7 +59,7 @@ const asideUi = {
   <div class="min-h-screen">
     <!-- 主内容区域 -->
     <UMain>
-      <UContainer class="max-w-8xl">
+      <UContainer class="max-w-8xl px-4 sm:px-4 lg:px-4">
         <UPage>
           <template #left>
             <UPageAside

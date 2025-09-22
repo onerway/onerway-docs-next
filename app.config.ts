@@ -4,6 +4,25 @@ export default defineAppConfig({
       primary: "indigo",
       neutral: "slate",
     },
+    tabs: {
+      slots: {
+        trigger: "cursor-pointer",
+      },
+    },
+    accordion: {
+      slots: {
+        trigger: "cursor-pointer",
+      },
+    },
+    navigationMenu: {
+      variants: {
+        active: {
+          false: {
+            link: "text-default",
+          },
+        },
+      },
+    },
     button: {
       compoundVariants: [
         {
@@ -18,8 +37,6 @@ export default defineAppConfig({
       slots: {
         link: "cursor-pointer",
         trigger: "font-medium",
-        linkTrailingIcon:
-          "group-data-[state=open]:rotate-90",
       },
       variants: {
         level: {

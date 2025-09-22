@@ -386,12 +386,12 @@ defineExpose({
 
 <template>
   <nav
-    class="flex items-center gap-1 text-sm"
+    class="flex items-center gap-1 text-sm bg-default"
     :class="[
       ui?.root || 'text-primary',
       props.class,
       sticky &&
-        'sticky top-[var(--ui-header-height)] sm:top-[var(--ui-header-total-height)] pt-6 z-10',
+        'sticky top-[var(--ui-header-height)] sm:top-[var(--ui-header-total-height)] py-3 z-10',
     ]"
     :aria-label="t('docs.breadcrumb.ariaLabel')"
     role="navigation">

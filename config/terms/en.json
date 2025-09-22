@@ -1,0 +1,42 @@
+{
+  "api": {
+    "term": "API",
+    "definition": "Application Programming Interface - A set of protocols and tools for building software applications",
+    "tags": "technical"
+  },
+  "webhook": {
+    "term": "Webhook",
+    "definition": "HTTP callback that sends real-time data to your application when specific events occur",
+    "tags": "integration"
+  },
+  "oauth": {
+    "term": "OAuth",
+    "definition": "Open Authorization - A standard for secure API authorization without sharing passwords",
+    "tags": "security"
+  },
+  "sandbox": {
+    "term": "Sandbox",
+    "definition": "A testing environment that mimics production but uses fake data and transactions",
+    "tags": "development"
+  },
+  "bearer-token": {
+    "term": "Bearer Token",
+    "definition": "A security token that grants access to protected resources when included in API requests",
+    "tags": "security"
+  },
+  "payment-intent": {
+    "term": "Payment Intent",
+    "definition": "An object that represents your intent to collect payment from a customer",
+    "tags": "payments"
+  },
+  "settlement": {
+    "term": "Settlement",
+    "definition": "The process of transferring funds from the payment processor to your bank account",
+    "tags": "payments"
+  },
+  "chargeback": {
+    "term": "Chargeback",
+    "definition": "A payment reversal initiated by the customer's bank, usually due to a dispute",
+    "tags": "disputes"
+  }
+}

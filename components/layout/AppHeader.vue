@@ -114,7 +114,7 @@ const languageItems = computed(() => [
           collapsed
           arrow
           popover
-          class="px-4 sm:px-6 bg-muted backdrop-blur max-sm:hidden border-b border-muted" />
+          class="px-2 bg-muted backdrop-blur max-sm:hidden border-b border-muted" />
       </template>
     </UHeader>
   </div>

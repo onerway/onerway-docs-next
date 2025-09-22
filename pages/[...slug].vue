@@ -5,10 +5,9 @@ import {
   useDebounceFn,
   whenever,
 } from "@vueuse/core";
-import { kebabCase } from "scule";
 import { createLogger } from "~/composables/shared/logger";
-import { buildCollectionName } from "~/composables/shared/module";
 import { useSharedPathInfo } from "~/composables/shared/path";
+import { usePageData } from "~/composables/usePageData";
 
 // ==================== 路由和基础信息 ====================
 
@@ -27,94 +26,14 @@ const { pathInfo } = useSharedPathInfo();
 
 logger.info("pathInfo", pathInfo.value);
 
-// 获取页面内容（带英文回退）
-const { data: page } = await useAsyncData(
-  `${kebabCase(pathInfo.value.contentPath)}`,
-  async () => {
-    // 根据路径信息获取集合名称
-    if (!pathInfo.value.collectionName) {
-      throw createError({
-        statusCode: 404,
-        statusMessage: "Collection not found",
-      });
-    }
-
-    logger.info(
-      "collectionName",
-      pathInfo.value.collectionName
-    );
-
-    // 1) 尝试当前语言内容
-    let doc = await queryCollection(
-      // @ts-expect-error: Dynamic collection name from pathInfo
-      pathInfo.value.collectionName
-    )
-      .path(pathInfo.value.contentPath)
-      .first();
-
-    // 2) 若不存在，回退到英文内容
-    if (!doc && pathInfo.value.module) {
-      const fallbackLocale = "en";
-      const fallbackCollection = buildCollectionName(
-        pathInfo.value.module,
-        fallbackLocale as "en"
-      );
-      // 将内容路径的首个语言段替换为 /en/
-      const fallbackPath =
-        pathInfo.value.contentPath.replace(
-          /^\/[a-z]{2}(?:-[a-z]{2})?\//i,
-          `/${fallbackLocale}/`
-        );
-
-      logger.info("fallback to EN", {
-        fallbackCollection,
-        fallbackPath,
-      });
-
-      doc = await queryCollection(
-        // @ts-expect-error: Dynamic collection name from buildCollectionName
-        fallbackCollection
-      )
-        .path(fallbackPath)
-        .first();
-    }
-
-    return doc;
-  },
-  {
-    watch: [() => route.path, locale], // 监听路径和语言
-  }
-);
+// 使用新的页面数据获取组合式函数
+const { page, surround, isLoading, error } = usePageData({
+  watchRoute: true,
+  enableFallback: true,
+  includeSurround: true,
+});
 
 logger.info("page", page.value);
-
-// 获取周围导航（上一页/下一页）
-const { data: surround } = await useAsyncData(
-  `${kebabCase(route.path)}-surround`,
-  async () => {
-    const info = pathInfo.value;
-
-    if (!info.collectionName) {
-      return null;
-    }
-
-    const surroundings =
-      await queryCollectionItemSurroundings(
-        // @ts-expect-error: Dynamic collection name from pathInfo
-        info.collectionName,
-        info.contentPath,
-        {
-          fields: ["description", "title"],
-        }
-      );
-
-    logger.info("surroundings", surroundings);
-    return surroundings;
-  },
-  {
-    watch: [() => route.path, locale], // 监听路径和语言
-  }
-);
 
 // ==================== 导航数据处理 ====================
 
@@ -190,14 +109,11 @@ whenever(
 
 // ==================== SEO 设置 ====================
 
-const title = computed(() => {
-  if (!page.value) return "";
-  return typeof page.value.navigation === "object" &&
-    page.value.navigation?.title
-    ? page.value.navigation.title
-    : page.value.title || "";
-});
-const description = page.value?.description;
+// 使用新的页面标题组合式函数
+const title = computed(() => page.value?.title || "");
+const description = computed(
+  () => page.value?.description || ""
+);
 
 useSeoMeta({
   titleTemplate: "%s - Onerway Docs",
@@ -216,6 +132,8 @@ if (import.meta.dev) {
     hasNavigation: hasNavigation.value,
     hasToc: hasToc.value,
     tocCount: tocLinks.value.length,
+    isLoading: isLoading.value,
+    hasError: !!error.value,
   });
 }
 </script>
@@ -268,13 +186,16 @@ if (import.meta.dev) {
           <!-- 分隔线和上下页导航 -->
           <USeparator
             v-if="
-              surround?.filter(Boolean).length &&
+              Array.isArray(surround) &&
+              surround.filter(Boolean).length &&
               page.showFooter
             "
             class="my-8" />
 
           <PageSurround
-            v-if="surround && page.showFooter"
+            v-if="
+              Array.isArray(surround) && page.showFooter
+            "
             :key="`${surround}-${locale}`"
             :surround="surround"
             show-descriptions

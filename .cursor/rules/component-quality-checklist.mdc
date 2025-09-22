@@ -1,134 +1,265 @@
 ---
 alwaysApply: true
-description: Component Quality Checklist — 适用于 Vue 3 / Nuxt 3 组件在开发、重构与 Code Review 时的最低质量要求与验收标准
+description:
+  Component Quality Checklist — 适用于 Vue 3 / Nuxt 3（Nuxt
+  UI / Nuxt Content / Tailwind / 多语言 /
+  MDC）组件在开发、重构与 Code Review
+  时的最低质量要求与验收标准
 ---
 
 # Component Quality Checklist（组件最低质量要求）
 
-本规则为所有组件的“最低质量门槛”。适用技术栈：Vue 3（Composition API）/ Nuxt 3 / TypeScript / TailwindCSS / Nuxt UI。
+> 适用技术栈：Vue 3（Composition API）/ Nuxt 3 / TypeScript
+> / TailwindCSS / **Nuxt UI** / **Nuxt Content（MDC）** /
+> vue-i18n / VueUse。  
+> 强制原则（优先级从高到低）：
+>
+> 1. **先用 Nuxt UI**：能用 Nuxt
+>    UI 的现成组件/模式，绝不从零造轮子；仅在明确不足时做“轻度封装”而非重写。
+> 2. **颜色与样式令牌化**：严禁硬编码颜色；统一走 Nuxt
+>    UI 主题令牌、Tailwind 语义色或 CSS variables。
+> 3. **MDC 友好**：组件设计为“可直接在 `.md|.mdc`
+>    中使用”，具备合理默认值与最小必填 props。
 
 关联规范：
+
 - [frontend-development-guidelines.mdc](mdc:.cursor/rules/frontend-development-guidelines.mdc)
 - [COMPOSABLES.md](mdc:.cursor/rules/COMPOSABLES.md)（三层架构与去重复用：核心服务 → 业务组合式 → 页面/组件使用）
 
-## 何时使用（使用时机与场景）
+## 使用时机
+
 - 新建组件：设计/开发前自检与开发中每日例检
 - 重构：重构前/后对比检查差异
-- 组件库：新增组件的验收标准
+- 组件库：新增/封装组件的验收标准
 - Code Review：审查单依据
 - Pre-merge：自测门禁清单
 
+---
+
 ## 验收清单（必须满足的最低要求）
 
-> 勾选全部“必须”项方可通过；“条件”项按组件适用性执行。
+> **必须**项全部通过方可合格；**条件**项按组件适用性执行。
+
+### 0) Nuxt UI 优先（必须）
+
+- [ ] 组件基于 Nuxt UI 原子/复合组件（如
+      `UButton/ UCard/ UModal/ UForm/ UDropdown/ UAlert/ UTable/ UTooltip`
+      等）组合实现；只有当能力缺口明确且记录在案时才新增自定义结构。
+- [ ] 若做样式定制：仅用 **Nuxt UI app config** 与 `ui`
+      props/slots、自带 class 合并机制；**禁止**直接写死颜色或过度覆盖。
+- [ ] 交互模式遵循 Nuxt UI 既有语义（如
+      `v-model`、`color`、`size`、`variant` 命名）。
 
 ### 1) 响应式布局（必须）
+
 - [ ] 断点覆盖极窄/常规/极宽屏与横竖屏切换
 - [ ] 可预见的溢出与折叠策略（多行省略/折叠面板/滚动/粘性）
-- [ ] 易读的内容宽度（合理行长、行高、间距），避免布局跳动
+- [ ] 合理行长/行高/间距，避免布局跳动（CLS 关注）
 
 ### 2) 主题与定制（必须）
-- [ ] 使用 `useColorMode` 同步 light/dark（Nuxt UI），主题切换无闪烁
-- [ ] 设计令牌/CSS variables 驱动颜色与间距，不硬编码颜色
-- [ ] 提供密度（紧凑/舒适）与高对比主题的扩展接口
 
-### 3) 可访问性 a11y（必须）
-- [ ] 语义化结构与 ARIA 角色/属性正确；标题层级有序；landmarks 合理
-- [ ] 焦点可见（清晰的 focus ring）；焦点管理正确（陷阱/初始焦点/循环）
-- [ ] Roving tabindex 适用于可选择列表/菜单/栈式组件
-- [ ] 键盘路径完整：Tab/Shift+Tab、箭头、Enter/Space、Esc 关闭对话框
-- [ ] 异步状态用 `aria-live` 区域播报（加载/成功/错误）
+- [ ] 使用 `useColorMode()` 同步 light/dark（Nuxt
+      UI），主题切换无闪烁
+- [ ] **不硬编码颜色**：仅使用 Nuxt
+      UI 主题令牌（`app.config.ts` 中的 `ui.primary`
+      等）、Tailwind 语义色（如 `text-primary`、`bg-primary`
+      由主题映射）、或 CSS variables（`--ui-*`）
+- [ ] 提供密度（紧凑/舒适）与高对比主题的扩展入口（props 或 class 开关）
 
-### 4) 视障用户体验（必须）
-- [ ] 字号放大不破版，文本与交互元素对比度达 WCAG AA
-- [ ] 状态不以颜色唯一表达（文字/形状/图标冗余提示）
-- [ ] 尊重 `prefers-reduced-motion`，为关键动效提供可禁用/降级
+### 3) Nuxt Content / MDC 友好（必须）
 
-### 5) 键鼠与多输入（必须）
-- [ ] 键盘、鼠标、触屏、触笔等输入等价可用
-- [ ] 拖放/长按/双击类交互提供替代路径与可发现性
+- [ ] 组件支持直接在 `.md/.mdc`
+      中使用（**无需额外注册**或已通过 `components:`
+      自动导入）
+- [ ] 默认 props 设计贴合文档场景：**1–2 个核心必填 props**，其余皆有合理默认值
+- [ ] 文档场景下的**渲染安全**：与 `<Prose>`
+      一致；代码块/插图/表格对齐 Prose 样式
+- [ ] 提供 **MDC 简写示例**（见“文档与示例”）
 
-### 6) 状态与反馈完整性（必须）
-- [ ] 加载/空/错误/成功的统一呈现与文案
+### 4) 国际化与本地化（必须）
+
+- [ ] 所有可见文案与 `aria-*` 文本均为 i18n key；无硬编码
+- [ ] 支持 RTL；长文案溢出策略；数字/日期/单位本地化（`Intl`/
+      i18n）
+
+### 5) 可访问性 a11y（必须）
+
+- [ ] 语义化结构与 ARIA 角色/属性正确；标题层级有序；合理 landmarks
+- [ ] 焦点可见（统一 focus
+      ring）；正确的焦点管理（陷阱/初始焦点/循环）
+- [ ] Roving tabindex 适配可选择集（列表/菜单/栈式）
+- [ ] 键盘路径完整：Tab/Shift+Tab/箭头/Enter|Space/Esc
+- [ ] 异步状态使用 `aria-live` 宣告
+
+### 6) 视障用户体验（必须）
+
+- [ ] 字号放大不破版；文本/交互对比度达 WCAG AA
+- [ ] 状态表达不只依赖颜色（文字/形状/图标冗余提示）
+- [ ] 尊重 `prefers-reduced-motion`；关键动效可禁用/降级
+
+### 7) 键鼠与多输入（必须）
+
+- [ ] 键盘/鼠标/触屏/触笔等输入等价可用
+- [ ] 拖放/长按/双击提供替代路径与可发现性
+
+### 8) 状态与反馈完整性（必须）
+
+- [ ] 加载/空/错误/成功的统一呈现与文案（优先
+      `UAlert/USkeleton`）
 - [ ] 错误可定位（字段级/组件级）；提供重试/撤销/恢复路径
 
-### 7) 国际化与本地化（必须）
-- [ ] 所有可见文案无硬编码，使用 i18n 键（aria 文本同样国际化）
-- [ ] RTL 兼容；长文案溢出策略；数字/日期/单位本地化
+### 9) 性能与加载策略（必须）
 
-### 8) 性能与加载策略（必须）
-- [ ] 按需加载/代码分割（动态导入），Skeleton/占位优化感知
-- [ ] 大列表必要时使用虚拟化；图像/图标优化（尺寸、格式、懒加载）
+- [ ] 按需加载/代码分割（`defineAsyncComponent`/ 动态导入），Skeleton/占位优化感知
+- [ ] 大列表必要时虚拟化；图像/图标优化（尺寸、格式、懒加载）
 - [ ] SSR/水合一致，无 hydration 警告与首屏闪烁
-- [ ] 组合式需 SSR 安全：仅在客户端访问浏览器 API；持久状态使用 `useState`；必要时使用 `client-only` 隔离
+- [ ] 组合式 SSR 安全：浏览器 API 客户端访问；持久状态用
+      `useState`；必要时 `client-only`
 
-### 9) 动效与时序（必须）
-- [ ] 关键动效可中止/可跳过，缓动与时长统一
-- [ ] 重要状态变化提供非颜色的可感知反馈
+### 10) 动效与时序（必须）
 
-### 10) 语义与 SEO（条件：可索引内容）
-- [ ] 正确的语义标记与可被抓取的结构
-- [ ] 分享元信息（OG/Twitter）与可分享性
+- [ ] 关键动效可中止/可跳过；缓动/时长与 Nuxt UI 一致
+- [ ] 重要状态变化提供**非颜色**的可感知反馈
 
-### 11) 错误与恢复（必须）
-- [ ] 弱网/离线/超时的降级策略（重试/回退）
-- [ ] 记录错误并向用户给出明确的恢复路径
+### 11) 语义与 SEO（条件：可索引内容）
 
-### 12) 安全与隐私（必须）
+- [ ] 语义标记可抓取；有意义的标题结构
+- [ ] 分享元信息（OG/Twitter）与分享友好度
+
+### 12) 错误与恢复（必须）
+
+- [ ] 弱网/离线/超时降级策略（重试/回退/提示）
+- [ ] 记录错误并向用户给出明确恢复路径（可结合
+      `useRequest`/告警）
+
+### 13) 安全与隐私（必须）
+
 - [ ] XSS/HTML 注入防护；外链 `rel="noopener noreferrer"`
 - [ ] 剪贴板/通知/权限请求显式同意与降级处理
 
-### 13) 可扩展性与 API 契约（必须）
-- [ ] 插槽与组合式 API 设计清晰；避免重复造轮子（复用核心服务）
-- [ ] `v-model` 契约、事件命名与 payload 类型明确
-- [ ] 必须复用 `composables/shared/` 能力（`constants`、`types`、`utils`、`skeleton-utils`），禁止重复实现已存在的缓存/存储/路径解析等功能
+### 14) 可扩展性与 API 契约（必须）
+
+- [ ] 插槽/props/事件契约清晰；`v-model` 采用
+      `modelValue`/`update:modelValue`
+- [ ] **必须复用**
+      `composables/shared/`（`constants`、`types`、`utils`、`skeleton-utils`
+      等）；禁止重复实现缓存/存储/路径解析等
 - [ ] 遵循三层架构：`shared → feature composables → components`；组件层不得直接实现共享基础设施
-- [ ] 优先采用 VueUse 能力（如 `useClipboard`、`useStorage`、防抖/节流等），无充分理由不得自造等价功能
+- [ ] 优先采用 VueUse（`useClipboard`/`useStorage`/防抖/节流…），无充分理由不得自造
 
-### 14) 可观测性与度量（必须）
+### 15) 可观测性与度量（必须）
+
 - [ ] 埋点事件语义化；关键性能指标（LCP/INP/CLS）可观测
-- [ ] 错误日志与追踪接入点预留
+- [ ] 错误日志/追踪接入点预留（例如公开 `onError` 回调或
+      `emit('error')`）
 
-### 15) 测试与验证（必须）
-- [ ] a11y 静态扫描（axe）零阻断项；关键交互用例覆盖
-- [ ] 视觉回归（必要组件）；跨设备/浏览器抽样验证
+### 16) 测试与验证（必须）
 
-### 16) 文档与示例（必须）
-- [ ] 属性/事件/插槽表；多状态示例（加载/错误/空/禁用）
-- [ ] i18n 与主题切换示例（含 `useColorMode`）
+- [ ] a11y 静态扫描（axe）零阻断项
+- [ ] 关键交互用例（Vitest + Vue Testing
+      Library），对话框/菜单/键盘路径必测
+- [ ] 视觉回归（Playwright/Chromatic 任选其一，条件：视觉复杂组件）
+- [ ] 跨设备/浏览器抽样验证（移动/桌面、Safari/Chromium/Firefox）
+
+### 17) 文档与示例（必须）
+
+- [ ] 属性/事件/插槽表；**MDC 使用示例**
+      与 i18n/主题切换示例（含 `useColorMode`）
+- [ ] PR 模板里附“最小可复现示例”与 Story/Sandbox 链接（如有）
+
+---
+
+## Nuxt UI 主题与颜色（强制做法）
+
+- 在 `app.config.ts` 定义/覆盖 `ui.primary`、`ui.gray`
+  等；**组件内仅使用**：
+  - Nuxt UI `color/variant/size` 等 props
+  - Tailwind 语义类（如 `text-primary`, `bg-primary`,
+    `border-gray-200`），并由主题映射到实际色值
+  - CSS variables（如 `var(--ui-primary)`），但仍以主题为源
+- **禁止**：`#RRGGBB`/`rgb()`/`hsl()`
+  等直接硬编码；禁止在组件内私自定义调色
+
+---
 
 ## 开发准则关联
-- 代码风格、命名、组合式与类型安全：参见 [frontend-development-guidelines.mdc](mdc:.cursor/rules/frontend-development-guidelines.mdc)
-- 组合式三层架构与去重复用（强制）：参见 [COMPOSABLES.md](mdc:.cursor/rules/COMPOSABLES.md)
+
+- 代码风格、命名、组合式与类型安全：参见
+  [frontend-development-guidelines.mdc](mdc:.cursor/rules/frontend-development-guidelines.mdc)
+- 组合式三层架构与去重复用（强制）：参见
+  [COMPOSABLES.md](mdc:.cursor/rules/COMPOSABLES.md)
+
+---
 
 ## 不通过示例（常见问题）
-- 缺失焦点环/键盘路径不可达/只能鼠标操作
-- 仅以颜色区分状态、缺空/错误/加载状态
-- 文案/aria 文本硬编码；未使用 `useColorMode` 处理主题
-- SSR 首屏闪烁或 hydration 警告；长列表未做性能优化
-- 绕过 `composables/shared/` 在组件或组合式中重复实现已有功能
-- 忽略 VueUse 的成熟能力（如剪贴板/存储/防抖等）而无必要理由自造等价实现
-- 组合式持久状态未用 `useState`，或直接访问 `window`/`document` 导致 SSR 报错/水合警告
+
+- 未使用 Nuxt UI 现成组件；从零实现已存在能力
+- 直接写死颜色/阴影/半透明等；未走主题令牌
+- 缺失焦点环/键盘不可达/仅鼠标可用
+- `aria-*` 文案未国际化；未用 `useColorMode`
+- SSR 首屏闪烁/水合警告；长列表未虚拟化
+- 绕过 `composables/shared/` 重复实现工具
+- 组合式持久状态未用 `useState`；直接访问
+  `window`/`document` 导致 SSR 报错
+
+---
 
 ## 快速检查模板（复制到 PR/自检记录）
 
-组件自检清单：
-- [ ] 响应式布局达标，溢出与折叠策略明确
-- [ ] 主题用 `useColorMode`，无闪烁；颜色令牌化
-- [ ] a11y 通过：焦点、ARIA、键盘路径、`aria-live`
-- [ ] 性能策略：按需加载/占位/（必要时）虚拟化；SSR 一致
-- [ ] 状态与反馈完整；错误可恢复；i18n 无硬编码
-- [ ] 可扩展 API 与文档/示例齐备；测试（axe/交互/视觉）达标
+**组件自检清单：**
 
-Code Review 质检单：
-- [ ] 语义结构合理且对屏幕阅读器友好
-- [ ] 输入设备等价可用；拖放类交互有替代路径
-- [ ] 安全与隐私项合规；外链与权限处理正确
+- [ ] 基于 Nuxt UI 组合实现；无硬编码颜色；主题令牌 OK
+- [ ] `.md/.mdc` 可直接使用；默认 props 友好；Prose 一致
+- [ ] a11y 通过（焦点/ARIA/键盘路径/`aria-live`）
+- [ ] 国际化：文案&ARIA 全 i18n；RTL/本地化就绪
+- [ ] 性能策略：按需加载/占位/（必要时）虚拟化；SSR 一致
+- [ ] 状态与反馈完整；错误可恢复
+- [ ] API 契约清晰；复用 `composables/shared/`；VueUse 优先
+- [ ] 埋点/性能指标 & 错误追踪接入点预留
+- [ ] 测试：axe=0 阻断；关键交互单测；（必要）视觉回归
+- [ ] 文档：属性/事件/插槽表 + MDC 示例 + i18n/主题演示
+
+**Code Review 质检单：**
+
+- [ ] 语义结构 + 屏幕阅读器友好
+- [ ] 输入设备等价；拖放等交互有替代路径
+- [ ] 安全与隐私项合规；外链/权限处理正确
+- [ ] Nuxt UI 用法规范；主题与令牌使用正确
 - [ ] 可观测性埋点/性能指标与错误追踪接入
 
-## 术语与参考
-- 焦点陷阱（Focus Trap）：将焦点限制在对话框等容器内部，Esc 可关闭
-- Roving tabindex：在同一可选集内移动焦点的键盘导航模式
-- ARIA live region：用于宣告异步内容变化的辅助技术区域
-- 参考标准：WCAG 2.1 AA、WAI-ARIA Authoring Practices
+---
 
+## 术语与参考
+
+- 焦点陷阱（Focus
+  Trap）：将焦点限制在对话框等容器内部，Esc 可关闭
+- Roving tabindex：在同一可选集内移动焦点的键盘导航模式
+- ARIA live region：用于宣告异步内容变化
+- 标准：WCAG 2.1 AA、WAI-ARIA Authoring Practices、Nuxt
+  UI 主题规范、Nuxt Content（MDC）约定
+
+---
+
+### 附：MDC 友好最小示例（用于文档内演示）
+
+```mdc
+
+::component-name
+---
+title=":t('docs.payments.quickStart')"
+variant="ghost"
+color="primary"
+icon="i-heroicons-credit-card"
+---
+#slot:default
+:t('docs.payments.desc')
+
+```
+
+该组件需：
+
+1. title/icon 可选、默认值友好；
+2. color/variant 透传到 Nuxt UI 内部；
+3. 所有可见文本走 t()；
+4. 未传 color 时自动使用主题 ui.primary。
+5. 提供 MDC 使用示例。

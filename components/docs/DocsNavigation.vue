@@ -179,7 +179,6 @@ const handleUpdateModelValue = (
 
 <template>
   <UNavigationMenu
-    trailing-icon="i-lucide-chevron-right"
     :items="items"
     :highlight="highlight"
     :color="color"
@@ -187,10 +186,13 @@ const handleUpdateModelValue = (
     variant="link"
     :type="type"
     :ui="{
-      link: 'cursor-pointer',
-      linkTrailingIcon: 'group-data-[state=open]:rotate-90',
-      linkLabel: 'line-clamp-2 text-wrap text-sm',
+      label: 'px-0 py-0',
+      link: 'cursor-pointer px-0.5 py-1',
+      linkLeadingIcon: 'group-data-[state=open]:rotate-90',
+      linkLabel:
+        'line-clamp-2 text-wrap text-sm font-normal text-left ',
       childLinkLabel: 'line-clamp-2 text-wrap',
+      childList: 'ms-1.5 border-none',
     }"
     class="sm:mt-8"
     @update:model-value="handleUpdateModelValue" />

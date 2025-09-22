@@ -67,14 +67,6 @@
     "_path": "/zh-tw/get-started/v1/3.start-building/1.start-developing/.navigation"
   },
   {
-    "lang": "zh-cn",
-    "module": "get-started",
-    "version": "v1",
-    "file": "1.development-environment.md",
-    "relativePath": "get-started/v1/3.start-building/1.start-developing/1.development-environment.md",
-    "_path": "/zh-cn/get-started/v1/3.start-building/1.start-developing/1.development-environment"
-  },
-  {
     "lang": "zh-tw",
     "module": "get-started",
     "version": "v1",
@@ -83,20 +75,20 @@
     "_path": "/zh-tw/get-started/v1/3.start-building/1.start-developing/1.development-environment"
   },
   {
-    "lang": "zh-cn",
-    "module": "get-started",
-    "version": "v1",
-    "file": "2.api-request.md",
-    "relativePath": "get-started/v1/3.start-building/1.start-developing/2.api-request.md",
-    "_path": "/zh-cn/get-started/v1/3.start-building/1.start-developing/2.api-request"
-  },
-  {
     "lang": "zh-tw",
     "module": "get-started",
     "version": "v1",
     "file": "2.api-request.md",
     "relativePath": "get-started/v1/3.start-building/1.start-developing/2.api-request.md",
     "_path": "/zh-tw/get-started/v1/3.start-building/1.start-developing/2.api-request"
+  },
+  {
+    "lang": "zh-tw",
+    "module": "get-started",
+    "version": "v1",
+    "file": "3.accept-a-payment.md",
+    "relativePath": "get-started/v1/3.start-building/1.start-developing/3.accept-a-payment.md",
+    "_path": "/zh-tw/get-started/v1/3.start-building/1.start-developing/3.accept-a-payment"
   },
   {
     "lang": "zh-tw",

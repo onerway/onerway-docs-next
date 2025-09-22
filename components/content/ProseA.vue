@@ -44,6 +44,21 @@ interface ProseAProps {
   glossary?: string;
   /** Glossary tooltip placement */
   side?: "top" | "bottom" | "left" | "right";
+  /** Badge label text */
+  badge?: string;
+  /** Badge color */
+  badgeColor?:
+    | "primary"
+    | "error"
+    | "secondary"
+    | "success"
+    | "info"
+    | "warning"
+    | "neutral";
+  /** Badge variant */
+  badgeVariant?: "solid" | "outline" | "soft" | "subtle";
+  /** Badge size */
+  badgeSize?: "xs" | "sm" | "md";
 }
 
 const props = withDefaults(defineProps<ProseAProps>(), {
@@ -60,6 +75,10 @@ const props = withDefaults(defineProps<ProseAProps>(), {
   glossary: undefined,
   side: "top",
   open: false,
+  badge: undefined,
+  badgeColor: "primary",
+  badgeVariant: "solid",
+  badgeSize: "sm",
 });
 
 // Glossary integration
@@ -100,16 +119,6 @@ const linkClasses = computed(() => [
   // 默认链接颜色
   "text-primary hover:text-default",
 
-  // 下划线样式
-  {
-    "underline decoration-1 underline-offset-2":
-      props.underline,
-    "no-underline":
-      !props.underline &&
-      props.tooltip?.length === 0 &&
-      props.glossary?.length === 0,
-  },
-
   // 禁用状态
   {
     "opacity-50 cursor-not-allowed pointer-events-none":
@@ -126,10 +135,10 @@ const linkClasses = computed(() => [
 
   // 有解释说明时额外视觉提示（虚线下划线 + 轻微颜色 + background 效果）
   {
-    "px-1 underline decoration-1 decoration-dotted underline-offset-4 decoration-neutral-500/40 hover:decoration-neutral-500/100 dark:decoration-neutral-300/40 hover:dark:decoration-neutral-300/100":
+    "px-1 underline decoration-1 decoration-dotted underline-offset-4 decoration-neutral-500/40 dark:decoration-neutral-300/40":
       !props.underline &&
       (!!props.tooltip || !!props.glossary),
-    "hover:bg-primary/20 hover:dark:bg-default/40 hover:rounded":
+    "hover:no-underline hover:bg-primary/10 hover:dark:bg-default/20 hover:rounded":
       !props.underline &&
       (!!props.tooltip || !!props.glossary),
   },
@@ -232,7 +241,6 @@ const handleUpdateOpen = (open: boolean) => {
     <UTooltip
       v-if="hasTooltip"
       :text="tooltipText"
-      :data-text="tooltipText"
       :content="{ side: props.side }"
       :delay-duration="200"
       @update:open="handleUpdateOpen">
@@ -252,6 +260,15 @@ const handleUpdateOpen = (open: boolean) => {
           :name="linkIcon"
           class="ml-1 size-3.5 flex-shrink-0 opacity-60 group-hover:opacity-100 transition-opacity duration-200"
           :aria-hidden="true" />
+
+        <!-- Badge 标签 -->
+        <UBadge
+          v-if="props.badge"
+          :label="props.badge"
+          :color="props.badgeColor"
+          :variant="props.badgeVariant"
+          :size="props.badgeSize"
+          class="ml-1.5 flex-shrink-0 group-hover:bg-primary/80" />
       </span>
     </UTooltip>
 
@@ -267,6 +284,15 @@ const handleUpdateOpen = (open: boolean) => {
         :name="linkIcon"
         class="ml-1 size-3.5 flex-shrink-0 opacity-60 group-hover:opacity-100 transition-opacity duration-200"
         :aria-hidden="true" />
+
+      <!-- Badge 标签 -->
+      <UBadge
+        v-if="props.badge"
+        :label="props.badge"
+        :color="props.badgeColor"
+        :variant="props.badgeVariant"
+        :size="props.badgeSize"
+        class="ml-1.5 flex-shrink-0 group-hover:bg-primary/80" />
     </span>
   </NuxtLink>
 
@@ -278,7 +304,6 @@ const handleUpdateOpen = (open: boolean) => {
     <UTooltip
       v-if="hasTooltip"
       :text="tooltipText"
-      :data-text="tooltipText"
       :delay-duration="200"
       :content="{ side: props.side }"
       @update:open="handleUpdateOpen">
@@ -290,12 +315,30 @@ const handleUpdateOpen = (open: boolean) => {
           :name="tooltipIcon"
           class="ml-1 size-3.5 flex-shrink-0 opacity-60 group-hover:opacity-100 transition-opacity duration-200"
           :aria-hidden="true" />
+
+        <!-- Badge 标签 (无链接情况) -->
+        <UBadge
+          v-if="props.badge"
+          :label="props.badge"
+          :color="props.badgeColor"
+          :variant="props.badgeVariant"
+          :size="props.badgeSize"
+          class="ml-1.5 flex-shrink-0 group-hover:bg-primary/80" />
       </span>
     </UTooltip>
     <span
       v-else
       class="inline-flex items-center">
       <slot />
+
+      <!-- Badge 标签 (无链接无解释情况) -->
+      <UBadge
+        v-if="props.badge"
+        :label="props.badge"
+        :color="props.badgeColor"
+        :variant="props.badgeVariant"
+        :size="props.badgeSize"
+        class="ml-1.5 flex-shrink-0 group-hover:bg-primary/80" />
     </span>
   </span>
 </template>

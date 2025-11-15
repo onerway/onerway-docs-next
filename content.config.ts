@@ -38,7 +38,7 @@ export default defineContentConfig({
     docs_en: defineCollection({
       type: "page",
       source: {
-        include: "en/**/*.md", // 匹配 en 目录及子目录中的文件
+        include: "en/**", // 匹配 en 目录及子目录中的文件
         prefix: "", // 不在 URL 中添加语言前缀 [oai_citation:0‡content.nuxt.com](https://content.nuxt.com/docs/integrations/i18n#:~:text=collections%3A%20,schema%3A%20commonSchema%2C)
       },
       schema: commonSchema,
@@ -47,7 +47,7 @@ export default defineContentConfig({
     docs_zh: defineCollection({
       type: "page",
       source: {
-        include: "zh/**/*.md",
+        include: "zh/**",
         prefix: "", // 同样不带前缀 [oai_citation:1‡content.nuxt.com](https://content.nuxt.com/docs/integrations/i18n#:~:text=collections%3A%20,schema%3A%20commonSchema%2C)
       },
       schema: commonSchema,

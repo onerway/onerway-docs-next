@@ -50,12 +50,33 @@ const { navigationItems } = useDocsNav(rawNav);
             block />
           <!-- 导航菜单 -->
           <UNavigationMenu
-            orientation="vertical"
-            :collapsed="collapsed"
-            :items="navigationItems" />
-          <!-- <UContentNavigation
             highlight
-            :navigation="rawNav" /> -->
+            orientation="vertical"
+            :items="navigationItems"
+            :ui="{
+              label: 'px-1 py-1',
+              linkLabel: 'whitespace-normal text-left', // 一级 label 换行，左对齐
+              childLinkLabel: 'whitespace-normal text-left', // 子级 label 换行，左对齐
+              linkTrailingIcon: 'hidden', // 隐藏默认箭头
+            }">
+            <!-- 自定义前缀：箭头 + 图标 -->
+            <template #item-leading="{ item }">
+              <span class="flex items-center gap-1">
+                <!-- 对有子菜单的项显示箭头 -->
+                <UIcon
+                  v-if="
+                    item.children && item.type !== 'label'
+                  "
+                  name="i-lucide-chevron-right"
+                  class="size-3 transition-transform duration-200 group-data-[state=open]:rotate-90" />
+                <!-- 渲染自定义图标 -->
+                <UIcon
+                  v-if="item.icon"
+                  :name="item.icon"
+                  class="size-5" />
+              </span>
+            </template>
+          </UNavigationMenu>
         </template>
       </UDashboardSidebar>
 

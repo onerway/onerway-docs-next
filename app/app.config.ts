@@ -4,12 +4,24 @@ export default defineAppConfig({
       primary: "indigo",
     },
 
+    container: {
+      base: " lg:p-4",
+    },
     // 组件样式
     navigationMenu: {
+      slots: {
+        item: "cursor-pointer",
+      },
       variants: {
         orientation: {
           vertical: {
             link: "px-1.5 py-1",
+          },
+        },
+        active: {
+          false: {
+            link: "text-default",
+            linkLeadingIcon: "text-default",
           },
         },
       },
@@ -27,5 +39,14 @@ export default defineAppConfig({
   },
   seo: {
     siteName: "Onerway Docs",
+  },
+
+  header: {
+    to: "/",
+    logo: {
+      alt: "",
+      light: "",
+      dark: "",
+    },
   },
 });

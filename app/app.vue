@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { PageCollections } from "@nuxt/content";
+import { NAVIGATION_KEY } from "~/types/injection-keys";
 
 // 从 app.config.ts 读取站点配置
 const { seo } = useAppConfig();
@@ -54,15 +55,16 @@ useSeoMeta({
   twitterCard: "summary_large_image",
 });
 
-// 通过 Vue 的 provide/inject 机制向后代组件提供导航树。
-provide("navigation", navigation);
+// 通过 Vue 的 provide/inject 机制向后代组件提供导航树
+// 使用类型安全的 injection key 避免命名冲突
+provide(NAVIGATION_KEY, navigation);
 </script>
 
 <template>
   <UApp>
     <NuxtLoadingIndicator />
 
-    <!-- <AppHeader /> -->
+    <AppHeader />
 
     <UMain>
       <NuxtLayout>

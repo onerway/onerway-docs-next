@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import type {
-  ContentNavigationItem,
-  PageCollections,
-} from "@nuxt/content";
+import type { PageCollections } from "@nuxt/content";
 import { findPageHeadline } from "@nuxt/content/utils";
+import {
+  NAVIGATION_KEY,
+  CURRENT_PAGE_STATE_KEY,
+  type DocPage,
+} from "~/types/injection-keys";
 
 definePageMeta({
   layout: "docs",
@@ -11,8 +13,9 @@ definePageMeta({
 
 const route = useRoute();
 const { locale } = useI18n();
-const navigation =
-  inject<Ref<ContentNavigationItem[]>>("navigation");
+
+// 使用类型安全的 injection key 获取导航树
+const navigation = inject(NAVIGATION_KEY);
 
 const { data: page } = await useAsyncData(
   route.path,
@@ -24,6 +27,7 @@ const { data: page } = await useAsyncData(
       .first();
   }
 );
+
 if (!page.value) {
   throw createError({
     statusCode: 404,
@@ -55,15 +59,19 @@ useSeoMeta({
   title,
   ogTitle: title,
   description,
-  ogDescription: description,
 });
 
 const headline = computed(() =>
   findPageHeadline(navigation?.value, page.value?.path)
 );
 
-// 将获取到的 page 对象提供给子组件/布局
-provide("currentPage", page);
+// 使用 useState 设置全局状态，让 layout 和其他组件可以访问
+// useState 是 Nuxt 提供的 SSR 安全的全局状态管理
+const currentPage = useState<DocPage | null>(
+  CURRENT_PAGE_STATE_KEY,
+  () => null
+);
+currentPage.value = page.value as unknown as DocPage;
 
 console.log(
   "page route path from [...slug].vue",
@@ -78,6 +86,7 @@ console.log(
 
 <template>
   <UContainer>
+    <UDashboardSidebarCollapse variant="ghost" />
     <UPageHeader
       :title="page?.title ?? ''"
       :description="page?.description ?? ''"

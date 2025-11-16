@@ -37,4 +37,20 @@ export default defineNuxtConfig({
     defaultLocale: "en",
     strategy: "no_prefix",
   },
+
+  components: [
+    {
+      path: "~/components",
+      pathPrefix: false,
+    },
+  ],
+
+  icon: {
+    customCollections: [
+      {
+        prefix: "custom",
+        dir: "./app/assets/icons",
+      },
+    ],
+  },
 });

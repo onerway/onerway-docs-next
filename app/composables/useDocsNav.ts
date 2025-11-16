@@ -69,7 +69,6 @@ export function useDocsNav(
     // 标记为模块时，设置默认展开
     if (item.module) {
       menuItem.defaultOpen = true;
-      menuItem.class = "py-3 border-t border-default";
       // 确保模块有图标（即使为空字符串，由 UI 组件决定默认图标）
       if (!menuItem.icon) {
         menuItem.icon = "";

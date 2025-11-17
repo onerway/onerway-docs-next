@@ -41,7 +41,7 @@ export function useDocsNav(
     hasChildren: boolean
   ): NavigationMenuItem["type"] {
     if (item.page === false) {
-      return "label";
+      return "trigger";
     }
     if (hasChildren) {
       return "trigger";

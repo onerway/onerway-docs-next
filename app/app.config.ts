@@ -11,11 +11,13 @@ export default defineAppConfig({
     navigationMenu: {
       slots: {
         item: "cursor-pointer",
+        linkTrailingIcon:
+          "group-data-[state=open]:rotate-90",
       },
       variants: {
         orientation: {
           vertical: {
-            link: "px-1.5 py-1",
+            link: "p-1.5",
           },
         },
         active: {
@@ -36,6 +38,11 @@ export default defineAppConfig({
         },
       ],
     },
+
+    // icon
+    icons: {
+      chevronRight: "i-lucide-chevron-right",
+    }
   },
   seo: {
     siteName: "Onerway Docs",

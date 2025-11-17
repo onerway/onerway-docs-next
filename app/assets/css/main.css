@@ -1,6 +1,6 @@
 @import "tailwindcss";
 @import "@nuxt/ui";
 :root {
-  --ui-container: 100rem;
+  --ui-container: 100%;
   /* --ui-header-height: --spacing(16); */
 }

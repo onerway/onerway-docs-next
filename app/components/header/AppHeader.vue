@@ -19,7 +19,12 @@ const { navigationItems } = useDocsNav(
 </script>
 
 <template>
-  <UHeader>
+  <UHeader
+    mode="slideover"
+    toggle-side="left"
+    :menu="{
+      side: 'left',
+    }">
     <!-- Left 插槽 - Logo 区域 -->
     <template #left>
       <ULink
@@ -41,6 +46,7 @@ const { navigationItems } = useDocsNav(
       <UNavigationMenu
         :items="navigationItems"
         variant="link"
+        trailing-icon="i-lucide-chevron-right"
         orientation="vertical" />
     </template>
 

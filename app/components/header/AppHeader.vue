@@ -1,21 +1,24 @@
 <script setup lang="ts">
-import type { ContentNavigationItem } from "@nuxt/content";
-import { useDocsNav } from "~/composables/useDocsNav";
+import type { DropdownMenuItem } from "@nuxt/ui";
 import { NAVIGATION_KEY } from "~/types/injection-keys";
 
 const { header } = useAppConfig();
+const { locale, locales, setLocale } = useI18n();
 
 // 使用类型安全的 injection key 获取导航树
 const navigation = inject(NAVIGATION_KEY);
 
-// 转换导航树为水平导航菜单所需的数据结构
-// includeModules: true 获取完整的顶层模块，悬浮时会自动展开子菜单
-const { navigationItems } = useDocsNav(
-  navigation as Ref<ContentNavigationItem[] | undefined>,
-  {
-    includeModules: true,
-  }
-);
+// 语言切换菜单项
+const languageItems = computed<DropdownMenuItem[][]>(() => [
+  locales.value.map((l) => ({
+    label: l.name || l.code.toUpperCase(),
+    icon:
+      locale.value === l.code
+        ? "i-lucide-check"
+        : undefined,
+    onSelect: () => setLocale(l.code),
+  })),
+]);
 </script>
 
 <template>
@@ -43,11 +46,8 @@ const { navigationItems } = useDocsNav(
       class="hidden lg:flex" />
 
     <template #body>
-      <UNavigationMenu
-        :items="navigationItems"
-        variant="link"
-        trailing-icon="i-lucide-chevron-right"
-        orientation="vertical" />
+      <!-- 移动端导航组件 -->
+      <AppHeaderMobileNav :navigation="navigation" />
     </template>
 
     <!-- Right 插槽 - 操作按钮 -->
@@ -55,17 +55,29 @@ const { navigationItems } = useDocsNav(
       <!-- 移动端搜索按钮 -->
       <UContentSearchButton class="lg:hidden" />
 
+      <!-- 语言切换下拉菜单 -->
+      <UDropdownMenu
+        :items="languageItems"
+        :ui="{ content: 'min-w-32' }">
+        <UButton
+          :label="locale.toUpperCase()"
+          icon="i-lucide-languages"
+          color="neutral"
+          variant="ghost"
+          size="sm" />
+      </UDropdownMenu>
+
       <!-- 颜色模式切换按钮 -->
       <UColorModeButton />
     </template>
 
     <!-- Bottom 插槽 - 水平导航菜单 -->
-    <!-- <template #bottom>
-      <USeparator class="hidden lg:flex" />
+    <template #bottom>
+      <!-- <USeparator class="hidden lg:flex" />
       <UNavigationMenu
-        :items="navigationItems"
+        :items="navigation"
         variant="link"
-        class="w-full" />
-    </template> -->
+        class="w-full" /> -->
+    </template>
   </UHeader>
 </template>

@@ -45,11 +45,23 @@ const { navigationItems } = useDocsNav(
             orientation="vertical"
             variant="link"
             trailing-icon="i-lucide-chevron-right"
-            :items="navigationItems">
+            :items="navigationItems"
+            class="">
             <!-- 
               自定义前缀：箭头 + 图标
               使用占位符方案确保所有菜单项完美对齐
             -->
+            <template #item-label="{ item }">
+              <div
+                :class="[
+                  'flex gap-2 cursor-pointer',
+                  item.module
+                    ? 'cursor-text select-text inline-block'
+                    : 'hover:text-primary',
+                ]">
+                <span>{{ item.label }}</span>
+              </div>
+            </template>
           </UNavigationMenu>
         </template>
       </UDashboardSidebar>

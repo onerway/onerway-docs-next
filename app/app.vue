@@ -1,10 +1,19 @@
 <script setup lang="ts">
 import type { PageCollections } from "@nuxt/content";
+import { en, zh_cn } from "@nuxt/ui/locale";
 import { NAVIGATION_KEY } from "~/types/injection-keys";
 
 // 从 app.config.ts 读取站点配置
 const { seo } = useAppConfig();
 const { locale } = useI18n();
+
+// Nuxt UI i18n 集成
+// 映射 @nuxtjs/i18n 的 locale code 到 Nuxt UI 的语言包
+const localeMap = { en, zh_cn };
+const uiLocale = computed(
+  () =>
+    localeMap[locale.value as keyof typeof localeMap] || en
+);
 
 // 获取当前语言环境的导航树。我们将动态集合名称转换为 `keyof PageCollections`，
 // 因为 `queryCollectionNavigation` 需要已知集合名称的联合类型。如果不进行此转换，
@@ -61,7 +70,7 @@ provide(NAVIGATION_KEY, navigation);
 </script>
 
 <template>
-  <UApp>
+  <UApp :locale="uiLocale">
     <NuxtLoadingIndicator />
 
     <AppHeader />

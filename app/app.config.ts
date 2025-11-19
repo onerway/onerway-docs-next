@@ -8,9 +8,21 @@ export default defineAppConfig({
       base: " lg:p-4",
     },
     // 组件样式
+    button: {
+      slots: {
+        base: "cursor-pointer",
+      },
+    },
+    card: {
+      variants: {
+        outline: {
+          root: "divide-none",
+        },
+      },
+    },
     navigationMenu: {
       slots: {
-        item: "cursor-pointer",
+        item: "cursor-pointer text-left",
         linkTrailingIcon:
           "group-data-[state=open]:rotate-90",
       },
@@ -26,14 +38,17 @@ export default defineAppConfig({
             linkLeadingIcon: "text-default",
           },
         },
+        disabled: {
+          true: {},
+        },
       },
       compoundVariants: [
         {
           orientation: "vertical",
           collapsed: false,
           class: {
-            childList: "ms-1.5 border-none",
-            childItem: "ps-1.5 -ms-px",
+            childList: "ms-3 border-none",
+            childItem: "ps-1",
           },
         },
       ],
@@ -42,7 +57,7 @@ export default defineAppConfig({
     // icon
     icons: {
       chevronRight: "i-lucide-chevron-right",
-    }
+    },
   },
   seo: {
     siteName: "Onerway Docs",

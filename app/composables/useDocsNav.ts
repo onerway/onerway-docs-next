@@ -13,6 +13,14 @@ export interface DocsNavOptions {
 }
 
 /**
+ * 扩展的导航菜单项，包含自定义字段
+ */
+interface ExtendedNavigationMenuItem
+  extends NavigationMenuItem {
+  module?: boolean;
+}
+
+/**
  * 文档导航组合式函数
  * 将 Nuxt Content 的导航树转换为 Nuxt UI NavigationMenu 所需的数据结构
  *
@@ -39,9 +47,9 @@ export function useDocsNav(
   function determineMenuItemType(
     item: ContentNavigationItem,
     hasChildren: boolean
-  ): NavigationMenuItem["type"] {
+  ): ExtendedNavigationMenuItem["type"] {
     if (item.page === false) {
-      return "trigger";
+      return "link";
     }
     if (hasChildren) {
       return "trigger";
@@ -54,7 +62,7 @@ export function useDocsNav(
    * 包括：icon、badge、trailingIcon、module 等
    */
   function applyCustomFields(
-    menuItem: NavigationMenuItem,
+    menuItem: ExtendedNavigationMenuItem,
     item: ContentNavigationItem
   ): void {
     if (item.icon) {
@@ -66,13 +74,26 @@ export function useDocsNav(
     if (item.trailingIcon) {
       menuItem.trailingIcon = item.trailingIcon;
     }
-    // 标记为模块时，设置默认展开
+    // 标记为模块时，设置默认展开并保留 module 标识
     if (item.module) {
       menuItem.defaultOpen = true;
+      // 保留 module 属性，用于样式自定义
+      menuItem.module = true;
+      // 禁止模块节点的 click trigger
+      menuItem.disabled = true;
+      menuItem.ui = {
+        item: "py-2 border-t border-default",
+        link: "opacity-100 cursor-default font-semibold text-highlight",
+        linkTrailingIcon: "hidden",
+      };
       // 确保模块有图标（即使为空字符串，由 UI 组件决定默认图标）
       if (!menuItem.icon) {
         menuItem.icon = "";
       }
+    } else {
+      menuItem.ui = {
+        link: "font-normal",
+      };
     }
   }
 
@@ -81,8 +102,8 @@ export function useDocsNav(
    * 当不显示顶层模块时，返回一个占位节点，其子节点会在上层被提升
    */
   function createFlattenPlaceholder(
-    children: NavigationMenuItem[]
-  ): NavigationMenuItem {
+    children: ExtendedNavigationMenuItem[]
+  ): ExtendedNavigationMenuItem {
     return {
       label: "", // 空标签，不会被渲染
       children,
@@ -100,13 +121,15 @@ export function useDocsNav(
   function transformToMenuItem(
     item: ContentNavigationItem,
     level = 1
-  ): NavigationMenuItem | null {
+  ): ExtendedNavigationMenuItem | null {
     // 递归转换子节点
     const children = item.children
       ?.map((child) =>
         transformToMenuItem(child, level + 1)
       )
-      .filter(Boolean) as NavigationMenuItem[] | undefined;
+      .filter(Boolean) as
+      | ExtendedNavigationMenuItem[]
+      | undefined;
 
     const hasChildren = Boolean(
       children && children.length > 0
@@ -122,7 +145,7 @@ export function useDocsNav(
     }
 
     // 构建基础菜单项
-    const menuItem: NavigationMenuItem = {
+    const menuItem: ExtendedNavigationMenuItem = {
       label: item.title,
       to: item.page === false ? undefined : item.path,
       type: determineMenuItemType(item, hasChildren),
@@ -144,7 +167,7 @@ export function useDocsNav(
    * @returns 是否有节点被标记为活动
    */
   function markActiveAndExpandParents(
-    items: NavigationMenuItem[],
+    items: ExtendedNavigationMenuItem[],
     currentPath: string
   ): boolean {
     let hasActiveChild = false;
@@ -160,7 +183,7 @@ export function useDocsNav(
       // 递归检查子节点
       if (item.children) {
         const childIsActive = markActiveAndExpandParents(
-          item.children,
+          item.children as ExtendedNavigationMenuItem[],
           currentPath
         );
         if (childIsActive) {
@@ -171,7 +194,8 @@ export function useDocsNav(
 
       // 标记活动状态
       if (isItemActive) {
-        item.active = true;
+        // 模块节点不标记为活动状态
+        item.active = item.module !== true;
         hasActiveChild = true;
       }
     }
@@ -183,7 +207,7 @@ export function useDocsNav(
    * 判断节点是否为需要展平的占位节点
    */
   function isFlattenPlaceholder(
-    item: NavigationMenuItem
+    item: ExtendedNavigationMenuItem
   ): boolean {
     return (
       !item.to &&
@@ -198,9 +222,9 @@ export function useDocsNav(
    * 自动处理顶层模块展平、活动状态标记和父节点展开
    */
   const navigationItems = computed(
-    (): NavigationMenuItem[] => {
+    (): ExtendedNavigationMenuItem[] => {
       const root = rootNav.value ?? [];
-      const result: NavigationMenuItem[] = [];
+      const result: ExtendedNavigationMenuItem[] = [];
 
       // 转换并展平导航树
       root.forEach((item) => {
@@ -222,5 +246,103 @@ export function useDocsNav(
     }
   );
 
-  return { navigationItems };
+  /**
+   * 模块相关辅助功能
+   * 提供顶层模块列表和当前模块查询
+   */
+  const modules = {
+    /**
+     * 顶层模块列表（始终包含完整模块，不受 includeModules 选项影响）
+     * 用于移动端导航的模块选择器
+     */
+    list: computed((): ExtendedNavigationMenuItem[] => {
+      const root = rootNav.value ?? [];
+
+      // 直接转换顶层模块，不展平
+      const result = root
+        .map((item): ExtendedNavigationMenuItem | null => {
+          // 递归转换子节点
+          const children = item.children
+            ?.map((child) => transformToMenuItem(child, 2))
+            .filter(Boolean) as
+            | ExtendedNavigationMenuItem[]
+            | undefined;
+
+          const hasChildren = Boolean(
+            children && children.length > 0
+          );
+
+          // 构建基础菜单项（始终显示顶层模块）
+          const menuItem: ExtendedNavigationMenuItem = {
+            label: item.title,
+            to: item.page === false ? undefined : item.path,
+            type: determineMenuItemType(item, hasChildren),
+            children: hasChildren ? children : undefined,
+          };
+
+          // 应用自定义字段
+          applyCustomFields(menuItem, item);
+
+          return menuItem;
+        })
+        .filter(Boolean) as ExtendedNavigationMenuItem[];
+
+      // 为每个模块的子菜单标记活动状态
+      result.forEach((module) => {
+        if (module.children) {
+          markActiveAndExpandParents(
+            module.children,
+            route.path
+          );
+        }
+      });
+
+      return result;
+    }),
+
+    /**
+     * 根据路径获取当前所属模块
+     *
+     * @param path - 路由路径（例如 "/get-started/installation"）
+     * @returns 匹配的模块项，如果未找到则返回 null
+     *
+     * @example
+     * ```ts
+     * const currentModule = modules.getCurrent(route.path)
+     * // 对于路径 "/get-started/quick-start"，返回 "Get Started" 模块
+     * ```
+     */
+    getCurrent(
+      path: string
+    ): ExtendedNavigationMenuItem | null {
+      // 提取路径第一段作为模块标识
+      // 例如："/get-started/installation" -> "get-started"
+      const segments = path.split("/").filter(Boolean);
+      if (!segments.length) return null;
+
+      const moduleSlug = segments[0];
+
+      // 在顶层模块中查找匹配项
+      return (
+        modules.list.value.find((module) => {
+          if (!module.to) return false;
+          // 模块路径通常是 "/get-started" 或 "/get-started/"
+          // 移除开头的 / 和结尾的 / 进行比较
+          const modulePath = module.to.replace(
+            /^\/|\/$/g,
+            ""
+          );
+          return (
+            modulePath.toLowerCase() ===
+            moduleSlug.toLowerCase()
+          );
+        }) || null
+      );
+    },
+  };
+
+  return {
+    navigationItems,
+    modules,
+  };
 }

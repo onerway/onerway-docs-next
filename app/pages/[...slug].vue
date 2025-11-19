@@ -25,7 +25,8 @@ const { data: page } = await useAsyncData(
     return queryCollection(collection)
       .path(route.path)
       .first();
-  }
+  },
+  { watch: [locale] }
 );
 
 if (!page.value) {
@@ -48,7 +49,8 @@ const { data: surround } = await useAsyncData(
         fields: ["description"],
       }
     );
-  }
+  },
+  { watch: [locale] }
 );
 
 const title = page.value.seo?.title || page.value.title;
@@ -95,7 +97,11 @@ console.log(
     <ContentRenderer
       v-if="page"
       :value="page" />
-    <USeparator v-if="surround?.length" />
+
+    <USeparator
+      v-if="surround?.length"
+      class="my-4"
+      icon="i-custom-onerway" />
 
     <UContentSurround
       v-if="surround?.length"

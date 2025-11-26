@@ -6,7 +6,7 @@ import type { NavigationMenuItem } from "@nuxt/ui";
 
 /**
  * 文档导航配置项
- * @property includeModules 是否在菜单中显示顶层模块目录（level 1）
+ * @property includeModules 是否在 navigationItems 中包含顶层模块目录
  */
 export interface DocsNavOptions {
   includeModules?: boolean;
@@ -18,6 +18,16 @@ export interface DocsNavOptions {
 interface ExtendedNavigationMenuItem
   extends NavigationMenuItem {
   module?: boolean;
+}
+
+/**
+ * 归一化的模块结构
+ * root：顶层模块菜单项（包含子菜单）
+ * menu：模块的子菜单（不包含模块节点）
+ */
+interface NormalizedModule {
+  root: ExtendedNavigationMenuItem;
+  menu: ExtendedNavigationMenuItem[];
 }
 
 /**
@@ -74,40 +84,33 @@ export function useDocsNav(
     if (item.trailingIcon) {
       menuItem.trailingIcon = item.trailingIcon;
     }
-    // 标记为模块时，设置默认展开并保留 module 标识
     if (item.module) {
-      menuItem.defaultOpen = true;
-      // 保留 module 属性，用于样式自定义
       menuItem.module = true;
-      // 禁止模块节点的 click trigger
-      menuItem.disabled = true;
-      menuItem.ui = {
-        item: "py-2 border-t border-default",
-        link: "opacity-100 cursor-default font-semibold text-highlight",
-        linkTrailingIcon: "hidden",
-      };
-      // 确保模块有图标（即使为空字符串，由 UI 组件决定默认图标）
       if (!menuItem.icon) {
         menuItem.icon = "";
       }
-    } else {
-      menuItem.ui = {
-        link: "font-normal",
-      };
     }
   }
 
   /**
-   * 创建用于展平的占位节点
-   * 当不显示顶层模块时，返回一个占位节点，其子节点会在上层被提升
+   * 模块节点的样式与交互（避免点击触发，默认展开）
    */
-  function createFlattenPlaceholder(
-    children: ExtendedNavigationMenuItem[]
-  ): ExtendedNavigationMenuItem {
-    return {
-      label: "", // 空标签，不会被渲染
-      children,
-      type: "label",
+  function applyModuleStyling(
+    menuItem: ExtendedNavigationMenuItem,
+    item: ContentNavigationItem
+  ): void {
+    if (!item.module) {
+      menuItem.ui = {
+        link: "font-normal cursor-pointer hover:text-primary",
+      };
+      return;
+    }
+    menuItem.defaultOpen = true;
+    menuItem.disabled = true;
+    menuItem.ui = {
+      item: "py-2 border-t border-default",
+      link: "opacity-100 cursor-default font-semibold text-highlight",
+      linkTrailingIcon: "hidden",
     };
   }
 
@@ -116,13 +119,12 @@ export function useDocsNav(
    *
    * @param item - Content 导航项
    * @param level - 当前层级（1 为顶层）
-   * @returns 转换后的菜单项，如果应该跳过则返回 null
+   * @returns 转换后的菜单项
    */
   function transformToMenuItem(
     item: ContentNavigationItem,
     level = 1
-  ): ExtendedNavigationMenuItem | null {
-    // 递归转换子节点
+  ): ExtendedNavigationMenuItem {
     const children = item.children
       ?.map((child) =>
         transformToMenuItem(child, level + 1)
@@ -135,16 +137,6 @@ export function useDocsNav(
       children && children.length > 0
     );
 
-    // 判断是否为需要展平的顶层节点
-    const shouldFlattenTopLevel =
-      level === 1 && !includeModules;
-
-    // 如果不显示顶层模块，返回占位节点用于后续展平
-    if (shouldFlattenTopLevel) {
-      return createFlattenPlaceholder(children ?? []);
-    }
-
-    // 构建基础菜单项
     const menuItem: ExtendedNavigationMenuItem = {
       label: item.title,
       to: item.page === false ? undefined : item.path,
@@ -152,8 +144,8 @@ export function useDocsNav(
       children: hasChildren ? children : undefined,
     };
 
-    // 应用自定义字段
     applyCustomFields(menuItem, item);
+    applyModuleStyling(menuItem, item);
 
     return menuItem;
   }
@@ -204,145 +196,92 @@ export function useDocsNav(
   }
 
   /**
-   * 判断节点是否为需要展平的占位节点
+   * 归一化的模块数据：root 为顶层模块，menu 为其子菜单
    */
-  function isFlattenPlaceholder(
-    item: ExtendedNavigationMenuItem
-  ): boolean {
-    return (
-      !item.to &&
-      item.type === "label" &&
-      item.label === "" &&
-      !!item.children
-    );
-  }
-
-  /**
-   * 响应式的导航菜单项
-   * 自动处理顶层模块展平、活动状态标记和父节点展开
-   */
-  const navigationItems = computed(
-    (): ExtendedNavigationMenuItem[] => {
+  const normalizedModules = computed<NormalizedModule[]>(
+    () => {
       const root = rootNav.value ?? [];
-      const result: ExtendedNavigationMenuItem[] = [];
 
-      // 转换并展平导航树
-      root.forEach((item) => {
-        const transformed = transformToMenuItem(item, 1);
-        if (!transformed) return;
+      return root.map((item) => {
+        const rootItem = transformToMenuItem(item, 1);
 
-        // 如果是占位节点，提升其子节点
-        if (isFlattenPlaceholder(transformed)) {
-          result.push(...(transformed.children ?? []));
-        } else {
-          result.push(transformed);
-        }
+        // 标记活跃态并展开父节点
+        markActiveAndExpandParents([rootItem], route.path);
+
+        const menu =
+          (rootItem.children as ExtendedNavigationMenuItem[]) ??
+          [];
+
+        return {
+          root: rootItem,
+          menu,
+        };
       });
-
-      // 标记活动项并展开其父节点路径
-      markActiveAndExpandParents(result, route.path);
-
-      return result;
     }
   );
 
   /**
-   * 模块相关辅助功能
-   * 提供顶层模块列表和当前模块查询
+   * 顶层模块列表（供 Header 或模块选择器）
    */
-  const modules = {
-    /**
-     * 顶层模块列表（始终包含完整模块，不受 includeModules 选项影响）
-     * 用于移动端导航的模块选择器
-     */
-    list: computed((): ExtendedNavigationMenuItem[] => {
-      const root = rootNav.value ?? [];
+  const topLevelModules = computed(
+    (): ExtendedNavigationMenuItem[] =>
+      normalizedModules.value.map((mod) => mod.root)
+  );
 
-      // 直接转换顶层模块，不展平
-      const result = root
-        .map((item): ExtendedNavigationMenuItem | null => {
-          // 递归转换子节点
-          const children = item.children
-            ?.map((child) => transformToMenuItem(child, 2))
-            .filter(Boolean) as
-            | ExtendedNavigationMenuItem[]
-            | undefined;
-
-          const hasChildren = Boolean(
-            children && children.length > 0
-          );
-
-          // 构建基础菜单项（始终显示顶层模块）
-          const menuItem: ExtendedNavigationMenuItem = {
-            label: item.title,
-            to: item.page === false ? undefined : item.path,
-            type: determineMenuItemType(item, hasChildren),
-            children: hasChildren ? children : undefined,
-          };
-
-          // 应用自定义字段
-          applyCustomFields(menuItem, item);
-
-          return menuItem;
-        })
-        .filter(Boolean) as ExtendedNavigationMenuItem[];
-
-      // 为每个模块的子菜单标记活动状态
-      result.forEach((module) => {
-        if (module.children) {
-          markActiveAndExpandParents(
-            module.children,
-            route.path
-          );
-        }
-      });
-
-      return result;
-    }),
-
-    /**
-     * 根据路径获取当前所属模块
-     *
-     * @param path - 路由路径（例如 "/get-started/installation"）
-     * @returns 匹配的模块项，如果未找到则返回 null
-     *
-     * @example
-     * ```ts
-     * const currentModule = modules.getCurrent(route.path)
-     * // 对于路径 "/get-started/quick-start"，返回 "Get Started" 模块
-     * ```
-     */
-    getCurrent(
-      path: string
-    ): ExtendedNavigationMenuItem | null {
-      // 提取路径第一段作为模块标识
-      // 例如："/get-started/installation" -> "get-started"
-      const segments = path.split("/").filter(Boolean);
-      if (!segments.length) return null;
-
-      const moduleSlug = segments[0];
-
-      // 在顶层模块中查找匹配项
-      return (
-        modules.list.value.find((module) => {
-          if (!module.to) return false;
-          // 模块路径通常是 "/get-started" 或 "/get-started/"
-          // 移除开头的 / 和结尾的 / 进行比较
-          const modulePath = module.to.replace(
-            /^\/|\/$/g,
-            ""
-          );
-          return (
-            modulePath.toLowerCase() ===
-            moduleSlug.toLowerCase()
-          );
-        }) || null
+  /**
+   * 根据 includeModules 输出：顶层+子菜单 或仅子菜单
+   */
+  const navigationItems = computed(
+    (): ExtendedNavigationMenuItem[] => {
+      if (includeModules) {
+        return topLevelModules.value;
+      }
+      return normalizedModules.value.flatMap(
+        (mod) => mod.menu
       );
-    },
-  };
+    }
+  );
+
+  /**
+   * 根据路径获取当前模块
+   */
+  function getCurrentModule(
+    path: string
+  ): NormalizedModule | null {
+    const segments = path.split("/").filter(Boolean);
+    if (!segments.length) return null;
+
+    const moduleSlug = segments[0];
+    if (!moduleSlug) return null;
+
+    return (
+      normalizedModules.value.find((mod) => {
+        const to = mod.root.to;
+        if (!to || typeof to !== "string") return false;
+        const modulePath = to.replace(/^\/|\/$/g, "");
+        return (
+          modulePath.toLowerCase() ===
+          moduleSlug.toLowerCase()
+        );
+      }) ?? null
+    );
+  }
+
+  const currentModule = computed(
+    (): NormalizedModule | null =>
+      getCurrentModule(route.path)
+  );
+
+  const currentModuleMenu = computed(
+    (): ExtendedNavigationMenuItem[] =>
+      currentModule.value?.menu ?? []
+  );
 
   return {
     navigationItems,
-    modules,
+    topLevelModules,
+    currentModule,
+    currentModuleMenu,
+    getCurrentModule,
   };
 }

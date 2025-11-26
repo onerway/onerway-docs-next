@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import type { DropdownMenuItem } from "@nuxt/ui";
+import type { ContentNavigationItem } from "@nuxt/content";
+import type { Ref } from "vue";
 import { NAVIGATION_KEY } from "~/types/injection-keys";
 
 const { header } = useAppConfig();
@@ -7,6 +9,22 @@ const { locale, locales, setLocale } = useI18n();
 
 // 使用类型安全的 injection key 获取导航树
 const navigation = inject(NAVIGATION_KEY);
+
+// 为移动端导航提供类型安全的 ref
+const navigationForMobile = computed(() =>
+  navigation
+    ? (navigation as Ref<
+        ContentNavigationItem[] | undefined
+      >)
+    : undefined
+);
+
+const { topLevelModules } = useDocsNav(
+  navigation as Ref<ContentNavigationItem[] | undefined>,
+  {
+    includeModules: true,
+  }
+);
 
 // 语言切换菜单项
 const languageItems = computed<DropdownMenuItem[][]>(() => [
@@ -25,6 +43,10 @@ const languageItems = computed<DropdownMenuItem[][]>(() => [
   <UHeader
     mode="slideover"
     toggle-side="left"
+    :toggle="{
+      color: 'neutral',
+      variant: 'ghost',
+    }"
     :menu="{
       side: 'left',
     }">
@@ -47,7 +69,9 @@ const languageItems = computed<DropdownMenuItem[][]>(() => [
 
     <template #body>
       <!-- 移动端导航组件 -->
-      <AppHeaderMobileNav :navigation="navigation" />
+      <AppHeaderMobileNav
+        v-if="navigationForMobile"
+        :navigation="navigationForMobile" />
     </template>
 
     <!-- Right 插槽 - 操作按钮 -->
@@ -73,11 +97,15 @@ const languageItems = computed<DropdownMenuItem[][]>(() => [
 
     <!-- Bottom 插槽 - 水平导航菜单 -->
     <template #bottom>
-      <!-- <USeparator class="hidden lg:flex" />
-      <UNavigationMenu
-        :items="navigation"
-        variant="link"
-        class="w-full" /> -->
+      <div class="hidden lg:flex">
+        <UNavigationMenu
+          :items="topLevelModules"
+          orientation="horizontal"
+          content-orientation="vertical"
+          :arrow="false"
+          variant="link"
+          class="w-full" />
+      </div>
     </template>
   </UHeader>
 </template>

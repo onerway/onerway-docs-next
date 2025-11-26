@@ -17,7 +17,7 @@ const page = useState<DocPage | null>(
 );
 
 // 转换导航树为 NavigationMenu 所需的数据结构
-const { navigationItems } = useDocsNav(
+const { currentModuleMenu } = useDocsNav(
   navigationTree as Ref<ContentNavigationItem[] | undefined>
 );
 </script>
@@ -45,7 +45,7 @@ const { navigationItems } = useDocsNav(
             orientation="vertical"
             variant="link"
             trailing-icon="i-lucide-chevron-right"
-            :items="navigationItems"
+            :items="currentModuleMenu"
             class="">
             <!-- 
               自定义前缀：箭头 + 图标
@@ -57,7 +57,7 @@ const { navigationItems } = useDocsNav(
                   'flex gap-2 cursor-pointer',
                   item.module
                     ? 'cursor-text select-text inline-block'
-                    : 'hover:text-primary',
+                    : '',
                 ]">
                 <span>{{ item.label }}</span>
               </div>
@@ -67,7 +67,8 @@ const { navigationItems } = useDocsNav(
       </UDashboardSidebar>
 
       <!-- 右侧内容区 -->
-      <UDashboardPanel class="pt-(--ui-header-height)">
+      <UDashboardPanel
+        class="pt-[calc(var(--ui-header-height)+8px)]">
         <template #body>
           <!-- 渲染文档内容 -->
           <slot />

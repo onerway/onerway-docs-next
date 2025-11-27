@@ -53,4 +53,20 @@ export default defineNuxtConfig({
       },
     ],
   },
+
+  features: {
+    devLogs: true,
+  },
+
+  // content 配置
+  content: {
+    build: {
+      markdown: {
+        toc: {
+          depth: 4, // include h4 headings
+          searchDepth: 4,
+        },
+      },
+    },
+  },
 });

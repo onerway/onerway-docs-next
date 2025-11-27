@@ -42,7 +42,7 @@ const languageItems = computed<DropdownMenuItem[][]>(() => [
 <template>
   <UHeader
     mode="slideover"
-    toggle-side="left"
+    toggle-side="right"
     :toggle="{
       color: 'neutral',
       variant: 'ghost',
@@ -97,12 +97,12 @@ const languageItems = computed<DropdownMenuItem[][]>(() => [
 
     <!-- Bottom 插槽 - 水平导航菜单 -->
     <template #bottom>
-      <div class="hidden lg:flex">
+      <div
+        class="hidden lg:flex w-full bg-default/75 backdrop-blur h-header-nav items-center border-b border-default px-2">
         <UNavigationMenu
           :items="topLevelModules"
           orientation="horizontal"
           content-orientation="vertical"
-          :arrow="false"
           variant="link"
           class="w-full" />
       </div>

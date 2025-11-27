@@ -75,7 +75,7 @@ provide(NAVIGATION_KEY, navigation);
 
     <AppHeader />
 
-    <UMain>
+    <UMain class="pt-layout">
       <NuxtLayout>
         <NuxtPage />
       </NuxtLayout>

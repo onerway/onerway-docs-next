@@ -1,11 +1,8 @@
 <script setup lang="ts">
 import type { PageCollections } from "@nuxt/content";
-import { findPageHeadline } from "@nuxt/content/utils";
-import {
-  NAVIGATION_KEY,
-  CURRENT_PAGE_STATE_KEY,
-  type DocPage,
-} from "~/types/injection-keys";
+import { findPageBreadcrumb } from "@nuxt/content/utils";
+import { NAVIGATION_KEY } from "~/types/injection-keys";
+import { mapContentNavigation } from "@nuxt/ui/utils/content";
 
 definePageMeta({
   layout: "docs",
@@ -28,6 +25,8 @@ const { data: page } = await useAsyncData(
   },
   { watch: [locale] }
 );
+
+console.log("[slug] page", page.value);
 
 if (!page.value) {
   throw createError({
@@ -63,48 +62,57 @@ useSeoMeta({
   description,
 });
 
-const headline = computed(() =>
-  findPageHeadline(navigation?.value, page.value?.path)
-);
-
 // 使用 useState 设置全局状态，让 layout 和其他组件可以访问
 // useState 是 Nuxt 提供的 SSR 安全的全局状态管理
-const currentPage = useState<DocPage | null>(
-  CURRENT_PAGE_STATE_KEY,
-  () => null
-);
-currentPage.value = page.value as unknown as DocPage;
-
-console.log(
-  "page route path from [...slug].vue",
-  route.path
-);
-console.log("page", page.value);
-console.log(
-  "page navigation from [...slug].vue",
-  navigation?.value
+const breadcrumb = computed(() =>
+  mapContentNavigation(
+    findPageBreadcrumb(
+      navigation?.value,
+      page.value?.path,
+      { indexAsChild: true }
+    )
+  ).map(({ icon, ...link }) => link)
 );
 </script>
 
 <template>
   <UContainer>
-    <UDashboardSidebarCollapse variant="ghost" />
-    <UPageHeader
-      :title="page?.title ?? ''"
-      :description="page?.description ?? ''"
-      :headline="headline" />
+    <UBreadcrumb
+      v-if="breadcrumb.length"
+      :items="breadcrumb" />
 
-    <ContentRenderer
-      v-if="page"
-      :value="page" />
+    <!-- 两栏布局：主内容 + TOC -->
+    <div class="lg:grid lg:grid-cols-[1fr_250px] lg:gap-8">
+      <!-- 左侧：主内容区 -->
+      <div class="min-w-0">
+        <UPageHeader
+          :title="page?.title ?? ''"
+          :description="page?.description ?? ''"
+          class="py-2" />
+        <ContentRenderer
+          v-if="page"
+          :value="page" />
 
-    <USeparator
-      v-if="surround?.length"
-      class="my-4"
-      icon="i-custom-onerway" />
+        <USeparator
+          v-if="surround?.length"
+          class="my-4"
+          icon="i-custom-onerway" />
 
-    <UContentSurround
-      v-if="surround?.length"
-      :surround="surround" />
+        <UContentSurround
+          v-if="surround?.length"
+          :surround="surround" />
+      </div>
+
+      <!-- 右侧：TOC -->
+      <div
+        v-if="page?.body?.toc?.links?.length"
+        class="hidden lg:block">
+        <UContentToc
+          :links="page.body.toc.links"
+          title="目录"
+          color="primary"
+          highlight />
+      </div>
+    </div>
   </UContainer>
 </template>

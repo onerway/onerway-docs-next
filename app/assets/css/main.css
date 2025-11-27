@@ -1,6 +1,44 @@
 @import "tailwindcss";
 @import "@nuxt/ui";
-:root {
-  --ui-container: 100%;
-  /* --ui-header-height: --spacing(16); */
+
+@layer base {
+  :root {
+    --ui-container: 100%;
+    /* --ui-header-height: --spacing(16); */
+
+    /* Header 相关高度定义 */
+    --ui-header-height: 4rem; /* Header 主体高度 */
+    --ui-header-nav-height: 0rem; /* 移动端：bottom 导航隐藏 */
+    --ui-header-total-height: 4rem; /* 移动端总高度 */
+
+    /* Layout 内容区偏移 */
+    --ui-content-offset: 0.5rem; /* 额外间距 */
+    --ui-layout-padding-top: calc(
+      var(--ui-header-total-height) +
+        var(--ui-content-offset)
+    );
+  }
+
+  /* 桌面端：bottom 导航显示 */
+  @media (min-width: 1024px) {
+    :root {
+      --ui-header-nav-height: 2.5rem; /* 桌面端：bottom 导航高度 */
+      --ui-header-total-height: calc(
+        var(--ui-header-height) +
+          var(--ui-header-nav-height)
+      );
+    }
+  }
+}
+
+@layer utilities {
+  /* 语义化的 padding 工具类 */
+  .pt-layout {
+    padding-top: var(--ui-layout-padding-top);
+  }
+
+  /* Header bottom 导航的高度类 */
+  .h-header-nav {
+    height: var(--ui-header-nav-height);
+  }
 }

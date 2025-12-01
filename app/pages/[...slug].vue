@@ -104,15 +104,19 @@ const breadcrumb = computed(() =>
       </div>
 
       <!-- 右侧：TOC -->
-      <div
-        v-if="page?.body?.toc?.links?.length"
-        class="hidden lg:block">
-        <UContentToc
-          :links="page.body.toc.links"
-          title="目录"
-          color="primary"
-          highlight />
-      </div>
+      <ClientOnly>
+        <div
+          v-if="page?.body?.toc?.links?.length"
+          class="hidden lg:block">
+          <ContentToc
+            :links="page.body.toc.links"
+            :title="
+              locale === 'en' ? 'Table of Contents' : '目录'
+            "
+            heading-selector="h2, h3, h4, h5"
+            highlight />
+        </div>
+      </ClientOnly>
     </div>
   </UContainer>
 </template>

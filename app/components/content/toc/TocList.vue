@@ -23,14 +23,22 @@ const emit = defineEmits<{
 }>();
 
 /**
+ * 层级对应的缩进类映射
+ */
+const INDENT_CLASSES = [
+  "",
+  "ml-3",
+  "ml-6",
+  "ml-9",
+] as const;
+
+/**
  * 根据层级返回对应的缩进类
  */
-function getIndentClass(level: number): string {
-  if (level === 0) return "";
-  if (level === 1) return "ml-3";
-  if (level === 2) return "ml-6";
-  return "ml-9";
-}
+const getIndentClass = (level: number): string | undefined =>
+  INDENT_CLASSES[
+    Math.min(level, INDENT_CLASSES.length - 1)
+  ];
 
 /**
  * 检查链接是否激活

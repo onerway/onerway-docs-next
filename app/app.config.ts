@@ -20,6 +20,12 @@ export default defineAppConfig({
         },
       },
     },
+
+    // icon
+    icons: {
+      chevronRight: "i-lucide-chevron-right",
+    },
+
     navigationMenu: {
       slots: {
         item: "cursor-pointer text-left",
@@ -54,9 +60,19 @@ export default defineAppConfig({
       ],
     },
 
-    // icon
-    icons: {
-      chevronRight: "i-lucide-chevron-right",
+    pageCTA: {
+      slots: {
+        container:
+          "px-0 py-0 lg:py-0 lg:px-0 flex flex-col-reverse",
+        footer: "mt-0",
+      },
+    },
+
+    // prose 组件样式
+    prose: {
+      p: {
+        base: "my-3 leading-7 text-pretty",
+      },
     },
   },
   seo: {

@@ -17,8 +17,12 @@ const page = useState<DocPage | null>(
 );
 
 // 转换导航树为 NavigationMenu 所需的数据结构
-const { currentModuleMenu } = useDocsNav(
-  navigation as Ref<ContentNavigationItem[] | undefined>
+const { currentModuleMenu } = useDocsNav(navigation as Ref<ContentNavigationItem[]>);
+
+console.log("[docs] navigation", navigation);
+console.log(
+  "[docs] currentModuleMenu",
+  currentModuleMenu.value
 );
 </script>
 

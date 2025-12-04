@@ -9,7 +9,7 @@ definePageMeta({
 });
 
 const route = useRoute();
-const { locale } = useI18n();
+const { locale, t } = useI18n();
 
 // 使用类型安全的 injection key 获取导航树
 const navigation = inject(NAVIGATION_KEY);
@@ -103,19 +103,14 @@ const breadcrumb = computed(() =>
           :surround="surround" />
       </div>
 
-      <!-- 右侧：TOC -->
+      <!-- TOC：移动端浮动按钮，桌面端右侧显示 -->
       <ClientOnly>
-        <div
+        <ContentToc
           v-if="page?.body?.toc?.links?.length"
-          class="hidden lg:block">
-          <ContentToc
-            :links="page.body.toc.links"
-            :title="
-              locale === 'en' ? 'Table of Contents' : '目录'
-            "
-            heading-selector="h2, h3, h4, h5"
-            highlight />
-        </div>
+          :links="page.body.toc.links"
+          :title="t('toc.title')"
+          heading-selector="h2, h3, h4, h5"
+          highlight />
       </ClientOnly>
     </div>
   </UContainer>

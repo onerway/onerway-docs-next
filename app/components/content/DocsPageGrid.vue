@@ -1,0 +1,50 @@
+<script setup lang="ts">
+type ResponsiveCols = 1 | 2 | 3;
+
+interface DocsPageGridProps {
+  cols?: {
+    base?: ResponsiveCols;
+    sm?: ResponsiveCols;
+    md?: ResponsiveCols;
+    lg?: ResponsiveCols;
+    xl?: ResponsiveCols;
+  };
+  gap?: string;
+  uiOverride?: Record<string, string>;
+  class?: string;
+  as?: "div" | "ul" | "ol";
+  ariaLabel?: string;
+}
+
+const props = withDefaults(
+  defineProps<DocsPageGridProps>(),
+  {
+    cols: () => ({ base: 1, md: 2, lg: 2, xl: 3 }),
+    gap: "gap-6",
+    as: "div",
+  }
+);
+
+const gridClass = computed<string>(() => {
+  const classes = ["grid", "items-stretch", props.gap];
+  const { base, sm, md, lg, xl } = props.cols;
+  if (base) classes.push(`grid-cols-${base}`);
+  if (sm) classes.push(`sm:grid-cols-${sm}`);
+  if (md) classes.push(`md:grid-cols-${md}`);
+  if (lg) classes.push(`lg:grid-cols-${lg}`);
+  if (xl) classes.push(`xl:grid-cols-${xl}`);
+  return classes.join(" ");
+});
+</script>
+
+<template>
+  <component
+    :is="props.as"
+    :class="[gridClass, props.class]"
+    :role="props.as !== 'div' ? 'list' : undefined"
+    :aria-label="
+      props.as !== 'div' ? props.ariaLabel : undefined
+    ">
+    <slot />
+  </component>
+</template>

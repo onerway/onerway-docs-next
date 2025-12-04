@@ -7,10 +7,11 @@ import type { TocLink } from "@nuxt/content";
  * ContentToc 组件
  *
  * 基于 Nuxt UI ContentToc 组件的自定义实现，支持灵活配置 IntersectionObserver 监听的标题级别。
+ * 移动端使用右上角浮动按钮 + 侧边抽屉，桌面端始终展开。
  *
  * @see https://ui.nuxt.com/docs/components/content-toc
  */
-import { computed, watch } from "vue";
+import { computed, watch, ref } from "vue";
 import { useScrollSpy } from "~/composables/useScrollSpy";
 
 export interface ContentTocLink extends TocLink {
@@ -52,6 +53,11 @@ export interface ContentTocProps {
    * @defaultValue 'h2, h3, h4, h5'
    */
   headingSelector?: string;
+  /**
+   * 移动端默认是否展开
+   * @defaultValue false
+   */
+  defaultOpen?: boolean;
 }
 
 const props = withDefaults(defineProps<ContentTocProps>(), {
@@ -61,7 +67,11 @@ const props = withDefaults(defineProps<ContentTocProps>(), {
   highlight: false,
   highlightColor: "primary",
   headingSelector: "h2, h3, h4, h5",
+  defaultOpen: false,
 });
+
+// 移动端折叠状态
+const isOpen = ref(props.defaultOpen);
 
 const emit = defineEmits<{
   move: [id: string];
@@ -70,6 +80,17 @@ const emit = defineEmits<{
 const router = useRouter();
 const nuxtApp = useNuxtApp();
 const { activeHeadings, updateHeadings } = useScrollSpy();
+
+/**
+ * 刷新标题元素列表
+ * 根据 headingSelector 从 DOM 中获取标题元素并更新 ScrollSpy
+ */
+const refreshHeadings = () => {
+  const headings = Array.from(
+    document.querySelectorAll(props.headingSelector)
+  );
+  updateHeadings(headings);
+};
 
 /**
  * 将嵌套的目录链接扁平化为一维数组
@@ -92,6 +113,14 @@ function scrollToHeading(id: string) {
   const encodedId = encodeURIComponent(id);
   router.push(`#${encodedId}`);
   emit("move", id);
+}
+
+/**
+ * 移动端点击目录链接：关闭抽屉并滚动
+ */
+function handleMobileScrollTo(id: string) {
+  isOpen.value = false;
+  scrollToHeading(id);
 }
 
 /**
@@ -120,50 +149,79 @@ const indicatorStyle = computed(() => {
 
 /**
  * 页面加载完成后使用 headingSelector 获取标题元素
+ * 只在客户端执行，避免 SSR hydration 问题
  */
-nuxtApp.hooks.hook("page:loading:end", () => {
-  const headings = Array.from(
-    document.querySelectorAll(props.headingSelector)
+if (import.meta.client) {
+  nuxtApp.hooks.hook("page:loading:end", refreshHeadings);
+  nuxtApp.hooks.hook(
+    "page:transition:finish",
+    refreshHeadings
   );
-  updateHeadings(headings);
-});
 
-nuxtApp.hooks.hook("page:transition:finish", () => {
-  const headings = Array.from(
-    document.querySelectorAll(props.headingSelector)
-  );
-  updateHeadings(headings);
-});
-
-/**
- * 监听 headingSelector 变化，重新获取标题元素
- */
-watch(
-  () => props.headingSelector,
-  () => {
-    const headings = Array.from(
-      document.querySelectorAll(props.headingSelector)
-    );
-    updateHeadings(headings);
-  }
-);
+  // 监听 headingSelector 变化，重新获取标题元素
+  watch(() => props.headingSelector, refreshHeadings);
+}
 </script>
 
 <template>
   <component
     :is="as"
-    class="sticky top-16 max-h-[calc(100vh-4rem)] overflow-y-auto">
-    <div class="border-l border-default pl-4">
+    v-if="links?.length">
+    <!-- 移动端：浮动按钮 + 侧边抽屉 -->
+    <div class="lg:hidden">
+      <!-- 浮动按钮 -->
+      <UButton
+        color="neutral"
+        variant="outline"
+        icon="i-lucide-book"
+        class="fixed right-6 top-20 z-50 shadow-lg"
+        :aria-label="title"
+        @click="isOpen = true" />
+
+      <!-- 侧边抽屉 -->
+      <USlideover
+        v-model:open="isOpen"
+        :title="title"
+        side="right"
+        class="w-80">
+        <template #body>
+          <div
+            class="relative border-l border-default pl-4">
+            <!-- 活动指示器 -->
+            <div
+              v-if="highlight"
+              class="absolute left-0 w-0.5 bg-primary rounded-full transition-all duration-200"
+              :style="{
+                height:
+                  indicatorStyle?.['--indicator-size'],
+                top: indicatorStyle?.[
+                  '--indicator-position'
+                ],
+                marginLeft: '-1px',
+              }" />
+
+            <!-- 递归渲染目录链接 -->
+            <TocList
+              :links="links"
+              :level="0"
+              :active-headings="activeHeadings"
+              :color="color"
+              @scroll-to="handleMobileScrollTo" />
+          </div>
+        </template>
+      </USlideover>
+    </div>
+
+    <!-- 桌面端：始终显示 -->
+    <div
+      class="hidden lg:block sticky top-16 max-h-[calc(100vh-4rem)] overflow-y-auto">
       <!-- 标题 -->
       <p
-        class="text-sm font-semibold text-highlighted mb-3 hidden lg:block">
+        class="text-sm font-semibold text-highlighted mb-3">
         {{ title }}
       </p>
 
-      <!-- 目录内容 -->
-      <div
-        v-if="links?.length"
-        class="relative">
+      <div class="relative border-l border-default pl-4">
         <!-- 活动指示器 -->
         <div
           v-if="highlight"
@@ -171,7 +229,7 @@ watch(
           :style="{
             height: indicatorStyle?.['--indicator-size'],
             top: indicatorStyle?.['--indicator-position'],
-            marginLeft: '-17px',
+            marginLeft: '-1px',
           }" />
 
         <!-- 递归渲染目录链接 -->

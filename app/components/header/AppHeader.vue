@@ -8,19 +8,16 @@ const { header } = useAppConfig();
 const { locale, locales, setLocale } = useI18n();
 
 // 使用类型安全的 injection key 获取导航树
+// NAVIGATION_KEY 已定义正确的泛型类型，inject 返回 Ref<ContentNavigationItem[]>
 const navigation = inject(NAVIGATION_KEY);
 
 // 为移动端导航提供类型安全的 ref
-const navigationForMobile = computed(() =>
-  navigation
-    ? (navigation as Ref<
-        ContentNavigationItem[] | undefined
-      >)
-    : undefined
+const navigationForMobile = computed(
+  () => navigation as Ref<ContentNavigationItem[]>
 );
 
 const { topLevelModules } = useDocsNav(
-  navigation as Ref<ContentNavigationItem[] | undefined>,
+  navigation as Ref<ContentNavigationItem[]>,
   {
     includeModules: true,
   }
@@ -48,7 +45,7 @@ const languageItems = computed<DropdownMenuItem[][]>(() => [
       variant: 'ghost',
     }"
     :menu="{
-      side: 'left',
+      side: 'right',
     }">
     <!-- Left 插槽 - Logo 区域 -->
     <template #left>
@@ -70,7 +67,7 @@ const languageItems = computed<DropdownMenuItem[][]>(() => [
     <template #body>
       <!-- 移动端导航组件 -->
       <AppHeaderMobileNav
-        v-if="navigationForMobile"
+        v-if="navigation"
         :navigation="navigationForMobile" />
     </template>
 

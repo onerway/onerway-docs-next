@@ -45,7 +45,7 @@ interface NormalizedModule {
  * ```
  */
 export function useDocsNav(
-  rootNav: Ref<ContentNavigationItem[] | undefined>,
+  rootNav: Ref<ContentNavigationItem[]>,
   options: DocsNavOptions = {}
 ) {
   const route = useRoute();
@@ -243,7 +243,30 @@ export function useDocsNav(
   );
 
   /**
+   * 递归查找菜单中第一个有效路径
+   */
+  function findFirstPath(
+    items: ExtendedNavigationMenuItem[]
+  ): string | null {
+    for (const item of items) {
+      if (item.to && typeof item.to === "string") {
+        return item.to;
+      }
+      if (item.children) {
+        const found = findFirstPath(
+          item.children as ExtendedNavigationMenuItem[]
+        );
+        if (found) return found;
+      }
+    }
+    return null;
+  }
+
+  /**
    * 根据路径获取当前模块
+   *
+   * 由于顶层模块目录可能没有 index.md，root.to 可能为 undefined，
+   * 所以通过子菜单的路径前缀来匹配当前模块。
    */
   function getCurrentModule(
     path: string
@@ -256,11 +279,17 @@ export function useDocsNav(
 
     return (
       normalizedModules.value.find((mod) => {
-        const to = mod.root.to;
-        if (!to || typeof to !== "string") return false;
-        const modulePath = to.replace(/^\/|\/$/g, "");
+        // 从 menu 中找到第一个有效路径
+        const samplePath = findFirstPath(mod.menu);
+        if (!samplePath) return false;
+
+        // 提取路径的第一段作为模块前缀
+        const modulePrefix = samplePath
+          .split("/")
+          .filter(Boolean)[0];
+
         return (
-          modulePath.toLowerCase() ===
+          modulePrefix?.toLowerCase() ===
           moduleSlug.toLowerCase()
         );
       }) ?? null
@@ -277,11 +306,34 @@ export function useDocsNav(
       currentModule.value?.menu ?? []
   );
 
+  /**
+   * 从 navigation 树中递归查找页面的 title
+   * @param path - 页面路径
+   * @param items - 导航树（可选，默认使用 rootNav）
+   */
+  function findTitleByPath(
+    path: string,
+    items?: ContentNavigationItem[]
+  ): string | undefined {
+    const navItems = items ?? rootNav.value;
+    if (!navItems) return undefined;
+
+    for (const item of navItems) {
+      if (item.path === path) return item.title;
+      if (item.children) {
+        const found = findTitleByPath(path, item.children);
+        if (found) return found;
+      }
+    }
+    return undefined;
+  }
+
   return {
     navigationItems,
     topLevelModules,
     currentModule,
     currentModuleMenu,
     getCurrentModule,
+    findTitleByPath,
   };
 }

@@ -9,7 +9,7 @@
 import {
   ref,
   watch,
-  onBeforeMount,
+  onMounted,
   onBeforeUnmount,
 } from "vue";
 
@@ -72,7 +72,8 @@ export function useScrollSpy() {
     }
   });
 
-  onBeforeMount(() => {
+  // 使用 onMounted 确保只在客户端执行
+  onMounted(() => {
     observer.value = new IntersectionObserver(
       observerCallback
     );

@@ -26,12 +26,14 @@ export default defineNuxtConfig({
         name: "English",
         language: "en-US",
         dir: "ltr",
+        files: ["en.json"],
       },
       {
-        code: "zh",
+        code: "zh_cn",
         name: "中文",
         language: "zh-CN",
         dir: "ltr",
+        files: ["zh_cn.json"],
       },
     ],
     defaultLocale: "en",
@@ -52,6 +54,9 @@ export default defineNuxtConfig({
         dir: "./app/assets/icons",
       },
     ],
+    serverBundle: {
+      remote: "jsdelivr",
+    },
   },
 
   features: {

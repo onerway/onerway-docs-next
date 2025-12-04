@@ -43,12 +43,12 @@ export default defineContentConfig({
       },
       schema: commonSchema,
     }),
-    // 中文内容集合：读取 content/zh 目录下的所有文件
-    docs_zh: defineCollection({
+    // 中文内容集合：读取 content/zh_cn 目录下的所有文件
+    docs_zh_cn: defineCollection({
       type: "page",
       source: {
-        include: "zh/**",
-        prefix: "", // 同样不带前缀 [oai_citation:1‡content.nuxt.com](https://content.nuxt.com/docs/integrations/i18n#:~:text=collections%3A%20,schema%3A%20commonSchema%2C)
+        include: "zh_cn/**",
+        prefix: "", // 同样不带前缀
       },
       schema: commonSchema,
     }),

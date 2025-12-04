@@ -1,24 +1,27 @@
 <script setup lang="ts">
 import type { PageCollections } from "@nuxt/content";
-import { en, zh_cn } from "@nuxt/ui/locale";
+import * as locales from "@nuxt/ui/locale";
 import { NAVIGATION_KEY } from "~/types/injection-keys";
 
 // 从 app.config.ts 读取站点配置
 const { seo } = useAppConfig();
 const { locale } = useI18n();
 
-// Nuxt UI i18n 集成
-// 映射 @nuxtjs/i18n 的 locale code 到 Nuxt UI 的语言包
-const localeMap = { en, zh_cn };
+/**
+ * Nuxt UI i18n 集成（官方推荐方式）
+ * locale code 与 Nuxt UI 导出名一致，可直接索引访问
+ */
 const uiLocale = computed(
   () =>
-    localeMap[locale.value as keyof typeof localeMap] || en
+    locales[locale.value as keyof typeof locales] ??
+    locales.en
 );
+console.log("uiLocale", uiLocale.value);
 
-// 获取当前语言环境的导航树。我们将动态集合名称转换为 `keyof PageCollections`，
-// 因为 `queryCollectionNavigation` 需要已知集合名称的联合类型。如果不进行此转换，
-// TypeScript 会推断出一个通用的 `string` 类型，该类型无法分配给所需的联合类型，
-// 并导致错误 "Argument of type 'string' is not assignable to parameter of type '"content"'"。
+/**
+ * 获取当前语言环境的导航树
+ * 动态集合名称需要类型转换，因为 queryCollectionNavigation 需要已知集合名称的联合类型
+ */
 const { data: navigation } = await useAsyncData(
   () => `navigation-${locale.value}`,
   () => {
@@ -29,11 +32,14 @@ const { data: navigation } = await useAsyncData(
   { watch: [locale] }
 );
 
-// 在客户端延迟获取当前语言环境的搜索部分。我们使用与上面相同的类型转换来满足
-// TypeScript 对集合名称的约束。动态键确保来自不同语言环境的数据不会在 Nuxt 的
-// 数据缓存中发生冲突。
+console.log("navigation", navigation.value);
+
+/**
+ * 延迟获取搜索索引（仅客户端）
+ * 动态 key 确保不同语言环境的数据不会在缓存中冲突
+ */
 const { data: files } = useLazyAsyncData(
-  () => `search-${locale.value}`,
+  `search-${locale.value}`,
   () => {
     const collection =
       `docs_${locale.value}` as keyof PageCollections;

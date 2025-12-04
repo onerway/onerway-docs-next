@@ -8,7 +8,7 @@ import type { ContentNavigationItem } from "@nuxt/content";
  */
 
 const props = defineProps<{
-  navigation: Ref<ContentNavigationItem[] | undefined>;
+  navigation: Ref<ContentNavigationItem[]>;
 }>();
 
 const route = useRoute();
@@ -90,7 +90,7 @@ function backToModules() {
 </script>
 
 <template>
-  <div class="h-full flex flex-col overflow-hidden">
+  <div class="h-full flex flex-col overflow-y-auto">
     <Transition
       mode="out-in"
       enter-active-class="transition-all duration-300 ease-out"
@@ -120,7 +120,7 @@ function backToModules() {
         class="flex-1 flex flex-col p-1">
         <UCard
           variant="outline"
-          class="flex-1 flex flex-col overflow-hidden">
+          class="flex-1 flex flex-col overflow-y-auto">
           <template #header>
             <div class="flex items-center gap-2">
               <UButton

@@ -109,6 +109,7 @@ const styles = {
     "size-3.5",
     "transition-transform duration-200",
     "group-hover/link:translate-x-0.5",
+    isExternal.value && "group-hover/link:-translate-y-0.5",
   ],
 };
 </script>

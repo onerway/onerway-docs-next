@@ -34,7 +34,8 @@ onerway-docs-next2/
 │   │   │   ├── ProseAccordion.vue
 │   │   │   ├── ProseAccordionItem.vue
 │   │   │   ├── ProseAnnotation.vue
-│   │   │   └── ProseInlineBlocks.vue
+│   │   │   ├── ProseInlineBlocks.vue
+│   │   │   └── ProseLinkSwitch.vue
 │   │   ├── header/        # Header navigation components
 │   │   │   ├── AppHeader.vue
 │   │   │   └── AppHeaderMobileNav.vue
@@ -95,6 +96,7 @@ onerway-docs-next2/
 - **ProseAccordion/ProseAccordionItem**: Expandable content sections
 - **ProseAnnotation**: Block-level annotations with hover tooltips (use with `::` syntax)
 - **ProseInlineBlocks**: Forces block-level elements to render inline on the same line
+- **ProseLinkSwitch**: Multi-link selector with preset support (e.g., merchant-dashboard for Sandbox/Production switching)
 - **AppHeader**: Main navigation header
 - **AppHeaderMobileNav**: Mobile-friendly navigation menu
 - **AppLogo**: Application logo component

@@ -7,5 +7,9 @@
   },
   "accordion": {
     "defaultItem": "项目 {index}"
+  },
+  "linkSwitch": {
+    "selectLink": "选择链接选项",
+    "linkOptions": "链接选项"
   }
 }

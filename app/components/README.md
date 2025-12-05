@@ -18,7 +18,8 @@ app/components/
 │   ├── ProseAccordion.vue        # MDC 内容组件（Prose 前缀）
 │   ├── ProseAccordionItem.vue
 │   ├── ProseAnnotation.vue
-│   └── ProseInlineBlocks.vue
+│   ├── ProseInlineBlocks.vue
+│   └── ProseLinkSwitch.vue       # 多链接选择器
 └── header/                        # 头部导航组件
     ├── AppHeader.vue
     └── AppHeaderMobileNav.vue
@@ -323,6 +324,7 @@ const styles = computed(() => ({
 | `ProseAccordionItem` | `:::prose-accordion-item` | 折叠面板项 |
 | `ProseAnnotation` | `:prose-annotation[text]{...}` | 术语注释 |
 | `ProseInlineBlocks` | `::prose-inline-blocks` | 强制行内渲染 |
+| `ProseLinkSwitch` | `:prose-link-switch{preset="env" path="/dashboard"}[text]` | 多链接选择器（环境切换等） |
 
 ### Docs - 文档页面结构组件
 

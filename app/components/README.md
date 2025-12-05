@@ -32,8 +32,8 @@ app/components/
 | 前缀 | 用途 | 示例 |
 |------|------|------|
 | `App` | 全局布局组件（Header、Logo、Sidebar 等） | `AppLogo`, `AppHeader` |
-| `Prose` | MDC 内容组件（在 `.md` 中用 `::` 语法调用） | `ProseAccordion`, `ProseAnnotation` |
-| `Docs` | 文档辅助组件（页面布局、TOC、导航等） | `DocsPageCard`, `DocsToc` |
+| `Prose` | 内容表达增强（折叠、注释、行内渲染等） | `ProseAccordion`, `ProseAnnotation` |
+| `Docs` | 文档页面结构（卡片、网格、资源列表、目录等） | `DocsPageCard`, `DocsToc` |
 
 ### 前缀选择指南
 
@@ -42,14 +42,16 @@ app/components/
          │
          ├─ 是 → App 前缀
          │
-         └─ 否 → 在 MDC 中用 :: 语法调用吗？
+         └─ 否 → 是内容表达增强组件吗？（折叠、注释、高亮等）
                  │
                  ├─ 是 → Prose 前缀
                  │
                  └─ 否 → Docs 前缀
 ```
 
-> **简化说明**：非 MDC 的文档相关组件统一使用 `Docs` 前缀。
+**Prose vs Docs 的区别**：
+- `Prose`：增强 Markdown **内容本身**的表达（如折叠展开、术语注释）
+- `Docs`：构建文档**页面结构**（如卡片布局、资源列表、目录导航）
 
 ### 命名规则
 
@@ -309,9 +311,9 @@ const styles = computed(() => ({
 | `AppHeader` | 顶部导航栏 |
 | `AppHeaderMobileNav` | 移动端导航菜单 |
 
-### Prose - MDC 内容组件
+### Prose - 内容表达增强组件
 
-在 `.md` 文件中用 `::` 语法调用。
+增强 Markdown 内容本身的表达能力，在 `.md` 文件中用 `::` 语法调用。
 
 | 组件 | MDC 语法 | 用途 |
 |------|----------|------|
@@ -320,7 +322,9 @@ const styles = computed(() => ({
 | `ProseAnnotation` | `:prose-annotation[text]{...}` | 术语注释 |
 | `ProseInlineBlocks` | `::prose-inline-blocks` | 强制行内渲染 |
 
-### Docs - 文档辅助组件
+### Docs - 文档页面结构组件
+
+构建文档页面的结构和布局，部分支持 MDC 语法调用。
 
 | 组件 | MDC 语法 | 用途 |
 |------|----------|------|
@@ -335,7 +339,7 @@ const styles = computed(() => ({
 
 ### 新建组件前
 
-- [ ] 确认组件前缀：全局布局用 `App`，MDC 内容用 `Prose`，其他用 `Docs`
+- [ ] 确认组件前缀：全局布局用 `App`，内容表达增强用 `Prose`，页面结构用 `Docs`
 - [ ] 确认组件放置目录
 - [ ] 检查是否有可复用的现有组件
 

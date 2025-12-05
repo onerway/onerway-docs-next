@@ -33,7 +33,7 @@ onerway-docs-next2/
 │   │   │   ├── ProseAccordionItem.vue
 │   │   │   ├── ProseAnnotation.vue
 │   │   │   ├── Annotate.vue
-│   │   │   └── InlineBlocks.vue
+│   │   │   └── ProseInlineBlocks.vue
 │   │   ├── header/        # Header navigation components
 │   │   │   ├── AppHeader.vue
 │   │   │   └── AppHeaderMobileNav.vue
@@ -92,8 +92,8 @@ onerway-docs-next2/
 - **ProseAccordion**: Expandable content sections
 - **ProseAnnotation**: Block-level annotations with hover tooltips (use with `::` syntax)
 - **Annotate**: Inline annotations for term explanations (use with `:` syntax)
-- **InlineBlocks**: Forces block-level elements to render inline on the same line
-- **ContentToc**: Dynamic table of contents with scroll tracking
+- **ProseInlineBlocks**: Forces block-level elements to render inline on the same line
+- **DocsToc**: Dynamic table of contents with scroll tracking
 - **AppHeader**: Main navigation header
 - **AppHeaderMobileNav**: Mobile-friendly navigation menu
 
@@ -160,7 +160,7 @@ pnpm preview
 Current branch: `main`
 
 Recent significant changes:
-- Added ContentToc and ProseAccordion components
+- Added DocsToc and ProseAccordion components
 - Enhanced mobile navigation experience
 - Refactored navigation components
 - Restructured Chinese content from `zh` to `zh_cn`

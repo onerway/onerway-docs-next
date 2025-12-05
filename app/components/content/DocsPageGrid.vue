@@ -1,7 +1,31 @@
 <script setup lang="ts">
+/**
+ * DocsPageGrid 组件
+ * 响应式网格布局容器，用于排列 DocsPageCard 等卡片组件
+ *
+ * 特点：
+ * - 支持响应式列数配置（base/sm/md/lg/xl 断点）
+ * - 可自定义间距
+ * - 支持语义化标签（div/ul/ol）
+ * - 自动处理 ARIA 属性
+ *
+ * @example MDC 用法
+ * ```mdc
+ * ::docs-page-grid{cols.base="1" cols.md="2" cols.lg="3"}
+ *   ::docs-page-card{title="卡片1"}
+ *   ::
+ *   ::docs-page-card{title="卡片2"}
+ *   ::
+ * ::
+ * ```
+ */
+// ============================================================================
+// Types
+// ============================================================================
+
 type ResponsiveCols = 1 | 2 | 3;
 
-interface DocsPageGridProps {
+export interface DocsPageGridProps {
   cols?: {
     base?: ResponsiveCols;
     sm?: ResponsiveCols;

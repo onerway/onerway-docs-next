@@ -1,4 +1,22 @@
 <script setup lang="ts">
+/**
+ * DocsPageCard 组件
+ * 可点击的文档卡片，用于展示文档入口和导航链接
+ *
+ * 特点：
+ * - 基于 UPageCard 封装，继承 Nuxt UI 设计语言
+ * - 支持多种变体（elevated/flat/ghost）
+ * - 支持 spotlight 高亮效果
+ * - 支持内部链接和外部链接
+ * - 完整的可访问性支持（键盘导航、ARIA 属性）
+ * - 支持自定义分析事件追踪
+ *
+ * @example MDC 用法
+ * ```mdc
+ * ::docs-page-card{title="快速开始" description="5分钟上手" to="/get-started" icon="i-lucide-rocket"}
+ * ::
+ * ```
+ */
 import type { RouteLocationRaw } from "vue-router";
 
 type SpotlightColor =

@@ -87,7 +87,7 @@ const slots = defineSlots<{
 // Composables & Injections
 // ============================================================================
 
-const { locale } = useI18n();
+const { locale, t } = useI18n();
 const navigation = inject(NAVIGATION_KEY);
 const { findTitleByPath } = useDocsNav(
   computed(() => navigation?.value ?? [])
@@ -346,7 +346,7 @@ const buttonUi = {
     <h3
       v-else
       :class="[styles.titleWrapper, styles.defaultTitle]">
-      相关资源
+      {{ t("resources.title") }}
     </h3>
 
     <!-- 链接列表 -->

@@ -105,7 +105,7 @@ const breadcrumb = computed(() =>
 
       <!-- TOC：移动端浮动按钮，桌面端右侧显示 -->
       <ClientOnly>
-        <ContentToc
+        <DocsToc
           v-if="page?.body?.toc?.links?.length"
           :links="page.body.toc.links"
           :title="t('toc.title')"

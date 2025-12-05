@@ -1,3 +1,16 @@
+<script setup lang="ts">
+/**
+ * AppLogo 组件
+ * Onerway Docs 品牌 Logo（SVG 格式）
+ *
+ * 特点：
+ * - 支持明暗主题自动切换颜色
+ * - "Onerway" 部分：深色主题下浅色，浅色主题下深色
+ * - "Docs" 部分：使用 primary 主题色
+ * - 固定尺寸 163x23，可通过父容器缩放
+ */
+</script>
+
 <template>
   <svg
     width="163"

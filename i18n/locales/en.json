@@ -1,5 +1,11 @@
 {
   "toc": {
     "title": "Table of Contents"
+  },
+  "resources": {
+    "title": "Related Resources"
+  },
+  "accordion": {
+    "defaultItem": "Item {index}"
   }
 }

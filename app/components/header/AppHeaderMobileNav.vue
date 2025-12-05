@@ -1,11 +1,17 @@
 <script setup lang="ts">
+/**
+ * AppHeaderMobileNav 组件
+ * 移动端导航菜单，实现双层导航交互
+ *
+ * 特点：
+ * - 双层导航：模块列表 ↔ 当前模块子菜单
+ * - 平滑的左右滑动过渡动画
+ * - 自动检测当前路由并高亮对应模块
+ * - 支持返回上一级导航
+ * - 作为 AppHeader 的子组件在移动端抽屉中使用
+ */
 import type { NavigationMenuItem } from "@nuxt/ui";
 import type { ContentNavigationItem } from "@nuxt/content";
-
-/**
- * 移动端导航组件
- * 实现双层导航：模块列表 ↔ 当前模块子菜单
- */
 
 const props = defineProps<{
   navigation: Ref<ContentNavigationItem[]>;

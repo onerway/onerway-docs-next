@@ -1,5 +1,11 @@
 {
   "toc": {
     "title": "目录"
+  },
+  "resources": {
+    "title": "相关资源"
+  },
+  "accordion": {
+    "defaultItem": "项目 {index}"
   }
 }

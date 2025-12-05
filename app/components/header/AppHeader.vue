@@ -1,4 +1,16 @@
 <script setup lang="ts">
+/**
+ * AppHeader 组件
+ * 应用顶部导航栏，包含 Logo、搜索、语言切换和主题切换
+ *
+ * 特点：
+ * - 基于 UHeader 封装
+ * - 桌面端：水平导航菜单 + 搜索框
+ * - 移动端：侧边抽屉导航（通过 AppHeaderMobileNav 实现）
+ * - 集成 i18n 语言切换
+ * - 集成颜色模式切换
+ * - 从 injection 获取导航数据
+ */
 import type { DropdownMenuItem } from "@nuxt/ui";
 import type { ContentNavigationItem } from "@nuxt/content";
 import type { Ref } from "vue";

@@ -65,6 +65,7 @@ const slots = defineSlots<{
   default(): VNode[];
 }>();
 
+const { t } = useI18n();
 const rerenderCount = ref(1);
 
 /**
@@ -160,7 +161,9 @@ const computedDefaultValue = computed(() => {
 
 onBeforeUpdate(() => rerenderCount.value++);
 
-// ========== 样式配置 ==========
+// ============================================================================
+// Styles
+// ============================================================================
 const styles = computed(() => ({
   // 容器样式
   root: [
@@ -215,7 +218,7 @@ const styles = computed(() => ({
     "data-[state=closed]:animate-[accordion-up_200ms_ease-out]",
   ].join(" "),
 
-  body: "text-sm pb-3.5",
+  body: "pb-4",
 
   leadingIcon: "shrink-0 size-5",
 
@@ -258,7 +261,11 @@ const styles = computed(() => ({
                 :key="idx" />
             </template>
             <template v-else>
-              项目 {{ item.index + 1 }}
+              {{
+                t("accordion.defaultItem", {
+                  index: item.index + 1,
+                })
+              }}
             </template>
           </span>
           <!-- Trailing icon -->

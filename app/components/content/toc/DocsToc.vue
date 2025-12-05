@@ -4,21 +4,25 @@ import type { TocLink } from "@nuxt/content";
 
 <script setup lang="ts">
 /**
- * ContentToc 组件
+ * DocsToc 组件
+ * 文档目录导航，支持桌面端固定显示和移动端抽屉模式
  *
- * 基于 Nuxt UI ContentToc 组件的自定义实现，支持灵活配置 IntersectionObserver 监听的标题级别。
- * 移动端使用右上角浮动按钮 + 侧边抽屉，桌面端始终展开。
+ * 特点：
+ * - 基于 Nuxt UI ContentToc 组件的自定义实现
+ * - 支持灵活配置 IntersectionObserver 监听的标题级别
+ * - 移动端使用右上角浮动按钮 + 侧边抽屉
+ * - 桌面端始终展开
  *
  * @see https://ui.nuxt.com/docs/components/content-toc
  */
 import { computed, watch, ref } from "vue";
 import { useScrollSpy } from "~/composables/useScrollSpy";
 
-export interface ContentTocLink extends TocLink {
+export interface DocsTocLink extends TocLink {
   class?: string;
 }
 
-export interface ContentTocProps {
+export interface DocsTocProps {
   /**
    * 渲染的根元素类型
    * @defaultValue 'nav'
@@ -27,7 +31,7 @@ export interface ContentTocProps {
   /**
    * 目录数据结构
    */
-  links?: ContentTocLink[];
+  links?: DocsTocLink[];
   /**
    * 目录标题
    * @defaultValue 'Table of Contents'
@@ -60,15 +64,22 @@ export interface ContentTocProps {
   defaultOpen?: boolean;
 }
 
-const props = withDefaults(defineProps<ContentTocProps>(), {
+const props = withDefaults(defineProps<DocsTocProps>(), {
   as: "nav",
-  title: "Table of Contents",
+  title: undefined,
   color: "primary",
   highlight: false,
   highlightColor: "primary",
   headingSelector: "h2, h3, h4, h5",
   defaultOpen: false,
 });
+
+const { t } = useI18n();
+
+// 计算标题：优先使用 prop，否则使用 i18n 翻译
+const tocTitle = computed(
+  () => props.title ?? t("toc.title")
+);
 
 // 移动端折叠状态
 const isOpen = ref(props.defaultOpen);
@@ -95,13 +106,11 @@ const refreshHeadings = () => {
 /**
  * 将嵌套的目录链接扁平化为一维数组
  */
-function flattenLinks(
-  links: ContentTocLink[]
-): ContentTocLink[] {
+function flattenLinks(links: DocsTocLink[]): DocsTocLink[] {
   return links.flatMap((link) => [
     link,
     ...(link.children
-      ? flattenLinks(link.children as ContentTocLink[])
+      ? flattenLinks(link.children as DocsTocLink[])
       : []),
   ]);
 }
@@ -175,13 +184,13 @@ if (import.meta.client) {
         variant="outline"
         icon="i-lucide-book"
         class="fixed right-6 top-20 z-50 shadow-lg"
-        :aria-label="title"
+        :aria-label="tocTitle"
         @click="isOpen = true" />
 
       <!-- 侧边抽屉 -->
       <USlideover
         v-model:open="isOpen"
-        :title="title"
+        :title="tocTitle"
         side="right"
         class="w-80">
         <template #body>
@@ -201,7 +210,7 @@ if (import.meta.client) {
               }" />
 
             <!-- 递归渲染目录链接 -->
-            <TocList
+            <DocsTocList
               :links="links"
               :level="0"
               :active-headings="activeHeadings"
@@ -218,7 +227,7 @@ if (import.meta.client) {
       <!-- 标题 -->
       <p
         class="text-sm font-semibold text-highlighted mb-3">
-        {{ title }}
+        {{ tocTitle }}
       </p>
 
       <div class="relative border-l border-default pl-4">
@@ -233,7 +242,7 @@ if (import.meta.client) {
           }" />
 
         <!-- 递归渲染目录链接 -->
-        <TocList
+        <DocsTocList
           :links="links"
           :level="0"
           :active-headings="activeHeadings"

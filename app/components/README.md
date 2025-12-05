@@ -14,6 +14,7 @@ app/components/
 │   ├── DocsResources.vue
 │   ├── DocsToc.vue               # 目录组件
 │   ├── DocsTocList.vue           # 目录内部组件
+│   ├── ProseA.vue                # 链接组件（覆盖默认）
 │   ├── ProseAccordion.vue        # MDC 内容组件（Prose 前缀）
 │   ├── ProseAccordionItem.vue
 │   ├── ProseAnnotation.vue
@@ -317,6 +318,7 @@ const styles = computed(() => ({
 
 | 组件 | MDC 语法 | 用途 |
 |------|----------|------|
+| `ProseA` | `[text](url)` | 链接渲染（区分内部/外部链接） |
 | `ProseAccordion` | `::prose-accordion` | 可折叠面板 |
 | `ProseAccordionItem` | `:::prose-accordion-item` | 折叠面板项 |
 | `ProseAnnotation` | `:prose-annotation[text]{...}` | 术语注释 |

@@ -24,15 +24,16 @@ onerway-docs-next2/
 │   │   └── icons/         # Custom icon collections
 │   ├── components/
 │   │   ├── content/       # Content-specific components
-│   │   │   ├── toc/       # Table of contents components
-│   │   │   ├── DocsResources.vue
-│   │   │   ├── DocsResourceItem.vue
 │   │   │   ├── DocsPageCard.vue
 │   │   │   ├── DocsPageGrid.vue
+│   │   │   ├── DocsResourceItem.vue
+│   │   │   ├── DocsResources.vue
+│   │   │   ├── DocsToc.vue
+│   │   │   ├── DocsTocList.vue
+│   │   │   ├── ProseA.vue
 │   │   │   ├── ProseAccordion.vue
 │   │   │   ├── ProseAccordionItem.vue
 │   │   │   ├── ProseAnnotation.vue
-│   │   │   ├── Annotate.vue
 │   │   │   └── ProseInlineBlocks.vue
 │   │   ├── header/        # Header navigation components
 │   │   │   ├── AppHeader.vue
@@ -87,15 +88,16 @@ onerway-docs-next2/
 - Header with language switcher
 
 ### 4. Custom Components
-- **DocsResources**: Display resource links
+- **DocsResources/DocsResourceItem**: Display resource links
 - **DocsPageCard/DocsPageGrid**: Card-based content display
-- **ProseAccordion**: Expandable content sections
+- **DocsToc/DocsTocList**: Dynamic table of contents with scroll tracking
+- **ProseA**: Link rendering with internal/external link detection and icons
+- **ProseAccordion/ProseAccordionItem**: Expandable content sections
 - **ProseAnnotation**: Block-level annotations with hover tooltips (use with `::` syntax)
-- **Annotate**: Inline annotations for term explanations (use with `:` syntax)
 - **ProseInlineBlocks**: Forces block-level elements to render inline on the same line
-- **DocsToc**: Dynamic table of contents with scroll tracking
 - **AppHeader**: Main navigation header
 - **AppHeaderMobileNav**: Mobile-friendly navigation menu
+- **AppLogo**: Application logo component
 
 ### 5. Composables
 - **useDocsNav**: Manages documentation navigation state and structure
@@ -160,12 +162,11 @@ pnpm preview
 Current branch: `main`
 
 Recent significant changes:
-- Added DocsToc and ProseAccordion components
-- Enhanced mobile navigation experience
-- Refactored navigation components
-- Restructured Chinese content from `zh` to `zh_cn`
-- Added i18n locale files
-- Updated layout and configuration files
+- Updated README and removed unused DocsToc components
+- Refactored documentation components and enhanced internationalization support
+- Added multilingual support and enhanced documentation structure
+- Added DocsToc and ProseAccordion components with comprehensive documentation
+- Enhanced configuration and layout for improved user experience
 
 ## Development Guidelines
 
@@ -174,6 +175,11 @@ Recent significant changes:
 - Use TypeScript for type safety
 - Follow Vue 3 Composition API patterns
 - Utilize Nuxt UI components when possible
+- **Naming convention**: Use prefix based on component type:
+  - `App` - Global layout (Header, Logo, Sidebar)
+  - `Prose` - Content expression enhancement (Accordion, Annotation)
+  - `Docs` - Page structure (PageCard, Toc, Resources)
+- See `app/components/README.md` for detailed guidelines
 
 ### Styling
 - Global styles in `app/assets/css/main.css`

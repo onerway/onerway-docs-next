@@ -71,6 +71,37 @@ export default defineNuxtConfig({
   content: {
     build: {
       markdown: {
+        // 代码高亮
+        highlight: {
+          langs: [
+            "bash",
+            "yaml",
+            "ts",
+            "typescript",
+            "diff",
+            "vue",
+            "json",
+            "yml",
+            "css",
+            "mdc",
+            "md",
+            "js",
+            "javascript",
+            "jsx",
+            "tsx",
+            "java",
+            "go",
+            "python",
+            "php",
+            "html",
+            "xml",
+          ],
+          theme: {
+            default: "catppuccin-latte",
+            dark: "dracula",
+            light: "catppuccin-latte",
+          },
+        },
         toc: {
           depth: 4, // include h4 headings
           searchDepth: 6,

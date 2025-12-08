@@ -11,5 +11,75 @@
   "linkSwitch": {
     "selectLink": "Select a link option",
     "linkOptions": "Link options"
+  },
+  "payment": {
+    "title": "Payment Demo",
+    "customerLocation": "Customer Location",
+    "size": "Size",
+    "layout": "Layout",
+    "disclaimer": "This is a demo for illustration purposes only. No real transactions will be processed.",
+    "paymentMethodSelector": "Payment Method Selector",
+    "sizes": {
+      "desktop": "Desktop",
+      "mobile": "Mobile"
+    },
+    "layouts": {
+      "tabs": "Tabs",
+      "accordion": "Accordion"
+    },
+    "countries": {
+      "us": "United States",
+      "gb": "United Kingdom",
+      "de": "Germany",
+      "br": "Brazil",
+      "id": "Indonesia",
+      "mx": "Mexico",
+      "jp": "Japan"
+    },
+    "methods": {
+      "card": "Card",
+      "googlePay": "Google Pay",
+      "applePay": "Apple Pay",
+      "wechat": "WeChat Pay",
+      "sepa": "SEPA Direct Debit",
+      "ideal": "iDEAL",
+      "bancontact": "Bancontact",
+      "przelewy24": "Przelewy24",
+      "afterpay": "Afterpay",
+      "boleto": "Boleto",
+      "oxxo": "OXXO",
+      "konbini": "Konbini",
+      "dana": "DANA",
+      "qris": "QRIS",
+      "ovo": "OVO",
+      "paypay": "PayPay",
+      "selected": "Selected",
+      "cardPayment": "Card Payment",
+      "walletPayment": "{method} Payment",
+      "walletNotice": "You will be redirected to complete payment in the wallet app.",
+      "wechatQrNotice": "Scan the QR code with WeChat to complete payment.",
+      "bankTransferNotice": "You will be redirected to your bank to authorize the payment.",
+      "redirectNotice": "You will be redirected to complete payment on the provider's website.",
+      "voucherNotice": "A payment voucher will be generated. Please complete payment at the designated location.",
+      "qrCodeNotice": "Scan the QR code with your payment app to complete the transaction."
+    },
+    "form": {
+      "cardNumber": "Card Number",
+      "cardNumberPlaceholder": "1234 5678 9012 3456",
+      "expiryDate": "Expiry Date",
+      "expiryDatePlaceholder": "MM/YY",
+      "cvv": "CVV",
+      "cvvPlaceholder": "123",
+      "cardholderName": "Cardholder Name",
+      "cardholderNamePlaceholder": "JOHN DOE",
+      "errors": {
+        "invalidCardNumber": "Please enter a valid card number",
+        "invalidExpiryDate": "Please enter a valid expiry date",
+        "cardExpired": "This card has expired",
+        "invalidCvv": "Please enter a valid CVV",
+        "invalidName": "Please enter a valid name",
+        "nameTooShort": "Name must be at least 2 characters"
+      }
+    }
   }
 }

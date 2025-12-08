@@ -11,5 +11,75 @@
   "linkSwitch": {
     "selectLink": "选择链接选项",
     "linkOptions": "链接选项"
+  },
+  "payment": {
+    "title": "支付演示",
+    "customerLocation": "客户所在地",
+    "size": "尺寸",
+    "layout": "布局",
+    "disclaimer": "这是一个仅供演示目的的示例。不会处理任何真实交易。",
+    "paymentMethodSelector": "支付方式选择器",
+    "sizes": {
+      "desktop": "桌面端",
+      "mobile": "移动端"
+    },
+    "layouts": {
+      "tabs": "标签页",
+      "accordion": "折叠面板"
+    },
+    "countries": {
+      "us": "美国",
+      "gb": "英国",
+      "de": "德国",
+      "br": "巴西",
+      "id": "印度尼西亚",
+      "mx": "墨西哥",
+      "jp": "日本"
+    },
+    "methods": {
+      "card": "银行卡",
+      "googlePay": "Google Pay",
+      "applePay": "Apple Pay",
+      "wechat": "微信支付",
+      "sepa": "SEPA 直接借记",
+      "ideal": "iDEAL",
+      "bancontact": "Bancontact",
+      "przelewy24": "Przelewy24",
+      "afterpay": "Afterpay",
+      "boleto": "Boleto",
+      "oxxo": "OXXO",
+      "konbini": "便利店支付",
+      "dana": "DANA",
+      "qris": "QRIS",
+      "ovo": "OVO",
+      "paypay": "PayPay",
+      "selected": "已选择",
+      "cardPayment": "银行卡支付",
+      "walletPayment": "{method} 支付",
+      "walletNotice": "您将被重定向到钱包应用完成支付。",
+      "wechatQrNotice": "请使用微信扫描二维码完成支付。",
+      "bankTransferNotice": "您将被重定向到您的银行以授权支付。",
+      "redirectNotice": "您将被重定向到服务商网站完成支付。",
+      "voucherNotice": "系统将生成支付凭证。请在指定地点完成支付。",
+      "qrCodeNotice": "请使用支付应用扫描二维码完成交易。"
+    },
+    "form": {
+      "cardNumber": "卡号",
+      "cardNumberPlaceholder": "1234 5678 9012 3456",
+      "expiryDate": "有效期",
+      "expiryDatePlaceholder": "MM/YY",
+      "cvv": "CVV",
+      "cvvPlaceholder": "123",
+      "cardholderName": "持卡人姓名",
+      "cardholderNamePlaceholder": "JOHN DOE",
+      "errors": {
+        "invalidCardNumber": "请输入有效的卡号",
+        "invalidExpiryDate": "请输入有效的有效期",
+        "cardExpired": "此卡已过期",
+        "invalidCvv": "请输入有效的 CVV",
+        "invalidName": "请输入有效的姓名",
+        "nameTooShort": "姓名至少需要 2 个字符"
+      }
+    }
   }
 }

@@ -68,6 +68,12 @@ export default defineAppConfig({
       },
     },
 
+    selectMenu: {
+      slots: {
+        content: "min-w-fit",
+      },
+    },
+
     codeIcon: {
       react: "vscode-icons:file-type-reactts",
       html: "vscode-icons:file-type-html",

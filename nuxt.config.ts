@@ -53,6 +53,10 @@ export default defineNuxtConfig({
         prefix: "custom",
         dir: "./app/assets/icons",
       },
+      {
+        prefix: "payment",
+        dir: "./app/assets/icons/payment",
+      },
     ],
     serverBundle: {
       remote: "jsdelivr",

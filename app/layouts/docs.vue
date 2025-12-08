@@ -17,7 +17,9 @@ const page = useState<DocPage | null>(
 );
 
 // 转换导航树为 NavigationMenu 所需的数据结构
-const { currentModuleMenu } = useDocsNav(navigation as Ref<ContentNavigationItem[]>);
+const { currentModuleMenu } = useDocsNav(
+  navigation as Ref<ContentNavigationItem[]>
+);
 
 console.log("[docs] navigation", navigation);
 console.log(
@@ -70,9 +72,10 @@ console.log(
       </UDashboardSidebar>
 
       <!-- 右侧内容区 -->
-      <UDashboardPanel class="pt-layout">
+      <UDashboardPanel
+        class="pt-layout"
+        :ui="{ body: 'docs-scroll-container p-6' }">
         <template #body>
-          <!-- 渲染文档内容 -->
           <slot />
         </template>
       </UDashboardPanel>

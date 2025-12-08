@@ -88,7 +88,6 @@ const emit = defineEmits<{
   move: [id: string];
 }>();
 
-const router = useRouter();
 const nuxtApp = useNuxtApp();
 const { activeHeadings, updateHeadings } = useScrollSpy();
 
@@ -106,9 +105,7 @@ const refreshHeadings = () => {
 /**
  * 将嵌套的目录链接扁平化为一维数组
  */
-function flattenLinks(
-  links: DocsTocLink[]
-): DocsTocLink[] {
+function flattenLinks(links: DocsTocLink[]): DocsTocLink[] {
   return links.flatMap((link) => [
     link,
     ...(link.children
@@ -117,12 +114,17 @@ function flattenLinks(
   ]);
 }
 
+const router = useRouter();
+const { scrollToElement } = useDocsScroll();
+
 /**
  * 点击目录链接时滚动到对应标题
  */
 function scrollToHeading(id: string) {
-  const encodedId = encodeURIComponent(id);
-  router.push(`#${encodedId}`);
+  scrollToElement(id);
+  // 使用 router.replace 更新 hash，保持 Vue Router 状态同步
+  // 由于 page 的 watch 只监听 route.path，不会触发重复滚动
+  router.replace({ hash: `#${encodeURIComponent(id)}` });
   emit("move", id);
 }
 

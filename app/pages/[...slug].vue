@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import type { PageCollections } from "@nuxt/content";
 import { findPageBreadcrumb } from "@nuxt/content/utils";
-import { NAVIGATION_KEY } from "~/types/injection-keys";
+import {
+  NAVIGATION_KEY,
+  CURRENT_PAGE_STATE_KEY,
+  type DocPage,
+} from "~/types/injection-keys";
 import { mapContentNavigation } from "@nuxt/ui/utils/content";
 
 definePageMeta({
@@ -26,7 +30,9 @@ const { data: page } = await useAsyncData(
   { watch: [locale] }
 );
 
-console.log("[slug] page", page.value);
+if (import.meta.client) {
+  console.log("[slug] page", page.value);
+}
 
 if (!page.value) {
   throw createError({
@@ -35,6 +41,14 @@ if (!page.value) {
     fatal: true,
   });
 }
+
+// 同步页面数据到共享状态，让 layout 可以访问（如控制导航可见性）
+const sharedPageState = useState<DocPage | null>(
+  CURRENT_PAGE_STATE_KEY
+);
+watchEffect(() => {
+  sharedPageState.value = page.value as DocPage | null;
+});
 
 const { data: surround } = await useAsyncData(
   `${route.path}-surround`,
@@ -73,45 +87,57 @@ const breadcrumb = computed(() =>
     )
   ).map(({ icon, ...link }) => link)
 );
+
+// 处理路由切换和初始 hash 的滚动行为
+const { scrollToHash } = useDocsScroll();
+const handleScroll = () => scrollToHash(route.hash);
+
+// 监听页面路径变化（不监听 hash，避免与 TOC 点击滚动冲突）
+watch(
+  () => route.path,
+  () => nextTick(handleScroll)
+);
+
+// 初始加载时，等待页面渲染完成后再处理 hash 滚动
+const nuxtApp = useNuxtApp();
+nuxtApp.hooks.hookOnce("page:finish", handleScroll);
 </script>
 
 <template>
-  <UContainer>
-    <UBreadcrumb
-      v-if="breadcrumb.length"
-      :items="breadcrumb" />
+  <!-- 两栏布局：主内容 + TOC（移除 UContainer，避免与 layout 双重嵌套） -->
+  <div
+    class="w-full max-w-7xl mx-auto lg:grid lg:grid-cols-[1fr_250px] lg:gap-8">
+    <!-- 左侧：主内容区 -->
+    <div class="min-w-0">
+      <UBreadcrumb
+        v-if="breadcrumb.length"
+        :items="breadcrumb" />
+      <UPageHeader
+        :title="page?.title ?? ''"
+        :description="page?.description ?? ''"
+        class="py-2" />
+      <ContentRenderer
+        v-if="page"
+        :value="page" />
 
-    <!-- 两栏布局：主内容 + TOC -->
-    <div class="lg:grid lg:grid-cols-[1fr_250px] lg:gap-8">
-      <!-- 左侧：主内容区 -->
-      <div class="min-w-0">
-        <UPageHeader
-          :title="page?.title ?? ''"
-          :description="page?.description ?? ''"
-          class="py-2" />
-        <ContentRenderer
-          v-if="page"
-          :value="page" />
+      <USeparator
+        v-if="surround?.length"
+        class="my-4"
+        icon="i-custom-onerway" />
 
-        <USeparator
-          v-if="surround?.length"
-          class="my-4"
-          icon="i-custom-onerway" />
-
-        <UContentSurround
-          v-if="surround?.length"
-          :surround="surround" />
-      </div>
-
-      <!-- TOC：移动端浮动按钮，桌面端右侧显示 -->
-      <ClientOnly>
-        <DocsToc
-          v-if="page?.body?.toc?.links?.length"
-          :links="page.body.toc.links"
-          :title="t('toc.title')"
-          heading-selector="h2, h3, h4, h5"
-          highlight />
-      </ClientOnly>
+      <UContentSurround
+        v-if="surround?.length"
+        :surround="surround" />
     </div>
-  </UContainer>
+
+    <!-- TOC：移动端浮动按钮，桌面端右侧显示 -->
+    <ClientOnly>
+      <DocsToc
+        v-if="page?.body?.toc?.links?.length"
+        :links="page.body.toc.links"
+        :title="t('toc.title')"
+        heading-selector="h2, h3, h4, h5"
+        highlight />
+    </ClientOnly>
+  </div>
 </template>

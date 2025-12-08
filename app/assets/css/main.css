@@ -42,3 +42,15 @@
     height: var(--ui-header-nav-height);
   }
 }
+
+/**
+ * docs-scroll-container
+ * 
+ * 标识符 class，用于 JavaScript 定位文档页面的滚动容器。
+ * 通过 UDashboardPanel 的 :ui="{ body: 'docs-scroll-container' }" 追加到 body 元素。
+ * 滚动样式（overflow-y-auto）由 Nuxt UI DashboardPanel 组件内置提供。
+ * 
+ * 使用位置：
+ * - app/layouts/docs.vue - 添加标识
+ * - app/pages/[...slug].vue - querySelector 定位滚动容器
+ */

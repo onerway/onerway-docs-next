@@ -104,7 +104,7 @@ export default defineNuxtConfig({
         },
         toc: {
           depth: 4, // include h4 headings
-          searchDepth: 6,
+          searchDepth: 10,
         },
       },
     },

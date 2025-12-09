@@ -5,7 +5,7 @@ export default defineAppConfig({
     },
 
     container: {
-      base: " lg:p-4",
+      base: "",
     },
     // 组件样式
     button: {

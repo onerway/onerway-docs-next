@@ -133,7 +133,9 @@ nuxtApp.hooks.hookOnce("page:finish", handleScroll);
     <!-- TOC：移动端浮动按钮，桌面端右侧显示 -->
     <ClientOnly>
       <DocsToc
-        v-if="page?.body?.toc?.links?.length"
+        v-if="
+          page?.showToc && page?.body?.toc?.links?.length
+        "
         :links="page.body.toc.links"
         :title="t('toc.title')"
         heading-selector="h2, h3, h4, h5"

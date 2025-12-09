@@ -19,7 +19,9 @@ app/components/
 │   ├── ProseAccordionItem.vue
 │   ├── ProseAnnotation.vue
 │   ├── ProseInlineBlocks.vue
-│   └── ProseLinkSwitch.vue       # 多链接选择器
+│   ├── ProseLinkSwitch.vue       # 多链接选择器
+│   ├── ProseTabs.vue             # 标签页（覆盖 Nuxt UI）
+│   └── ProseTabsItem.vue         # 标签页项
 └── header/                        # 头部导航组件
     ├── AppHeader.vue
     └── AppHeaderMobileNav.vue
@@ -325,6 +327,8 @@ const styles = computed(() => ({
 | `ProseAnnotation` | `:prose-annotation[text]{...}` | 术语注释 |
 | `ProseInlineBlocks` | `::prose-inline-blocks` | 强制行内渲染 |
 | `ProseLinkSwitch` | `:prose-link-switch{preset="env" path="/dashboard"}[text]` | 多链接选择器（环境切换等） |
+| `ProseTabs` | `::tabs{sync="key" variant="pill"}` | 标签页容器（覆盖 Nuxt UI 默认实现） |
+| `ProseTabsItem` | `:::tabs-item{label="标签"}` | 标签页项 |
 
 ### Docs - 文档页面结构组件
 

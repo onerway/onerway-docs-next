@@ -47,15 +47,30 @@ export function useScrollSpy() {
 
   /**
    * 更新需要观察的标题元素
+   * 会清除旧的观察目标，避免内存泄漏和状态不一致
    * @param headings - 需要监听的标题元素数组
    */
   function updateHeadings(headings: Element[]) {
-    headings.forEach((heading) => {
-      if (!observer.value) {
-        return;
-      }
+    if (!observer.value) {
+      return;
+    }
 
-      observer.value.observe(heading);
+    // 1. 断开所有现有观察，避免观察已卸载的元素
+    observer.value.disconnect();
+
+    // 2. 重置可见标题列表，避免保留已不存在的标题
+    visibleHeadings.value = [];
+
+    // 3. 如果没有标题需要观察（如空 Tab），清空 activeHeadings
+    //    注意：watch 中的逻辑会在 visibleHeadings 为空时保留 activeHeadings（为滚动场景设计）
+    //    但 Tab 切换到空内容时，应该清空
+    if (headings.length === 0) {
+      activeHeadings.value = [];
+    }
+
+    // 4. 重新观察新的标题元素
+    headings.forEach((heading) => {
+      observer.value?.observe(heading);
     });
   }
 

@@ -35,13 +35,16 @@ onerway-docs-next2/
 │   │   │   ├── ProseAccordionItem.vue
 │   │   │   ├── ProseAnnotation.vue
 │   │   │   ├── ProseInlineBlocks.vue
-│   │   │   └── ProseLinkSwitch.vue
+│   │   │   ├── ProseLinkSwitch.vue
+│   │   │   ├── ProseTabs.vue
+│   │   │   └── ProseTabsItem.vue
 │   │   ├── header/        # Header navigation components
 │   │   │   ├── AppHeader.vue
 │   │   │   └── AppHeaderMobileNav.vue
 │   │   └── AppLogo.vue
 │   ├── composables/
 │   │   ├── useDocsNav.ts  # Documentation navigation logic
+│   │   ├── useDocsScroll.ts # Hash navigation scroll behavior
 │   │   └── useScrollSpy.ts # Scroll tracking for TOC
 │   ├── layouts/
 │   │   └── docs.vue       # Main documentation layout
@@ -97,6 +100,7 @@ onerway-docs-next2/
 - **ProseAnnotation**: Block-level annotations with hover tooltips (use with `::` syntax)
 - **ProseInlineBlocks**: Forces block-level elements to render inline on the same line
 - **ProseLinkSwitch**: Multi-link selector with preset support (e.g., merchant-dashboard for Sandbox/Production switching)
+- **ProseTabs/ProseTabsItem**: Enhanced tabs component with multiple variants (pill, link, underline, segment), localStorage sync, and dynamic TOC integration
 - **AppHeader**: Main navigation header
 - **AppHeaderMobileNav**: Mobile-friendly navigation menu
 - **AppLogo**: Application logo component
@@ -104,6 +108,7 @@ onerway-docs-next2/
 ### 5. Composables
 - **useDocsNav**: Manages documentation navigation state and structure
 - **useScrollSpy**: Tracks scroll position for TOC highlighting
+- **useDocsScroll**: Handles scroll behavior for hash navigation within docs layout
 
 ## Development
 

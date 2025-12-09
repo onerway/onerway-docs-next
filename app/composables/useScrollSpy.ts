@@ -27,18 +27,14 @@ export function useScrollSpy() {
   ) {
     entries.forEach((entry) => {
       const id = entry.target.id;
-      if (!id) {
-        return;
-      }
+      if (!id) return;
 
       if (entry.isIntersecting) {
-        // 标题进入视口，添加到 visibleHeadings
         visibleHeadings.value = [
           ...visibleHeadings.value,
           id,
         ];
       } else {
-        // 标题离开视口，从 visibleHeadings 中移除
         visibleHeadings.value =
           visibleHeadings.value.filter((h) => h !== id);
       }
@@ -47,28 +43,24 @@ export function useScrollSpy() {
 
   /**
    * 更新需要观察的标题元素
-   * 会清除旧的观察目标，避免内存泄漏和状态不一致
    * @param headings - 需要监听的标题元素数组
    */
   function updateHeadings(headings: Element[]) {
-    if (!observer.value) {
-      return;
-    }
+    if (!observer.value) return;
 
-    // 1. 断开所有现有观察，避免观察已卸载的元素
+    // 断开所有现有观察
     observer.value.disconnect();
 
-    // 2. 重置可见标题列表，避免保留已不存在的标题
+    // 重置 visibleHeadings（watcher 会同步执行，保留 oldVal）
     visibleHeadings.value = [];
 
-    // 3. 如果没有标题需要观察（如空 Tab），清空 activeHeadings
-    //    注意：watch 中的逻辑会在 visibleHeadings 为空时保留 activeHeadings（为滚动场景设计）
-    //    但 Tab 切换到空内容时，应该清空
+    // 空标题列表（如 Tab 切换到空内容）时清空 activeHeadings
+    // 由于 watcher 使用 flush: 'sync'，此赋值在 watcher 之后执行
     if (headings.length === 0) {
       activeHeadings.value = [];
     }
 
-    // 4. 重新观察新的标题元素
+    // 重新观察新的标题元素
     headings.forEach((heading) => {
       observer.value?.observe(heading);
     });
@@ -76,18 +68,24 @@ export function useScrollSpy() {
 
   /**
    * 当 visibleHeadings 变化时更新 activeHeadings
-   * - 如果有可见标题，activeHeadings 更新为当前可见的标题
-   * - 如果没有可见标题，保留上一次的激活状态
+   * - 有可见标题：更新为当前可见的标题
+   * - 无可见标题：保留上一次的激活状态（滚动时的正常行为）
+   *
+   * 使用 flush: 'sync' 确保 watcher 同步执行，避免与 updateHeadings 中
+   * 直接设置 activeHeadings 产生竞态条件
    */
-  watch(visibleHeadings, (val, oldVal) => {
-    if (val.length === 0) {
-      activeHeadings.value = oldVal;
-    } else {
-      activeHeadings.value = val;
-    }
-  });
+  watch(
+    visibleHeadings,
+    (val, oldVal) => {
+      if (val.length === 0) {
+        activeHeadings.value = oldVal;
+      } else {
+        activeHeadings.value = val;
+      }
+    },
+    { flush: "sync" }
+  );
 
-  // 使用 onMounted 确保只在客户端执行
   onMounted(() => {
     observer.value = new IntersectionObserver(
       observerCallback

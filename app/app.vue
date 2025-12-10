@@ -16,7 +16,6 @@ const uiLocale = computed(
     locales[locale.value as keyof typeof locales] ??
     locales.en
 );
-console.log("uiLocale", uiLocale.value);
 
 /**
  * 获取当前语言环境的导航树

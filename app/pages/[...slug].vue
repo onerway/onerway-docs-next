@@ -10,6 +10,16 @@ import { mapContentNavigation } from "@nuxt/ui/utils/content";
 
 definePageMeta({
   layout: "docs",
+  validate: (route) => {
+    // 不要用文档 catch-all 来处理 Nuxt 内部前缀
+    if (
+      route.path.startsWith("/_nuxt") ||
+      route.path.startsWith("/__nuxt")
+    ) {
+      return false;
+    }
+    return true;
+  },
 });
 
 const route = useRoute();
@@ -41,7 +51,7 @@ if (!page.value) {
   throw createError({
     statusCode: 404,
     statusMessage: "Page not found",
-    fatal: true,
+    fatal: false,
   });
 }
 

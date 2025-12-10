@@ -68,6 +68,22 @@ export default defineAppConfig({
       },
     },
 
+    // PageCard 增强样式
+    // 基础：hover 上浮效果 + 平滑过渡
+    // spotlight 模式：额外添加阴影和微妙渐变
+    pageCard: {
+      slots: {
+        root: "transition-all duration-300 ease-out hover:-translate-y-1",
+      },
+      variants: {
+        spotlight: {
+          true: {
+            root: "shadow-md hover:shadow-xl bg-linear-to-br from-default to-primary/5",
+          },
+        },
+      },
+    },
+
     selectMenu: {
       slots: {
         content: "min-w-fit",

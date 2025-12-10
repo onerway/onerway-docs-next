@@ -51,8 +51,7 @@ const {
             variant="naked"
             :to="page.path"
             :ui="{
-              wrapper:
-                'flex-row items-start gap-2.5 py-2.5',
+              wrapper: 'flex-row items-start gap-2.5 p-2.5',
               leading: 'mb-0 mt-0.5',
               body: 'flex-1 min-w-0',
             }">

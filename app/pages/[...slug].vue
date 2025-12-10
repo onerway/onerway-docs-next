@@ -15,6 +15,9 @@ definePageMeta({
 const route = useRoute();
 const { locale, t } = useI18n();
 
+// 记录最近访问的页面
+const { addPage } = useRecentPages();
+
 // 使用类型安全的 injection key 获取导航树
 const navigation = inject(NAVIGATION_KEY);
 
@@ -101,6 +104,22 @@ watch(
 // 初始加载时，等待页面渲染完成后再处理 hash 滚动
 const nuxtApp = useNuxtApp();
 nuxtApp.hooks.hookOnce("page:finish", handleScroll);
+
+// 记录页面访问历史（仅客户端）
+watch(
+  () => page.value,
+  (newPage) => {
+    if (import.meta.client && newPage) {
+      addPage({
+        path: newPage.path || route.path,
+        title: newPage.title || "",
+        description: newPage.description,
+        icon: newPage.icon || "i-heroicons-document-text",
+      });
+    }
+  },
+  { immediate: true }
+);
 </script>
 
 <template>

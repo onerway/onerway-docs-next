@@ -20,12 +20,6 @@ const page = useState<DocPage | null>(
 const { currentModuleMenu } = useDocsNav(
   navigation as Ref<ContentNavigationItem[]>
 );
-
-console.log("[docs] navigation", navigation);
-console.log(
-  "[docs] currentModuleMenu",
-  currentModuleMenu.value
-);
 </script>
 
 <template>

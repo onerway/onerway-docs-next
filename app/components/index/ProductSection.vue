@@ -46,13 +46,15 @@ const products = computed(() => [
     :ui="{
       container: 'gap-4 sm:gap-8 py-4 sm:py-6 lg:py-8',
     }">
-    <ProseH2 class="my-0">{{ t("productsTitle") }}</ProseH2>
+    <h3 class="text-2xl font-bold text-default">
+      {{ t("productsTitle") }}
+    </h3>
 
     <!-- Payments subsection -->
     <section :id="`payments`">
-      <ProseH3 class="text-muted">
+      <h4 class="text-lg font-semibold text-default mb-4">
         {{ t("productsPayments") }}
-      </ProseH3>
+      </h4>
 
       <UPageGrid>
         <UPageCard
@@ -69,14 +71,14 @@ const products = computed(() => [
 
     <!-- Transfer subsection -->
     <section>
-      <ProseH3 class="text-muted">
+      <h4 class="text-lg font-semibold text-default">
         {{ t("productsTransfer") }}
         <UBadge
           class="font-bold rounded-lg ml-2 -translate-y-0.5"
           trailing-icon="i-heroicons-clock">
           {{ t("comingSoon") }}
         </UBadge>
-      </ProseH3>
+      </h4>
     </section>
   </UPageSection>
 </template>

@@ -327,8 +327,8 @@ const styles = computed(() => ({
 | `ProseAnnotation` | `:prose-annotation[text]{...}` | 术语注释 |
 | `ProseInlineBlocks` | `::prose-inline-blocks` | 强制行内渲染 |
 | `ProseLinkSwitch` | `:prose-link-switch{preset="env" path="/dashboard"}[text]` | 多链接选择器（环境切换等） |
-| `ProseTabs` | `::tabs{sync="key" variant="pill"}` | 标签页容器（覆盖 Nuxt UI 默认实现） |
-| `ProseTabsItem` | `:::tabs-item{label="标签"}` | 标签页项 |
+| `ProseTabs` | `::prose-tabs{sync="key" variant="pill"}` | 标签页容器（覆盖 Nuxt UI 默认实现）：支持横向滚动 tabs 头、左右按钮、激活项自动滚动、sync 与 TOC 集成 |
+| `ProseTabsItem` | `:::prose-tabs-item{label="标签"}` | 标签页项 |
 
 ### Docs - 文档页面结构组件
 

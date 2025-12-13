@@ -61,14 +61,22 @@ const accordionItems = computed(() => {
       v-if="layout === 'tabs'"
       v-model="selectedMethod"
       :items="tabItems"
-      variant="pill">
+      variant="pill"
+      :ui="{
+        // 不截断 label：完整展示，允许横向滚动（保留滚动条），默认是 truncate
+        label:
+          'whitespace-nowrap overflow-visible text-clip max-w-none',
+        // 关键：禁用 pill 默认的 trigger: 'grow'，让每个 tab 按内容宽度撑开
+        trigger: 'max-sm:grow-0 shrink-0 min-w-max',
+        list: 'overflow-x-auto scroll-smooth min-w-0 w-full',
+      }">
       <template
         v-for="method in paymentMethods"
         :key="method.id"
         #[method.id]>
         <div
           :class="
-            size === 'mobile' ? 'p-2' : 'p-2 sm:p-12'
+            size === 'mobile' ? 'p-2' : 'p-2 sm:p-10'
           ">
           <PaymentMethodCard
             v-if="
@@ -106,7 +114,7 @@ const accordionItems = computed(() => {
         #[method.id]>
         <div
           :class="
-            size === 'mobile' ? 'p-2' : 'p-2 sm:p-12'
+            size === 'mobile' ? 'p-2' : 'p-2 sm:p-10'
           ">
           <PaymentMethodCard
             v-if="

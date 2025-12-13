@@ -100,7 +100,7 @@ onerway-docs-next2/
 - **ProseAnnotation**: Block-level annotations with hover tooltips (use with `::` syntax)
 - **ProseInlineBlocks**: Forces block-level elements to render inline on the same line
 - **ProseLinkSwitch**: Multi-link selector with preset support (e.g., merchant-dashboard for Sandbox/Production switching)
-- **ProseTabs/ProseTabsItem**: Enhanced tabs component with multiple variants (pill, link, underline, segment), localStorage sync, and dynamic TOC integration
+- **ProseTabs/ProseTabsItem**: Enhanced tabs component with multiple variants (pill, link, underline, segment), localStorage sync, scrollable tab header (with left/right controls), auto scroll to active tab, and dynamic TOC integration
 - **AppHeader**: Main navigation header
 - **AppHeaderMobileNav**: Mobile-friendly navigation menu
 - **AppLogo**: Application logo component

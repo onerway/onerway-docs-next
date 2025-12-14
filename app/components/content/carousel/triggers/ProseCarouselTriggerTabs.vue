@@ -1,4 +1,24 @@
 <script setup lang="ts">
+/**
+ * ProseCarouselTriggerTabs
+ * Carousel 的 Tabs Trigger（内部组件）。
+ *
+ * 注意：通常你只需要在 MDC 里使用 `::prose-carousel{variant="tabs"}`，
+ * 不需要直接使用本组件。这里给出最小示例便于排障/调试。
+ *
+ * @example MDC（不推荐，仅排障）
+ * ```mdc
+ * ::prose-carousel-trigger-tabs
+ * ---
+ * activeIndex: 0
+ * orientation: vertical
+ * items:
+ *   - label: Tab 1
+ *   - label: Tab 2
+ * ---
+ * ::
+ * ```
+ */
 // ============================================================================
 // Types
 // ============================================================================

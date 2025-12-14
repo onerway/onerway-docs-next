@@ -1,4 +1,60 @@
 <script setup lang="ts">
+/**
+ * ProseCarousel
+ * 面向文档内容的 Carousel 封装（基于 Nuxt UI `UCarousel` / Embla）。
+ *
+ * 特点：
+ * - 支持 `#slide-n` 命名 slots（便于未来迁移到 Nuxt Content MDC 写法）
+ * - 支持多种 triggers：tabs / dots / thumbnails / numbers / progress
+ * - `tabs.orientation = vertical` 时，默认左侧并排且与 slides 同高
+ *
+ * @example MDC（推荐：用 #slide-n）
+ * ```mdc
+ * ::prose-carousel
+ * ---
+ * variant: tabs
+ * tabs:
+ *   orientation: vertical
+ *   items:
+ *     - label: Payment
+ *       icon: i-heroicons-credit-card
+ *     - label: Tokenization
+ *       icon: i-heroicons-key
+ * carouselProps:
+ *   loop: true
+ *   fade: true
+ *   autoHeight: true
+ *   autoplay:
+ *     delay: 3000
+ *     stopOnInteraction: true
+ *   ui:
+ *     container: transition-[height] duration-300
+ * pauseOnInteraction: true
+ * ---
+ * #slide-1
+ * 这里放 slide 1 内容（例如 prose-code-card）
+ *
+ * #slide-2
+ * 这里放 slide 2 内容
+ * ::
+ * ```
+ *
+ * @example MDC（dots）
+ * ```mdc
+ * ::prose-carousel
+ * ---
+ * variant: dots
+ * carouselProps:
+ *   loop: true
+ * ---
+ * #slide-1
+ * Slide A
+ *
+ * #slide-2
+ * Slide B
+ * ::
+ * ```
+ */
 import { computed, ref, useSlots, watch } from "vue";
 import type { EmblaCarouselType } from "embla-carousel";
 

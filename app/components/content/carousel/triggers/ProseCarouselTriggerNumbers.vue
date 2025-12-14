@@ -1,4 +1,23 @@
 <script setup lang="ts">
+/**
+ * ProseCarouselTriggerNumbers
+ * Carousel 的 Numbers Trigger（内部组件）。
+ *
+ * 注意：通常你只需要在 MDC 里使用 `::prose-carousel{variant="numbers"}`，
+ * 不需要直接使用本组件。这里给出最小示例便于排障/调试。
+ *
+ * @example MDC（不推荐，仅排障）
+ * ```mdc
+ * ::prose-carousel-trigger-numbers
+ * ---
+ * activeIndex: 0
+ * total: 5
+ * format: "01"
+ * maxVisible: 4
+ * ---
+ * ::
+ * ```
+ */
 export interface ProseCarouselTriggerNumbersProps {
   activeIndex: number;
   total: number;

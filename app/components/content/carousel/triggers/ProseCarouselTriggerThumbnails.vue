@@ -1,4 +1,26 @@
 <script setup lang="ts">
+/**
+ * ProseCarouselTriggerThumbnails
+ * Carousel 的 Thumbnails Trigger（内部组件）。
+ *
+ * 注意：通常你只需要在 MDC 里使用 `::prose-carousel{variant="thumbnails"}`，
+ * 不需要直接使用本组件。这里给出最小示例便于排障/调试。
+ *
+ * @example MDC（不推荐，仅排障）
+ * ```mdc
+ * ::prose-carousel-trigger-thumbnails
+ * ---
+ * activeIndex: 0
+ * size: md
+ * items:
+ *   - src: /images/placeholder-1.png
+ *     alt: Thumb 1
+ *   - src: /images/placeholder-2.png
+ *     alt: Thumb 2
+ * ---
+ * ::
+ * ```
+ */
 // ============================================================================
 // Types
 // ============================================================================

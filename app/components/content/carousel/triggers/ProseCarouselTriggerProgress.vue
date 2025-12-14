@@ -1,4 +1,22 @@
 <script setup lang="ts">
+/**
+ * ProseCarouselTriggerProgress
+ * Carousel 的 Progress Trigger（内部组件）。
+ *
+ * 注意：通常你只需要在 MDC 里使用 `::prose-carousel{variant="progress"}`，
+ * 不需要直接使用本组件。这里给出最小示例便于排障/调试。
+ *
+ * @example MDC（不推荐，仅排障）
+ * ```mdc
+ * ::prose-carousel-trigger-progress
+ * ---
+ * activeIndex: 1
+ * total: 4
+ * showCounter: true
+ * ---
+ * ::
+ * ```
+ */
 export interface ProseCarouselTriggerProgressProps {
   activeIndex: number;
   total: number;

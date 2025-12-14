@@ -334,7 +334,7 @@ const styles = computed(() => ({
 | `ProseAccordion` | `::prose-accordion` | 可折叠面板 |
 | `ProseAccordionItem` | `:::prose-accordion-item` | 折叠面板项 |
 | `ProseAnnotation` | `:prose-annotation[text]{...}` | 术语注释 |
-| `ProseCodeCard` | - | 代码展示卡片（copy + 可选 footer CTA，支持 `#code` slot 覆盖） |
+| `ProseCodeCard` | - | 代码展示卡片（copy + 可选 footer actions，支持默认 slot 直写 fenced code block） |
 | `ProseInlineBlocks` | `::prose-inline-blocks` | 强制行内渲染 |
 | `ProseLinkSwitch` | `:prose-link-switch{preset="env" path="/dashboard"}[text]` | 多链接选择器（环境切换等） |
 | `ProseCarousel` | - | 轮播封装（基于 Nuxt UI `UCarousel` + 多种 triggers，支持 `#slide-n` 命名 slots） |

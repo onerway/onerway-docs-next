@@ -107,7 +107,7 @@ onerway-docs-next2/
 - **ProseA**: Link rendering with internal/external link detection and icons
 - **ProseAccordion/ProseAccordionItem**: Expandable content sections
 - **ProseAnnotation**: Block-level annotations with hover tooltips (use with `::` syntax)
-- **ProseCodeCard**: Reusable code display card with copy button and optional footer CTA
+- **ProseCodeCard**: Reusable code display card with copy button and optional footer actions (supports default slot fenced code blocks)
 - **ProseCarousel / ProseCarouselTrigger***: Carousel wrapper around Nuxt UI `UCarousel` with multiple trigger variants and `#slide-n` named slots
 - **ProseInlineBlocks**: Forces block-level elements to render inline on the same line
 - **ProseLinkSwitch**: Multi-link selector with preset support (e.g., merchant-dashboard for Sandbox/Production switching)

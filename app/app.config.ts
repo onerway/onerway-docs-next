@@ -24,6 +24,8 @@ export default defineAppConfig({
     // icon
     icons: {
       chevronRight: "i-lucide-chevron-right",
+      light: "i-ph-sun",
+      dark: "i-ph-moon",
     },
 
     navigationMenu: {

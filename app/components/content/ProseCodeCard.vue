@@ -4,79 +4,66 @@
  * 可复用的“代码展示卡片”，适用于首页 showcase / 文档内容中的示例展示。
  *
  * 特点：
- * - 复用 Nuxt UI（UButton）实现复制与按钮样式
- * - 支持固定高度（用于 carousel slides 统一高度）
- * - 支持 `#code` slot 覆盖（例如未来接入 Nuxt Content 已高亮的代码 HTML）
+ * - 终端风格 header（title）+ copy 按钮
+ * - MDC 对齐：默认 slot 可直接放 fenced code block（让 Nuxt Content/Prose 负责渲染与高亮）
+ * - 支持 footer actions（可变数量 CTA）
  */
+
+import type { ButtonProps } from "#ui/types";
 
 // ============================================================================
 // Types
 // ============================================================================
 
-export interface ProseCodeCardFooter {
-  tryItTo?: string;
-  learnMoreTo?: string;
-  tryItLabel?: string;
-  learnMoreLabel?: string;
+export interface ProseCodeCardAction {
+  label: string;
+  to: string;
+  icon?: string;
+  trailingIcon?: string;
+  color?: ButtonProps["color"];
+  variant?: ButtonProps["variant"];
+  size?: ButtonProps["size"];
 }
 
 export interface ProseCodeCardProps {
-  /** 终端命令行标题（展示在 header 左侧） */
-  command?: string;
+  /** header 左侧标题（更通用的文本，如命令/标题） */
+  title?: string;
 
-  /** 代码内容（默认以 ProsePre 展示） */
+  /**
+   * fallback 代码文本（当没有 slot 内容时，默认以 ProsePre 展示）
+   * 同时也是 copy 的首选来源
+   */
   code?: string;
 
   /** 代码语言（仅用于 ProsePre 的语义类名/属性） */
   language?: string;
 
-  /** 点击复制时写入剪贴板的文本（默认等于 code） */
-  copyText?: string;
+  /** 固定高度（px）。不传则动态高度；传值则内容区滚动 */
+  height?: number;
 
-  /** 复制按钮 hover/title 文案 */
-  copyLabel?: string;
-
-  /**
-   * 是否显示左侧“三点”装饰
-   * @defaultValue true
-   */
-  showWindowControls?: boolean;
-
-  /**
-   * 最小高度（用于保持布局稳定）
-   * @defaultValue 380
-   */
-  minHeight?: number;
-
-  /**
-   * 是否固定卡片高度（用于多张卡片高度一致）
-   * 开启后内容区会占满剩余空间并支持滚动
-   * @defaultValue false
-   */
-  fixedHeight?: boolean;
-
-  /** 底部 CTA */
-  footer?: ProseCodeCardFooter;
+  /** 底部 CTA actions（MDC 友好：数量可变） */
+  actions?: ProseCodeCardAction[];
 }
 
 // ============================================================================
-// Props & Emits
+// Props & Slots
 // ============================================================================
 
 const props = withDefaults(
   defineProps<ProseCodeCardProps>(),
   {
-    command: undefined,
+    title: undefined,
     code: undefined,
     language: "json",
-    copyText: undefined,
-    copyLabel: undefined,
-    showWindowControls: true,
-    minHeight: 380,
-    fixedHeight: false,
-    footer: undefined,
+    height: undefined,
+    actions: () => [],
   }
 );
+
+const slots = defineSlots<{
+  default?: () => VNode[];
+  footer?: () => VNode[];
+}>();
 
 // ============================================================================
 // Composables & Injections
@@ -89,20 +76,30 @@ const { copy, copied } = useClipboard();
 // Computed Properties
 // ============================================================================
 
-const resolvedCopyLabel = computed(
-  () => props.copyLabel || t("apiCopy")
-);
+const isFixedHeight = computed(() => {
+  return (
+    typeof props.height === "number" && props.height > 0
+  );
+});
 
-const resolvedCode = computed(() => props.code ?? "");
+const canCopy = computed(() => {
+  return !!props.code?.trim();
+});
+
+const hasFooter = computed(() => {
+  return !!slots.footer || props.actions.length > 0;
+});
 
 // ============================================================================
 // Methods
 // ============================================================================
 
 const handleCopy = () => {
-  const text = props.copyText ?? props.code ?? "";
+  const text = props.code?.trim() || "";
   if (!text) return;
-  copy(text, { successTitle: t("copied") });
+  copy(text, {
+    successTitle: t("copied"),
+  });
 };
 
 // ============================================================================
@@ -112,7 +109,7 @@ const handleCopy = () => {
 const styles = computed(() => ({
   root: [
     "w-full rounded-lg overflow-hidden border border-default",
-    props.fixedHeight ? "flex flex-col" : undefined,
+    isFixedHeight.value ? "flex flex-col" : undefined,
   ],
   header:
     "flex items-center justify-between px-4 py-3 border-b border-default",
@@ -124,7 +121,7 @@ const styles = computed(() => ({
   commandText: "truncate",
   content: [
     "overflow-auto bg-elevated",
-    props.fixedHeight ? "flex-1" : "max-h-80",
+    isFixedHeight.value ? "flex-1" : undefined,
   ],
   footer:
     "flex items-center justify-between px-4 py-3 border-t border-default",
@@ -135,16 +132,12 @@ const styles = computed(() => ({
   <div
     :class="styles.root"
     :style="
-      fixedHeight
-        ? { height: `${minHeight}px` }
-        : { minHeight: `${minHeight}px` }
+      isFixedHeight ? { height: `${height}px` } : undefined
     ">
     <!-- Header -->
     <div :class="styles.header">
       <div :class="styles.headerLeft">
-        <div
-          v-if="showWindowControls"
-          :class="styles.windowControls">
+        <div :class="styles.windowControls">
           <div class="size-3 rounded-full bg-error" />
           <div class="size-3 rounded-full bg-warning" />
           <div class="size-3 rounded-full bg-success" />
@@ -153,12 +146,13 @@ const styles = computed(() => ({
         <div :class="styles.commandRow">
           <span :class="styles.commandPrompt">$</span>
           <span :class="styles.commandText">
-            {{ command }}
+            {{ title }}
           </span>
         </div>
       </div>
 
       <UButton
+        v-if="canCopy"
         :icon="
           copied
             ? 'i-heroicons-check'
@@ -167,48 +161,50 @@ const styles = computed(() => ({
         size="xs"
         :color="copied ? 'primary' : 'success'"
         variant="ghost"
-        :title="resolvedCopyLabel"
+        :title="t('apiCopy')"
+        :aria-label="t('apiCopy')"
         @click="handleCopy" />
     </div>
 
     <!-- Content -->
     <div :class="styles.content">
-      <slot name="code">
+      <template v-if="$slots.default">
+        <slot />
+      </template>
+      <template v-else>
         <ProsePre
           :language="language"
-          :code="resolvedCode"
+          :code="code || ''"
           :ui="{
             root: 'my-0',
             base: 'border-none bg-inherit',
             copy: 'hidden',
           }">
-          {{ resolvedCode }}
+          {{ code || "" }}
         </ProsePre>
-      </slot>
+      </template>
     </div>
 
     <!-- Footer -->
     <div
-      v-if="footer?.tryItTo || footer?.learnMoreTo"
+      v-if="hasFooter"
       :class="styles.footer">
-      <UButton
-        v-if="footer?.tryItTo"
-        :to="footer.tryItTo"
-        color="primary"
-        size="sm"
-        icon="i-heroicons-play">
-        {{ footer.tryItLabel || t("apiTryIt") }}
-      </UButton>
-
-      <UButton
-        v-if="footer?.learnMoreTo"
-        :to="footer.learnMoreTo"
-        color="primary"
-        variant="ghost"
-        size="sm"
-        trailing-icon="i-heroicons-arrow-top-right-on-square">
-        {{ footer.learnMoreLabel || t("apiLearnMore") }}
-      </UButton>
+      <slot name="footer">
+        <UButton
+          v-for="(action, index) in actions"
+          :key="`${action.to}-${index}`"
+          :to="action.to"
+          :icon="action.icon"
+          :trailing-icon="action.trailingIcon"
+          :color="action.color || 'primary'"
+          :variant="
+            action.variant ||
+            (index === 0 ? 'solid' : 'ghost')
+          "
+          :size="action.size || 'sm'">
+          {{ action.label }}
+        </UButton>
+      </slot>
     </div>
   </div>
 </template>

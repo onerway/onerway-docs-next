@@ -142,16 +142,23 @@ const isMobile = computed(
         :key="demo.id"
         #[`slide-${idx+1}`]>
         <ProseCodeCard
-          :command="demo.command"
+          :title="demo.command"
           :code="demo.code"
-          fixed-height
-          :copy-label="t('apiCopy')"
-          :footer="{
-            tryItTo: demo.docsLink,
-            learnMoreTo: demo.docsLink,
-            tryItLabel: t('apiTryIt'),
-            learnMoreLabel: t('apiLearnMore'),
-          }" />
+          :height="380"
+          :actions="[
+            {
+              label: t('apiTryIt'),
+              to: demo.docsLink,
+              icon: 'i-heroicons-play',
+            },
+            {
+              label: t('apiLearnMore'),
+              to: demo.docsLink,
+              trailingIcon:
+                'i-heroicons-arrow-top-right-on-square',
+              variant: 'ghost',
+            },
+          ]" />
       </template>
     </ProseCarousel>
   </UPageSection>

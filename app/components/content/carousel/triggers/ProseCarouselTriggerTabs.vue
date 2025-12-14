@@ -90,7 +90,7 @@ const styles = computed(() => ({
     root:
       props.orientation === "vertical"
         ? "h-full"
-        : undefined,
+        : "flex-row",
     list: [
       "p-2",
       props.orientation === "horizontal"

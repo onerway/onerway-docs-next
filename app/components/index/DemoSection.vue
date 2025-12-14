@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import {
+  breakpointsTailwind,
+  useBreakpoints,
+} from "@vueuse/core";
+
 /**
  * DemoSection
  * 首页 API 演示轮播区域，展示交互式 API 示例
@@ -92,6 +97,11 @@ const demos = computed<ApiDemo[]>(() => [
     docsLink: "/reconciliation",
   },
 ]);
+
+const breakpoints = useBreakpoints(breakpointsTailwind);
+const isMobile = computed(
+  () => breakpoints.smaller("sm").value
+);
 </script>
 
 <template>
@@ -105,12 +115,13 @@ const demos = computed<ApiDemo[]>(() => [
     </h3>
     <ProseCarousel
       variant="tabs"
+      :trigger-placement="isMobile ? 'top' : 'auto'"
       :tabs="{
         items: demos.map((d) => ({
           label: d.label,
           icon: d.icon,
         })),
-        orientation: 'vertical',
+        orientation: isMobile ? 'horizontal' : 'vertical',
       }"
       :carousel-props="{
         loop: true,

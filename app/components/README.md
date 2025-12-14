@@ -18,7 +18,16 @@ app/components/
 │   ├── ProseAccordion.vue        # MDC 内容组件（Prose 前缀）
 │   ├── ProseAccordionItem.vue
 │   ├── ProseAnnotation.vue
+│   ├── ProseCodeCard.vue          # 代码展示卡片
 │   ├── ProseInlineBlocks.vue
+│   ├── carousel/                  # Carousel（ProseCarousel + triggers）
+│   │   ├── ProseCarousel.vue
+│   │   └── triggers/
+│   │       ├── ProseCarouselTriggerDots.vue
+│   │       ├── ProseCarouselTriggerNumbers.vue
+│   │       ├── ProseCarouselTriggerProgress.vue
+│   │       ├── ProseCarouselTriggerTabs.vue
+│   │       └── ProseCarouselTriggerThumbnails.vue
 │   ├── ProseLinkSwitch.vue       # 多链接选择器
 │   ├── ProseTabs.vue             # 标签页（覆盖 Nuxt UI）
 │   └── ProseTabsItem.vue         # 标签页项
@@ -325,8 +334,10 @@ const styles = computed(() => ({
 | `ProseAccordion` | `::prose-accordion` | 可折叠面板 |
 | `ProseAccordionItem` | `:::prose-accordion-item` | 折叠面板项 |
 | `ProseAnnotation` | `:prose-annotation[text]{...}` | 术语注释 |
+| `ProseCodeCard` | - | 代码展示卡片（copy + 可选 footer CTA，支持 `#code` slot 覆盖） |
 | `ProseInlineBlocks` | `::prose-inline-blocks` | 强制行内渲染 |
 | `ProseLinkSwitch` | `:prose-link-switch{preset="env" path="/dashboard"}[text]` | 多链接选择器（环境切换等） |
+| `ProseCarousel` | - | 轮播封装（基于 Nuxt UI `UCarousel` + 多种 triggers，支持 `#slide-n` 命名 slots） |
 | `ProseTabs` | `::prose-tabs{sync="key" variant="pill"}` | 标签页容器（覆盖 Nuxt UI 默认实现）：支持横向滚动 tabs 头、左右按钮、激活项自动滚动、sync 与 TOC 集成 |
 | `ProseTabsItem` | `:::prose-tabs-item{label="标签"}` | 标签页项 |
 

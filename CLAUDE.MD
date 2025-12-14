@@ -34,8 +34,17 @@ onerway-docs-next2/
 │   │   │   ├── ProseAccordion.vue
 │   │   │   ├── ProseAccordionItem.vue
 │   │   │   ├── ProseAnnotation.vue
+│   │   │   ├── ProseCodeCard.vue
 │   │   │   ├── ProseInlineBlocks.vue
 │   │   │   ├── ProseLinkSwitch.vue
+│   │   │   ├── carousel/
+│   │   │   │   ├── ProseCarousel.vue
+│   │   │   │   └── triggers/
+│   │   │   │       ├── ProseCarouselTriggerDots.vue
+│   │   │   │       ├── ProseCarouselTriggerNumbers.vue
+│   │   │   │       ├── ProseCarouselTriggerProgress.vue
+│   │   │   │       ├── ProseCarouselTriggerTabs.vue
+│   │   │   │       └── ProseCarouselTriggerThumbnails.vue
 │   │   │   ├── ProseTabs.vue
 │   │   │   └── ProseTabsItem.vue
 │   │   ├── header/        # Header navigation components
@@ -98,6 +107,8 @@ onerway-docs-next2/
 - **ProseA**: Link rendering with internal/external link detection and icons
 - **ProseAccordion/ProseAccordionItem**: Expandable content sections
 - **ProseAnnotation**: Block-level annotations with hover tooltips (use with `::` syntax)
+- **ProseCodeCard**: Reusable code display card with copy button and optional footer CTA
+- **ProseCarousel / ProseCarouselTrigger***: Carousel wrapper around Nuxt UI `UCarousel` with multiple trigger variants and `#slide-n` named slots
 - **ProseInlineBlocks**: Forces block-level elements to render inline on the same line
 - **ProseLinkSwitch**: Multi-link selector with preset support (e.g., merchant-dashboard for Sandbox/Production switching)
 - **ProseTabs/ProseTabsItem**: Enhanced tabs component with multiple variants (pill, link, underline, segment), localStorage sync, scrollable tab header (with left/right controls), auto scroll to active tab, and dynamic TOC integration

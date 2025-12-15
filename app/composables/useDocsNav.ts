@@ -58,12 +58,12 @@ export function useDocsNav(
     item: ContentNavigationItem,
     hasChildren: boolean
   ): ExtendedNavigationMenuItem["type"] {
-    if (item.page === false) {
-      return "link";
-    }
-    if (hasChildren) {
-      return "trigger";
-    }
+    // 子节点优先：即便该节点本身不可点击，也应作为可展开的 trigger
+    if (hasChildren) return "trigger";
+
+    // 不生成页面且无子节点：作为纯文本分组/标签渲染
+    if (item.page === false) return "label";
+    // 普通页面链接
     return "link";
   }
 

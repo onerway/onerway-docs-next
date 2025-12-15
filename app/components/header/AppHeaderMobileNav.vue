@@ -12,6 +12,7 @@
  */
 import type { NavigationMenuItem } from "@nuxt/ui";
 import type { ContentNavigationItem } from "@nuxt/content";
+import { navigationMenuResponsiveUi } from "~/composables/useNavigationMenuResponsiveUi";
 
 const props = defineProps<{
   navigation: Ref<ContentNavigationItem[]>;
@@ -115,6 +116,7 @@ function backToModules() {
             :items="moduleMenuItems"
             orientation="vertical"
             variant="link"
+            :ui="navigationMenuResponsiveUi"
             trailing-icon="i-lucide-chevron-right" />
         </UCard>
       </div>
@@ -148,6 +150,7 @@ function backToModules() {
               selectedModule?.children || currentModuleMenu
             "
             variant="link"
+            :ui="navigationMenuResponsiveUi"
             trailing-icon="i-lucide-chevron-right"
             orientation="vertical" />
         </UCard>

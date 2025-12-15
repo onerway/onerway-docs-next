@@ -37,7 +37,15 @@ export default defineAppConfig({
       variants: {
         orientation: {
           vertical: {
-            link: "p-1.5",
+            // 纵向菜单：长标题移动端最多 2 行，PC 端不截断
+            link: "px-0.5 py-1.5 items-start",
+            linkLabel: "whitespace-normal text-left",
+            linkTrailing: "items-start",
+            childLink: "items-start",
+            childLinkLabel: "whitespace-normal",
+            childLinkWrapper: "min-w-0",
+            childLinkDescription:
+              "text-balance line-clamp-2",
           },
         },
         active: {
@@ -55,7 +63,7 @@ export default defineAppConfig({
           orientation: "vertical",
           collapsed: false,
           class: {
-            childList: "ms-3 border-none",
+            childList: "ms-2 border-none",
             childItem: "ps-1",
           },
         },

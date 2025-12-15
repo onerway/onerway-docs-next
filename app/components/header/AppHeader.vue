@@ -15,6 +15,7 @@ import type { DropdownMenuItem } from "@nuxt/ui";
 import type { ContentNavigationItem } from "@nuxt/content";
 import type { Ref } from "vue";
 import { NAVIGATION_KEY } from "~/types/injection-keys";
+import { navigationMenuResponsiveUi } from "~/composables/useNavigationMenuResponsiveUi";
 
 const { header } = useAppConfig();
 const { locale, locales, setLocale } = useI18n();
@@ -112,8 +113,19 @@ const languageItems = computed<DropdownMenuItem[][]>(() => [
           :items="topLevelModules"
           orientation="horizontal"
           content-orientation="vertical"
+          trailing-icon="i-lucide-chevron-right"
           variant="link"
-          class="w-full" />
+          class="w-full">
+          <template #item-content="{ item }">
+            <UNavigationMenu
+              :items="item.children"
+              orientation="vertical"
+              variant="link"
+              trailing-icon="i-lucide-chevron-right"
+              :ui="navigationMenuResponsiveUi"
+              class="p-2" />
+          </template>
+        </UNavigationMenu>
       </div>
     </template>
   </UHeader>

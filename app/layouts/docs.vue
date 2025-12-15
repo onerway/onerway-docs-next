@@ -53,12 +53,16 @@ const { currentModuleMenu } = useDocsNav(
             <template #item-label="{ item }">
               <div
                 :class="[
-                  'flex gap-2 cursor-pointer',
+                  'flex gap-2 cursor-pointer whitespace-normal wrap-break-word text-pretty',
                   item.module
                     ? 'cursor-text select-text inline-block'
                     : '',
                 ]">
-                <span>{{ item.label }}</span>
+                <span
+                  :title="item.label"
+                  class="line-clamp-2 lg:line-clamp-none"
+                  >{{ item.label }}</span
+                >
               </div>
             </template>
           </UNavigationMenu>

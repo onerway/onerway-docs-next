@@ -69,10 +69,6 @@ export default defineNuxtConfig({
 
   // content 配置
   content: {
-    // sqlite 配置
-    experimental: {
-      sqliteConnector: "better-sqlite3",
-    },
     build: {
       markdown: {
         // 代码高亮

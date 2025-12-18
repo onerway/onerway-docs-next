@@ -17,7 +17,8 @@ const page = useState<DocPage | null>(
 );
 
 // 转换导航树为 NavigationMenu 所需的数据结构
-const { currentModuleMenu } = useDocsNav(
+// currentModuleKey 用于强制重新渲染 NavigationMenu，确保 defaultOpen 生效
+const { currentModuleMenu, currentModuleKey } = useDocsNav(
   navigation as Ref<ContentNavigationItem[]>
 );
 </script>
@@ -39,13 +40,13 @@ const { currentModuleMenu } = useDocsNav(
         </template>
 
         <template #default>
-          <!-- 导航菜单 -->
+          <!-- 导航菜单：key 确保模块切换时重新渲染，使 defaultOpen 生效 -->
           <UNavigationMenu
+            :key="currentModuleKey"
             orientation="vertical"
             variant="link"
             trailing-icon="i-lucide-chevron-right"
-            :items="currentModuleMenu"
-            class="">
+            :items="currentModuleMenu">
             <!-- 
               自定义前缀：箭头 + 图标
               使用占位符方案确保所有菜单项完美对齐

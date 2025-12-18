@@ -1,4 +1,11 @@
 {
+  "header": {
+    "api": {
+      "title": "API Reference",
+      "payments": "Payments API",
+      "transfer": "Transfer API"
+    }
+  },
   "toc": {
     "title": "Table of Contents"
   },

@@ -84,7 +84,8 @@ export function useDocsNav(
     if (item.trailingIcon) {
       menuItem.trailingIcon = item.trailingIcon;
     }
-    if (item.module) {
+    // 只有模块节点（无独立页面）才标记为 module
+    if (item.page === false) {
       menuItem.module = true;
       if (!menuItem.icon) {
         menuItem.icon = "";
@@ -94,21 +95,29 @@ export function useDocsNav(
 
   /**
    * 模块节点的样式与交互（避免点击触发，默认展开）
+   * @param isFirstItem - 是否为同级中第一个 item（第一个不需要顶部边框）
    */
   function applyModuleStyling(
     menuItem: ExtendedNavigationMenuItem,
-    item: ContentNavigationItem
+    item: ContentNavigationItem,
+    isFirstItem = false
   ): void {
-    if (!item.module) {
+    if (item.page !== false) {
       menuItem.ui = {
         link: "font-normal cursor-pointer hover:text-primary",
       };
       return;
     }
+    // defaultOpen: 初始渲染时是否展开（用户可以后续收起）
     menuItem.defaultOpen = true;
+    // open: 强制控制展开状态（模块节点始终保持展开）
+    menuItem.open = item.page === false;
     menuItem.disabled = true;
     menuItem.ui = {
-      item: "py-2 border-t border-default",
+      // 第一个 item 不需要顶部边框（用于与上方内容分隔）
+      item: isFirstItem
+        ? "py-2"
+        : "py-2 border-t border-default",
       link: "opacity-100 cursor-default font-semibold text-highlight",
       linkTrailingIcon: "hidden",
     };
@@ -119,15 +128,18 @@ export function useDocsNav(
    *
    * @param item - Content 导航项
    * @param level - 当前层级（1 为顶层）
+   * @param isFirstItem - 是否为同级中第一个 item
    * @returns 转换后的菜单项
    */
   function transformToMenuItem(
     item: ContentNavigationItem,
-    level = 1
+    level = 1,
+    isFirstItem = false
   ): ExtendedNavigationMenuItem {
+    // 处理子节点时，传递索引判断是否为第一个 item
     const children = item.children
-      ?.map((child) =>
-        transformToMenuItem(child, level + 1)
+      ?.map((child, index) =>
+        transformToMenuItem(child, level + 1, index === 0)
       )
       .filter(Boolean) as
       | ExtendedNavigationMenuItem[]
@@ -145,7 +157,7 @@ export function useDocsNav(
     };
 
     applyCustomFields(menuItem, item);
-    applyModuleStyling(menuItem, item);
+    applyModuleStyling(menuItem, item, isFirstItem);
 
     return menuItem;
   }
@@ -186,8 +198,8 @@ export function useDocsNav(
 
       // 标记活动状态
       if (isItemActive) {
-        // 模块节点不标记为活动状态
-        item.active = item.module !== true;
+        // 只有普通页面（非模块节点）才标记为活动状态
+        item.active = item.page !== false;
         hasActiveChild = true;
       }
     }
@@ -221,29 +233,9 @@ export function useDocsNav(
   );
 
   /**
-   * 顶层模块列表（供 Header 或模块选择器）
-   */
-  const topLevelModules = computed(
-    (): ExtendedNavigationMenuItem[] =>
-      normalizedModules.value.map((mod) => mod.root)
-  );
-
-  /**
-   * 根据 includeModules 输出：顶层+子菜单 或仅子菜单
-   */
-  const navigationItems = computed(
-    (): ExtendedNavigationMenuItem[] => {
-      if (includeModules) {
-        return topLevelModules.value;
-      }
-      return normalizedModules.value.flatMap(
-        (mod) => mod.menu
-      );
-    }
-  );
-
-  /**
    * 递归查找菜单中第一个有效路径
+   * @param items - 菜单项数组
+   * @returns 第一个找到的路径，如果没有则返回 null
    */
   function findFirstPath(
     items: ExtendedNavigationMenuItem[]
@@ -261,6 +253,47 @@ export function useDocsNav(
     }
     return null;
   }
+
+  /**
+   * 顶层模块列表（供 Header 或模块选择器）
+   * 包含完整的嵌套结构
+   */
+  const topLevelModules = computed(
+    (): ExtendedNavigationMenuItem[] =>
+      normalizedModules.value.map((mod) => mod.root)
+  );
+
+  /**
+   * 仅顶层模块链接（无子菜单）
+   * 适用于 Header 水平导航，只显示模块名称作为链接
+   */
+  const topLevelModuleLinks = computed(
+    (): ExtendedNavigationMenuItem[] =>
+      normalizedModules.value.map((mod) => ({
+        label: mod.root.label,
+        to:
+          mod.root.to ||
+          findFirstPath(mod.menu) ||
+          undefined,
+        type: "link" as const,
+        active: mod.root.active,
+        icon: mod.root.icon,
+      }))
+  );
+
+  /**
+   * 根据 includeModules 输出：顶层+子菜单 或仅子菜单
+   */
+  const navigationItems = computed(
+    (): ExtendedNavigationMenuItem[] => {
+      if (includeModules) {
+        return topLevelModules.value;
+      }
+      return normalizedModules.value.flatMap(
+        (mod) => mod.menu
+      );
+    }
+  );
 
   /**
    * 根据路径获取当前模块
@@ -307,6 +340,14 @@ export function useDocsNav(
   );
 
   /**
+   * 当前模块的唯一标识（用于 NavigationMenu 的 key，强制重新渲染）
+   */
+  const currentModuleKey = computed(
+    (): string =>
+      currentModule.value?.root?.label ?? "default"
+  );
+
+  /**
    * 从 navigation 树中递归查找页面的 title
    * @param path - 页面路径
    * @param items - 导航树（可选，默认使用 rootNav）
@@ -331,8 +372,10 @@ export function useDocsNav(
   return {
     navigationItems,
     topLevelModules,
+    topLevelModuleLinks,
     currentModule,
     currentModuleMenu,
+    currentModuleKey,
     getCurrentModule,
     findTitleByPath,
   };

@@ -1,4 +1,11 @@
 {
+  "header": {
+    "api": {
+      "title": "API 参考",
+      "payments": "支付 API",
+      "transfer": "转账 API"
+    }
+  },
   "toc": {
     "title": "目录"
   },

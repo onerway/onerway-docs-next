@@ -1,3 +1,5 @@
+import type { DropdownMenuItem } from "@nuxt/ui";
+
 export default defineAppConfig({
   ui: {
     colors: {
@@ -65,6 +67,16 @@ export default defineAppConfig({
           class: {
             childList: "ms-2 border-none",
             childItem: "ps-1",
+          },
+        },
+        {
+          orientation: "horizontal",
+          highlight: true,
+          class: {
+            link: [
+              "after:absolute after:-bottom-1 after:inset-x-2.5 after:block after:h-[1.5px] after:rounded-full",
+              "after:transition-colors",
+            ],
           },
         },
       ],
@@ -199,5 +211,15 @@ export default defineAppConfig({
       light: "",
       dark: "",
     },
+    apiLinks: [
+      {
+        labelKey: "header.api.payments",
+        to: "https://docs.onerway.com/apis/",
+      },
+      {
+        labelKey: "header.api.transfer",
+        to: "https://docs.onerway.com/apis/payout/",
+      },
+    ] as DropdownMenuItem[],
   },
 });

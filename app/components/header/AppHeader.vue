@@ -15,10 +15,9 @@ import type { DropdownMenuItem } from "@nuxt/ui";
 import type { ContentNavigationItem } from "@nuxt/content";
 import type { Ref } from "vue";
 import { NAVIGATION_KEY } from "~/types/injection-keys";
-import { navigationMenuResponsiveUi } from "~/composables/useNavigationMenuResponsiveUi";
 
 const { header } = useAppConfig();
-const { locale, locales, setLocale } = useI18n();
+const { t, locale, locales, setLocale } = useI18n();
 
 // 使用类型安全的 injection key 获取导航树
 // NAVIGATION_KEY 已定义正确的泛型类型，inject 返回 Ref<ContentNavigationItem[]>
@@ -29,7 +28,7 @@ const navigationForMobile = computed(
   () => navigation as Ref<ContentNavigationItem[]>
 );
 
-const { topLevelModules } = useDocsNav(
+const { topLevelModuleLinks } = useDocsNav(
   navigation as Ref<ContentNavigationItem[]>,
   {
     includeModules: true,
@@ -45,6 +44,17 @@ const languageItems = computed<DropdownMenuItem[][]>(() => [
         ? "i-lucide-check"
         : undefined,
     onSelect: () => setLocale(l.code),
+  })),
+]);
+
+// API 链接菜单项
+const apis = computed<DropdownMenuItem[][]>(() => [
+  (header.apiLinks || []).map((link) => ({
+    label: t(link.labelKey),
+    ...(link.icon && { icon: link.icon }),
+    to: link.to,
+    color: "primary",
+    target: "_blank",
   })),
 ]);
 </script>
@@ -105,27 +115,25 @@ const languageItems = computed<DropdownMenuItem[][]>(() => [
       <UColorModeButton />
     </template>
 
-    <!-- Bottom 插槽 - 水平导航菜单 -->
+    <!-- Bottom 插槽 - 水平导航菜单 + API 入口 -->
     <template #bottom>
       <div
-        class="hidden lg:flex w-full bg-default/75 backdrop-blur h-header-nav items-center border-b border-default px-2">
+        class="hidden lg:flex w-full bg-default/75 backdrop-blur h-header-nav items-center justify-between border-b border-default px-2">
+        <!-- 左侧：模块导航链接（无子菜单） -->
         <UNavigationMenu
-          :items="topLevelModules"
+          :items="topLevelModuleLinks"
+          highlight
           orientation="horizontal"
-          content-orientation="vertical"
-          trailing-icon="i-lucide-chevron-right"
-          variant="link"
-          class="w-full">
-          <template #item-content="{ item }">
-            <UNavigationMenu
-              :items="item.children"
-              orientation="vertical"
-              variant="link"
-              trailing-icon="i-lucide-chevron-right"
-              :ui="navigationMenuResponsiveUi"
-              class="p-2" />
-          </template>
-        </UNavigationMenu>
+          variant="link" />
+
+        <!-- 右侧：API 入口下拉菜单 -->
+        <UDropdownMenu :items="apis">
+          <UButton
+            :label="t('header.api.title')"
+            trailing-icon="i-lucide-chevron-down"
+            color="neutral"
+            variant="link" />
+        </UDropdownMenu>
       </div>
     </template>
   </UHeader>

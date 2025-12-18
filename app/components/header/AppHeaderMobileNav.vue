@@ -9,8 +9,12 @@
  * - 自动检测当前路由并高亮对应模块
  * - 支持返回上一级导航
  * - 作为 AppHeader 的子组件在移动端抽屉中使用
+ * - 底部固定 API 入口链接
  */
-import type { NavigationMenuItem } from "@nuxt/ui";
+import type {
+  NavigationMenuItem,
+  PageLink,
+} from "@nuxt/ui";
 import type { ContentNavigationItem } from "@nuxt/content";
 import { navigationMenuResponsiveUi } from "~/composables/useNavigationMenuResponsiveUi";
 
@@ -19,6 +23,19 @@ const props = defineProps<{
 }>();
 
 const route = useRoute();
+const { header } = useAppConfig();
+const { t } = useI18n();
+
+// API 链接（用于 UPageLinks）
+const apis = computed<PageLink[]>(() =>
+  (header.apiLinks || []).map((link) => ({
+    label: t(link.labelKey),
+    ...(link.icon && { icon: link.icon }),
+    to: link.to,
+    color: "primary",
+    target: "_blank",
+  }))
+);
 
 // 获取完整导航数据（包括顶层模块）
 const {
@@ -97,64 +114,81 @@ function backToModules() {
 </script>
 
 <template>
-  <div class="h-full flex flex-col overflow-y-auto">
-    <Transition
-      mode="out-in"
-      enter-active-class="transition-all duration-300 ease-out"
-      leave-active-class="transition-all duration-200 ease-in"
-      enter-from-class="translate-x-full opacity-0"
-      enter-to-class="translate-x-0 opacity-100"
-      leave-from-class="translate-x-0 opacity-100"
-      leave-to-class="-translate-x-full opacity-0">
-      <!-- 模块列表视图 -->
-      <div
-        v-if="viewMode === 'modules'"
-        key="modules"
-        class="flex-1 flex flex-col p-1 overflow-y-auto">
-        <UCard variant="outline">
-          <UNavigationMenu
-            :items="moduleMenuItems"
-            orientation="vertical"
-            variant="link"
-            :ui="navigationMenuResponsiveUi"
-            trailing-icon="i-lucide-chevron-right" />
-        </UCard>
-      </div>
+  <div class="h-full flex flex-col">
+    <!-- 导航内容区域（可滚动） -->
+    <div class="flex-1 overflow-y-auto">
+      <Transition
+        mode="out-in"
+        enter-active-class="transition-all duration-300 ease-out"
+        leave-active-class="transition-all duration-200 ease-in"
+        enter-from-class="translate-x-full opacity-0"
+        enter-to-class="translate-x-0 opacity-100"
+        leave-from-class="translate-x-0 opacity-100"
+        leave-to-class="-translate-x-full opacity-0">
+        <!-- 模块列表视图 -->
+        <div
+          v-if="viewMode === 'modules'"
+          key="modules"
+          class="p-1">
+          <UCard variant="outline">
+            <UNavigationMenu
+              :items="moduleMenuItems"
+              orientation="vertical"
+              variant="link"
+              :ui="navigationMenuResponsiveUi"
+              trailing-icon="i-lucide-chevron-right" />
+          </UCard>
+        </div>
 
-      <!-- 子菜单视图 -->
-      <div
-        v-else
-        key="submenu"
-        class="flex-1 flex flex-col p-1">
-        <UCard
-          variant="outline"
-          class="flex-1 flex flex-col overflow-y-auto">
-          <template #header>
-            <div class="flex items-center gap-2">
-              <UButton
-                icon="i-lucide-arrow-left"
-                color="neutral"
-                variant="solid"
-                size="sm"
-                :label="selectedModule?.label"
-                @click="backToModules" />
-            </div>
-          </template>
+        <!-- 子菜单视图 -->
+        <div
+          v-else
+          key="submenu"
+          class="p-1">
+          <UCard variant="outline">
+            <template #header>
+              <div class="flex items-center gap-2">
+                <UButton
+                  icon="i-lucide-arrow-left"
+                  color="neutral"
+                  variant="solid"
+                  size="sm"
+                  :label="selectedModule?.label"
+                  @click="backToModules" />
+              </div>
+            </template>
 
-          <!-- 模块子菜单 - 使用 default slot -->
-          <UNavigationMenu
-            v-if="
-              selectedModule?.children || currentModuleMenu
-            "
-            :items="
-              selectedModule?.children || currentModuleMenu
-            "
-            variant="link"
-            :ui="navigationMenuResponsiveUi"
-            trailing-icon="i-lucide-chevron-right"
-            orientation="vertical" />
-        </UCard>
-      </div>
-    </Transition>
+            <!-- 模块子菜单 -->
+            <UNavigationMenu
+              v-if="
+                selectedModule?.children ||
+                currentModuleMenu
+              "
+              :items="
+                selectedModule?.children ||
+                currentModuleMenu
+              "
+              variant="link"
+              :ui="navigationMenuResponsiveUi"
+              trailing-icon="i-lucide-chevron-right"
+              orientation="vertical" />
+          </UCard>
+        </div>
+      </Transition>
+    </div>
+
+    <!-- 底部固定 API 入口 -->
+    <div class="shrink-0 p-1">
+      <UPageCard variant="outline">
+        <template #body>
+          <UPageLinks
+            :title="t('header.api.title')"
+            :links="apis"
+            :ui="{
+              list: 'ms-auto',
+            }" />
+        </template>
+      </UPageCard>
+    </div>
   </div>
 </template>

@@ -1,4 +1,3 @@
 title: Web Dashboard
-description: Manage your Onerway account
-icon:
-order: 1
+type: trigger
+to: /get-started/set-up-onerway/web-dashboard/test3

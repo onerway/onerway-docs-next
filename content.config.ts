@@ -18,6 +18,16 @@ const commonSchema = z.object({
   showFooter: z.boolean().default(true),
 
   /**
+   * 控制导航条目（用于菜单）的跳转路径
+   */
+  to: z.string().optional(),
+
+  /**
+   * 控制导航条目（用于菜单）是否隐藏
+   */
+  hidden: z.boolean().default(false),
+
+  /**
    * 控制导航条目（用于菜单）是否显示或自定义标题
    */
   navigation: z

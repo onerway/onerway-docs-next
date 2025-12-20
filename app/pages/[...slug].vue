@@ -32,7 +32,7 @@ const { addPage } = useRecentPages();
 const navigation = inject(NAVIGATION_KEY);
 
 const { data: page } = await useAsyncData(
-  route.path,
+  `${route.path}-${locale.value}`,
   () => {
     const collection =
       `docs_${locale.value}` as keyof PageCollections;
@@ -40,7 +40,7 @@ const { data: page } = await useAsyncData(
       .path(route.path)
       .first();
   },
-  { watch: [locale] }
+  { watch: [() => locale.value] }
 );
 
 if (import.meta.client && import.meta.dev) {
@@ -64,7 +64,7 @@ watchEffect(() => {
 });
 
 const { data: surround } = await useAsyncData(
-  `${route.path}-surround`,
+  `${route.path}-${locale.value}-surround`,
   () => {
     const collection =
       `docs_${locale.value}` as keyof PageCollections;
@@ -76,7 +76,7 @@ const { data: surround } = await useAsyncData(
       }
     );
   },
-  { watch: [locale] }
+  { watch: [() => locale.value] }
 );
 
 const title = page.value.seo?.title || page.value.title;

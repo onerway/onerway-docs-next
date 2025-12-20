@@ -335,6 +335,20 @@ if (import.meta.client) {
   // 监听 headingSelector 变化，重新获取标题元素
   watch(() => props.headingSelector, refreshHeadings);
 
+  // 监听 links 变化（语言切换时 page.body.toc.links 会变化）
+  // 等待 ContentRenderer 完成 DOM 渲染后再刷新标题
+  watch(
+    () => props.links,
+    () => {
+      // 使用 setTimeout 确保 ContentRenderer 完全渲染完成
+      // nextTick 只等待一个 tick，可能不够
+      setTimeout(() => {
+        refreshHeadings();
+      }, 100);
+    },
+    { deep: true }
+  );
+
   // 组件卸载时取消所有 hook 注册，防止内存泄漏
   onUnmounted(() => {
     unregisterPageLoadingEnd();

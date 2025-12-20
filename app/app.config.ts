@@ -40,7 +40,7 @@ export default defineAppConfig({
         orientation: {
           vertical: {
             // 纵向菜单：长标题移动端最多 2 行，PC 端不截断
-            link: "px-0.5 py-1.5 items-start",
+            link: "px-0.5 pt-1 pb-1.5 items-start",
             linkLabel: "whitespace-normal text-left",
             linkTrailing: "items-start",
             childLink: "items-start",

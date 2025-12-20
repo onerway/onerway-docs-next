@@ -1,0 +1,32 @@
+/* 字体 */
+@theme {
+  /* 无衬线字体栈 - 全面覆盖 Web、文档、Emoji */
+  --font-sans: 
+      /* 系统字体优先 */
+    -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+    /* Web 字体 */ "Inter", "Noto Sans SC", "Noto Sans TC",
+    "Source Han Sans", /* 系统中文字体 */ "PingFang SC",
+    "PingFang TC", "Hiragino Sans GB", "Hiragino Sans CNS",
+    "Microsoft YaHei", "Microsoft JhengHei",
+    /* 通用回退 */ "Helvetica Neue", "Arial",
+    "Liberation Sans", "Noto Sans", sans-serif,
+    /* Emoji 支持 */ "Apple Color Emoji", "Segoe UI Emoji",
+    "Noto Color Emoji", "Segoe UI Symbol";
+
+  /* 衬线字体栈 - 支持文档和正式内容 */
+  --font-serif: 
+      /* Web 衬线字体 */
+    "Crimson Pro", "Noto Serif SC", "Source Han Serif SC",
+    /* 系统衬线字体 */ "Times New Roman", "Times",
+    "Liberation Serif", /* 中文衬线字体 */ "Songti SC",
+    "SimSun", "NSimSun", /* 通用回退 */ serif;
+
+  /* 等宽字体栈 - 代码和技术文档 */
+  --font-mono: 
+      /* 现代等宽字体 */
+    ui-monospace, "SF Mono", "Monaco", "Cascadia Code",
+    "Roboto Mono", /* 系统等宽字体 */ "Consolas",
+    "Liberation Mono", "Menlo", "Courier New",
+    /* 中文等宽支持 */ "Microsoft YaHei Mono",
+    "Source Han Sans CN", /* 通用回退 */ monospace;
+}

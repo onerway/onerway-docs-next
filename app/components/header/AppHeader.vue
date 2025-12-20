@@ -69,6 +69,9 @@ const apis = computed<DropdownMenuItem[][]>(() => [
     }"
     :menu="{
       side: 'right',
+    }"
+    :ui="{
+      root: 'border-none bg-default',
     }">
     <!-- Left 插槽 - Logo 区域 -->
     <template #left>
@@ -118,7 +121,7 @@ const apis = computed<DropdownMenuItem[][]>(() => [
     <!-- Bottom 插槽 - 水平导航菜单 + API 入口 -->
     <template #bottom>
       <div
-        class="hidden lg:flex w-full bg-default/75 backdrop-blur h-header-nav items-center justify-between border-b border-default px-2">
+        class="hidden lg:flex w-full bg-default backdrop-blur h-header-nav items-center justify-between border-b border-default px-2">
         <!-- 左侧：模块导航链接（无子菜单） -->
         <UNavigationMenu
           :items="topLevelModuleLinks"

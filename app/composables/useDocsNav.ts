@@ -23,6 +23,65 @@ interface NormalizedModule {
 }
 
 /**
+ * 查找页面面包屑导航，过滤掉 page === false 的导航项
+ *
+ * 这是基于 @nuxt/content/utils 的 findPageBreadcrumb 的自定义版本，
+ * 增加了对 page === false 导航项的过滤逻辑。
+ *
+ * @param navigation - 导航树
+ * @param path - 当前页面路径
+ * @param options - 配置选项
+ * @returns 面包屑数组
+ */
+export function findPageBreadcrumb(
+  navigation: ContentNavigationItem[] | undefined,
+  path: string | undefined,
+  options?: { current?: boolean; indexAsChild?: boolean }
+): ContentNavigationItem[] {
+  if (!navigation?.length || !path) {
+    return [];
+  }
+
+  return navigation.reduce(
+    (breadcrumb: ContentNavigationItem[], link) => {
+      if (
+        path &&
+        (path + "/").startsWith(link.path + "/")
+      ) {
+        // 只有当 page !== false 时才添加到面包屑
+        if (
+          link.page !== false &&
+          (path !== link.path ||
+            options?.current ||
+            (options?.indexAsChild && link.children))
+        ) {
+          breadcrumb.push(link);
+        }
+
+        // 仍然递归检查子节点（不过滤子节点的 page 属性）
+        if (link.children) {
+          breadcrumb.push(
+            ...findPageBreadcrumb(
+              link.children.filter(
+                (c: ContentNavigationItem) =>
+                  c.path !== link.path ||
+                  (c.path === path &&
+                    options?.current &&
+                    options?.indexAsChild)
+              ),
+              path,
+              options
+            )
+          );
+        }
+      }
+      return breadcrumb;
+    },
+    []
+  );
+}
+
+/**
  * 文档导航组合式函数
  * 将 Nuxt Content 的导航树转换为 Nuxt UI NavigationMenu 所需的数据结构
  *

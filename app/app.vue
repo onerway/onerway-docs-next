@@ -29,12 +29,13 @@ const { data: navigation } = await useAsyncData(
     return queryCollectionNavigation(collection, [
       "to",
       "hidden",
+      "navigation"
     ]);
   },
   { watch: [locale] }
 );
 
-if (import.meta.client) {
+if (import.meta.client && import.meta.dev) {
   console.log("navigation", navigation.value);
 }
 

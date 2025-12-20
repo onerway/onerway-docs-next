@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { PageCollections } from "@nuxt/content";
-import { findPageBreadcrumb } from "@nuxt/content/utils";
+import { findPageBreadcrumb } from "~/composables/useDocsNav";
 import {
   NAVIGATION_KEY,
   CURRENT_PAGE_STATE_KEY,
@@ -43,7 +43,7 @@ const { data: page } = await useAsyncData(
   { watch: [locale] }
 );
 
-if (import.meta.client) {
+if (import.meta.client && import.meta.dev) {
   console.log("[slug] page", page.value);
 }
 
@@ -96,9 +96,9 @@ const breadcrumb = computed(() =>
     findPageBreadcrumb(
       navigation?.value,
       page.value?.path,
-      { indexAsChild: true }
+      { current: true, indexAsChild: true }
     )
-  ).map(({ icon, ...link }) => link)
+  )
 );
 
 // 处理路由切换和初始 hash 的滚动行为
@@ -144,6 +144,9 @@ watch(
     <div class="min-w-0">
       <UBreadcrumb
         v-if="breadcrumb.length"
+        :ui="{
+          list: 'flex-wrap',
+        }"
         :items="breadcrumb" />
       <UPageHeader
         :title="page?.title ?? ''"

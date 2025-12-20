@@ -17,6 +17,7 @@ import type {
 } from "@nuxt/ui";
 import type { ContentNavigationItem } from "@nuxt/content";
 import { navigationMenuResponsiveUi } from "~/composables/useNavigationMenuResponsiveUi";
+import { useNavigationMenuTriggerClick } from "~/composables/useNavigationMenuTriggerClick";
 
 const props = defineProps<{
   navigation: Ref<ContentNavigationItem[]>;
@@ -111,6 +112,18 @@ const moduleMenuItems = computed(() =>
 function backToModules() {
   viewMode.value = "modules";
 }
+
+// 当前子菜单数据（响应式）
+const currentSubmenuItems = computed(
+  () =>
+    (selectedModule.value
+      ?.children as NavigationMenuItem[]) ||
+    currentModuleMenu.value
+);
+
+// trigger + 跳转处理器（无参数，从 data-nav-to 获取路径）
+const { handleClick: handleTriggerClick } =
+  useNavigationMenuTriggerClick();
 </script>
 
 <template>
@@ -125,26 +138,46 @@ function backToModules() {
         enter-to-class="translate-x-0 opacity-100"
         leave-from-class="translate-x-0 opacity-100"
         leave-to-class="-translate-x-full opacity-0">
-        <!-- 模块列表视图 -->
         <div
           v-if="viewMode === 'modules'"
           key="modules"
           class="p-1">
+          <!-- 模块列表视图 -->
           <UCard variant="outline">
-            <UNavigationMenu
-              :items="moduleMenuItems"
-              orientation="vertical"
-              variant="link"
-              :ui="navigationMenuResponsiveUi"
-              trailing-icon="i-lucide-chevron-right" />
+            <!-- 事件委托：捕获 trigger 类型菜单项的点击，实现展开 + 跳转 -->
+            <div @click.capture="handleTriggerClick">
+              <UNavigationMenu
+                :items="moduleMenuItems"
+                orientation="vertical"
+                variant="link"
+                :ui="navigationMenuResponsiveUi"
+                trailing-icon="i-lucide-chevron-right">
+                <!--
+                  slot 添加 data-nav-to 属性，用于 trigger + 跳转功能
+                  仅当父级菜单有独立页面（to 与 children[0].to 不同）时才启用跳转
+                -->
+                <template #item-label="{ item }">
+                  <span
+                    :data-nav-to="
+                      item.type === 'trigger' &&
+                      item.to &&
+                      item.children?.[0]?.to !== item.to
+                        ? item.to
+                        : undefined
+                    ">
+                    {{ item.label }}
+                  </span>
+                </template>
+              </UNavigationMenu>
+            </div>
           </UCard>
         </div>
 
-        <!-- 子菜单视图 -->
         <div
           v-else
           key="submenu"
           class="p-1">
+          <!-- 子菜单视图 -->
           <UCard variant="outline">
             <template #header>
               <div class="flex items-center gap-2">
@@ -159,19 +192,33 @@ function backToModules() {
             </template>
 
             <!-- 模块子菜单 -->
-            <UNavigationMenu
-              v-if="
-                selectedModule?.children ||
-                currentModuleMenu
-              "
-              :items="
-                selectedModule?.children ||
-                currentModuleMenu
-              "
-              variant="link"
-              :ui="navigationMenuResponsiveUi"
-              trailing-icon="i-lucide-chevron-right"
-              orientation="vertical" />
+            <!-- 事件委托：捕获 trigger 类型菜单项的点击，实现展开 + 跳转 -->
+            <div @click.capture="handleTriggerClick">
+              <UNavigationMenu
+                v-if="currentSubmenuItems?.length"
+                :items="currentSubmenuItems"
+                variant="link"
+                :ui="navigationMenuResponsiveUi"
+                trailing-icon="i-lucide-chevron-right"
+                orientation="vertical">
+                <!--
+                  slot 添加 data-nav-to 属性，用于 trigger + 跳转功能
+                  仅当父级菜单有独立页面（to 与 children[0].to 不同）时才启用跳转
+                -->
+                <template #item-label="{ item }">
+                  <span
+                    :data-nav-to="
+                      item.type === 'trigger' &&
+                      item.to &&
+                      item.children?.[0]?.to !== item.to
+                        ? item.to
+                        : undefined
+                    ">
+                    {{ item.label }}
+                  </span>
+                </template>
+              </UNavigationMenu>
+            </div>
           </UCard>
         </div>
       </Transition>

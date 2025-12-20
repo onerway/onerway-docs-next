@@ -124,7 +124,11 @@ watch(
         path: newPage.path || route.path,
         title: newPage.title || "",
         description: newPage.description,
-        icon: newPage.icon || "i-heroicons-document-text",
+        icon:
+          newPage.navigation === true
+            ? "i-lucide-file"
+            : (newPage.navigation as { icon?: string })
+                ?.icon,
       });
     }
   },

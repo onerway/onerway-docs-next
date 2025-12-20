@@ -55,8 +55,7 @@ export function useDocsNav(
       return item.type as NavigationMenuItem["type"];
 
     // 子节点优先：即便该节点本身不可点击，也应作为可展开的 trigger
-    if (hasChildren && item.page !== false)
-      return "trigger";
+    if (hasChildren) return "trigger";
 
     // 不生成页面且无子节点：作为纯文本分组/标签渲染
     if (item.page === false) return "label";

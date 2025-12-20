@@ -93,10 +93,6 @@ function handleNavigationClick(e: MouseEvent) {
         :ui="{
           body: 'pt-layout px-4',
         }">
-        <template #toggle>
-          <UDashboardSidebarToggle variant="subtle" />
-        </template>
-
         <template #default>
           <!-- 事件委托容器：捕获导航菜单的点击事件，实现 trigger + 跳转 -->
           <div @click.capture="handleNavigationClick">

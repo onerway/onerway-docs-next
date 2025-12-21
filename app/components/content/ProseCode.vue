@@ -188,7 +188,10 @@ const formatters: Record<
   phone: (text: string) => {
     const cleaned = text.replace(/\s/g, "");
     if (cleaned.length === 11) {
-      return cleaned.replace(/(\d{3})(\d{4})(\d{4})/, "$1 $2 $3");
+      return cleaned.replace(
+        /(\d{3})(\d{4})(\d{4})/,
+        "$1 $2 $3"
+      );
     }
     return text;
   },
@@ -285,6 +288,7 @@ const codeClasses = computed(() => {
     "font-medium",
     "rounded-md",
     "inline-block",
+    "whitespace-nowrap",
   ];
 
   // 徽章模式
@@ -378,14 +382,13 @@ const codeClasses = computed(() => {
 const iconClasses = ["size-3", "shrink-0", "opacity-70"];
 
 const copyClasses = computed(() => [
-  "size-3",
+  "size-4",
   "shrink-0",
   "cursor-pointer",
-  "opacity-0",
-  "group-hover/code:opacity-100",
+  "opacity-50 group-hover/code:opacity-100",
   "transition-all",
   "duration-200",
-  copied.value ? "text-success" : "hover:text-primary",
+  copied.value ? "text-success" : "text-highlighted",
 ]);
 </script>
 
@@ -406,7 +409,13 @@ const copyClasses = computed(() => [
       <!-- Code 元素 -->
       <code
         :class="codeClasses"
-        :title="copy && !to ? (copied ? $t('copied') : $t('apiCopy')) : undefined"
+        :title="
+          copy && !to
+            ? copied
+              ? $t('copied')
+              : $t('apiCopy')
+            : undefined
+        "
         @click="copy && !to ? handleCopy() : undefined">
         <template v-if="format">{{ displayText }}</template>
         <slot v-else />
@@ -437,7 +446,13 @@ const copyClasses = computed(() => [
     <!-- Code 元素 -->
     <code
       :class="codeClasses"
-      :title="copy && !to ? (copied ? $t('copied') : $t('apiCopy')) : undefined"
+      :title="
+        copy && !to
+          ? copied
+            ? $t('copied')
+            : $t('apiCopy')
+          : undefined
+      "
       @click="copy && !to ? handleCopy() : undefined">
       <template v-if="format">{{ displayText }}</template>
       <slot v-else />

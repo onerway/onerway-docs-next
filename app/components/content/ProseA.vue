@@ -8,6 +8,7 @@
  * - 内部链接：始终显示 → 图标
  * - 外部链接：hover 时显示 ↗ 图标
  * - 外部链接自动添加 rel="noopener noreferrer" 安全属性
+ * - 支持 Badge：在链接和图标之间显示徽章标签
  *
  * @example MDC 用法
  * ```markdown
@@ -19,6 +20,10 @@
  *
  * # 外部链接（显式 target）
  * [GitHub](https://github.com){target="_blank"}
+ *
+ * # 带 Badge 的链接
+ * [API Overview](https://docs.onerway.com/apis/en/v0.6/){badge="API"}
+ * [Checkout Session](/api/checkout){badge="v0.6"}
  * ```
  */
 
@@ -37,6 +42,8 @@ export interface ProseAProps {
     | "_top"
     | (string & object)
     | null;
+  /** 徽章文本（显示在链接和图标之间） */
+  badge?: string;
 }
 
 // ============================================================================
@@ -46,6 +53,7 @@ export interface ProseAProps {
 const props = withDefaults(defineProps<ProseAProps>(), {
   href: "",
   target: undefined,
+  badge: undefined,
 });
 
 // ============================================================================
@@ -98,11 +106,17 @@ const targetAttr = computed(() => {
 const styles = {
   /** 链接基础样式 */
   link: [
-    "inline-flex items-center gap-1",
+    "inline-flex items-center gap-1.5",
     "text-primary font-medium",
     "hover:text-default",
     "transition duration-200",
     "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary focus-visible:rounded-sm",
+  ],
+  /** Badge 样式 */
+  badge: [
+    "shrink-0",
+    "transition-opacity duration-200",
+    "group-hover/link:opacity-90",
   ],
   /** 图标样式（内部/外部链接共用） */
   icon: [
@@ -121,6 +135,14 @@ const styles = {
     :rel="relAttr"
     :class="['group/link', styles.link]">
     <slot />
+    <!-- Badge -->
+    <UBadge
+      v-if="badge"
+      :label="badge"
+      color="primary"
+      variant="solid"
+      size="sm"
+      :class="styles.badge" />
     <!-- 外部链接图标 -->
     <UIcon
       v-if="isExternal"

@@ -1,4 +1,5 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+
 export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
   devtools: { enabled: true },
@@ -17,6 +18,8 @@ export default defineNuxtConfig({
     "@nuxt/icon",
     "@nuxt/fonts",
     "@nuxtjs/i18n",
+    // @include 语法支持 + 开发环境 HMR
+    "./modules/include",
   ],
 
   i18n: {

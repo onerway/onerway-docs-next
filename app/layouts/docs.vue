@@ -23,8 +23,6 @@ const { currentModuleMenu, currentModuleKey } = useDocsNav(
   navigation as Ref<ContentNavigationItem[]>
 );
 
-console.log("currentModuleMenu", currentModuleMenu.value);
-
 // 处理 trigger 类型菜单项的"展开 + 跳转"功能
 const { handleClick: handleNavigationClick } =
   useNavigationMenuTriggerClick();

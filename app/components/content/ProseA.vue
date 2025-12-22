@@ -116,7 +116,7 @@ const styles = {
   badge: [
     "shrink-0",
     "transition-opacity duration-200",
-    "group-hover/link:opacity-90",
+    "group-hover/link:opacity-80",
   ],
   /** 图标样式（内部/外部链接共用） */
   icon: [

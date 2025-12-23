@@ -13,7 +13,7 @@
     --ui-header-total-height: 4rem; /* 移动端总高度 */
 
     /* Layout 内容区偏移 */
-    --ui-content-offset: 0rem; /* 额外间距 */
+    --ui-content-offset: 0.2rem; /* 额外间距 */
     --ui-layout-padding-top: calc(
       var(--ui-header-total-height) +
         var(--ui-content-offset)

@@ -2,6 +2,7 @@
   "name": "onerway-docs-next2",
   "type": "module",
   "private": true,
+  "packageManager": "pnpm@10.23.0",
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",

@@ -117,6 +117,9 @@ export default defineAppConfig({
       p: {
         base: "my-3 leading-7 text-pretty",
       },
+      h2: {
+        base: "mt-8 mb-4",
+      },
       // 代码图标
       codeIcon: {
         react: "vscode-icons:file-type-reactts",

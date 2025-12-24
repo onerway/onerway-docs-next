@@ -89,14 +89,13 @@ function isActive(id: string): boolean {
       <a
         :href="`#${link.id}`"
         :class="[
-          'flex items-center h-7 transition-colors duration-200 truncate',
-          isActive(link.id)
-            ? 'text-primary'
-            : 'text-muted hover:text-default',
+          'flex items-center h-7 transition-colors duration-200 text-ellipsis',
+          isActive(link.id) ? 'text-primary' : 'text-muted hover:text-default',
           link.class,
         ]"
-        @click.prevent="emit('scrollTo', link.id)">
-        {{ link.text }}
+        @click.prevent="emit('scrollTo', link.id)"
+      >
+        <span class="truncate">{{ link.text }}</span>
       </a>
 
       <!-- 递归渲染子链接 -->

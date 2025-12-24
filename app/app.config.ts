@@ -120,6 +120,18 @@ export default defineAppConfig({
       h2: {
         base: "mt-8 mb-4",
       },
+      h3: {
+        base: "mt-6 mb-3",
+      },
+      h4: {
+        base: "mt-4 mb-2",
+      },
+      h5: {
+        base: "mt-2 mb-1",
+      },
+      h6: {
+        base: "mt-1 mb-0.5",
+      },
       // 代码图标
       codeIcon: {
         react: "vscode-icons:file-type-reactts",

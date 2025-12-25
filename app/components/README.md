@@ -5,7 +5,7 @@
 
 - 前缀：`App`（全局布局）、`Prose`（内容表达增强，MDC 组件）、`Docs`（文档页面结构）
 - 维护：新增组件时同步更新表格，并补充/链接 MDC 示例；缺示例时以
-  `TODO` 标注
+`TODO` 标注
 
 ## App - 全局布局组件
 
@@ -35,6 +35,7 @@
 | ProseCarouselTriggerThumbnails | 轮播触发器 - 缩略图                           | `size`: sm · md · lg                                                                | -                 | 内部组件                                                     |
 | ProseTabs                      | 标签页容器，支持 localStorage 同步和动态 TOC  | `variant`: pill · link · underline · segment; `sync`                                | Reka UI Tabs      | [查看](content/ProseTabs.vue)                                |
 | ProseTabsItem                  | 标签项数据容器                                | `icon`                                                                              | -                 | `:::tabs-item{label="Tab" icon="i-lucide-x"}`                |
+| ProseTaskItem                  | 可交互任务列表项，支持 localStorage 持久化    | `initialChecked`                                                                    | UCheckbox         | 自动注入，无需手动使用                                       |
 
 ## Docs - 文档页面结构组件
 
@@ -50,7 +51,7 @@
 ## 维护约定
 
 - 新增/改动组件时：更新上述表格；为 MDC 组件补充示例链接或在组件内添加
-  `@example`；缺示例保持 `TODO`。
+`@example`；缺示例保持 `TODO`。
 - 命令/技能的读取顺序：组件示例（权威） → 本 README（概览） →
-  props/slots 推断；缺失信息时会提示 TODO。
+props/slots 推断；缺失信息时会提示 TODO。
 - 示例策略：简单示例直接放表格内；复杂示例放组件文件链接。

@@ -20,6 +20,8 @@ export default defineNuxtConfig({
     "@nuxtjs/i18n",
     // @include 语法支持 + 开发环境 HMR
     "./modules/include",
+    // Task list 可交互支持
+    "./modules/task-list",
   ],
 
   i18n: {
@@ -66,6 +68,10 @@ export default defineNuxtConfig({
     },
   },
 
+  taskList: {
+    enabled: true,
+  },
+
   features: {
     devLogs: true,
   },
@@ -74,6 +80,14 @@ export default defineNuxtConfig({
   content: {
     build: {
       markdown: {
+        remarkPlugins: {
+          "remark-emoji": {
+            options: {
+              emoticon: true,
+            },
+          },
+        },
+        rehypePlugins: {},
         // 代码高亮
         highlight: {
           langs: [

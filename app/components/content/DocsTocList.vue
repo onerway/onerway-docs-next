@@ -77,26 +77,59 @@ const getIndentClass = (
 function isActive(id: string): boolean {
   return props.activeHeadings.includes(id);
 }
+
+/**
+ * 获取激活状态的文本颜色类
+ * 返回完整的 Tailwind 类名以确保正确编译
+ */
+const activeTextClass = computed(() => {
+  // 使用完整类名，Tailwind 编译器可以识别
+  switch (props.color) {
+    case "primary":
+      return "text-primary";
+    case "secondary":
+      return "text-secondary";
+    case "success":
+      return "text-success";
+    case "info":
+      return "text-info";
+    case "warning":
+      return "text-warning";
+    case "error":
+      return "text-error";
+    case "neutral":
+      return "text-highlighted";
+    default:
+      return "text-primary";
+  }
+});
 </script>
 
 <template>
   <ul class="text-sm">
     <li
-      v-for="(link, index) in links"
-      :key="index"
+      v-for="link in links"
+      :key="link.id"
       :class="getIndentClass(level)">
       <!-- 每个链接高度固定为 28px (h-7)，与 Nuxt UI 指示器计算一致 -->
-      <a
-        :href="`#${link.id}`"
-        :class="[
-          'flex items-center h-7 transition-colors duration-200 text-ellipsis',
-          isActive(link.id) ? 'text-primary' : 'text-muted hover:text-default',
-          link.class,
-        ]"
-        @click.prevent="emit('scrollTo', link.id)"
-      >
-        <span class="truncate">{{ link.text }}</span>
-      </a>
+      <UTooltip
+        :text="link.text"
+        :delay-duration="300"
+        :content="{ side: 'right', align: 'center' }">
+        <ULink
+          :href="`#${link.id}`"
+          :active="isActive(link.id)"
+          inactive-class="text-muted hover:text-highlighted"
+          :active-class="activeTextClass"
+          :class="[
+            'flex items-center h-7 text-ellipsis transition-colors duration-200',
+            link.class,
+          ]"
+          raw
+          @click.prevent="emit('scrollTo', link.id)">
+          <span class="truncate">{{ link.text }}</span>
+        </ULink>
+      </UTooltip>
 
       <!-- 递归渲染子链接 -->
       <DocsTocList

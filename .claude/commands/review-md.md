@@ -150,6 +150,12 @@ allowed-tools: Read, Grep, Bash(git:*)
   - [ ] 如果原文有 Stripe 参考链接，是否已移至 Frontmatter 的
         `stripeDocUrl` 字段？
 
+- **Badge 使用规范**
+  - [ ] API 文档链接是否添加了 `{badge="API"}` 标识？
+  - [ ] 版本相关链接是否添加了版本号 badge（如 `{badge="v0.6"}`）？
+  - [ ] 待补充的链接是否使用 `[文本](#){badge="TODO"}` 占位符标记？
+  - [ ] Badge 文本是否简洁明了（建议 2-5 个字符）？
+
 #### 4.5 图片和媒体
 
 - [ ] 图片路径是否正确？

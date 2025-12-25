@@ -63,6 +63,14 @@ allowed-tools: Read, Task, Glob, Grep
 - 格式化约定
 - 整体可读性
 
+### 链接处理（重要 ⚠️）
+- **移除 Stripe 链接**：删除所有 docs.stripe.com、stripe.com 等官方链接
+- **添加 TODO 占位符**：对应位置需要链接但 Onerway 文档尚未创建时
+  - 格式：`[链接文本](#){badge="TODO"}`
+  - 示例：`[API 参考](#){badge="TODO"}`、`[Webhook 指南](#){badge="TODO"}`
+- **保留语义**：确保删除链接后文本仍然完整可读
+- **便于后期替换**：可全局搜索 `{badge="TODO"}` 批量替换真实链接
+
 ---
 
 ## ⚠️ 注意事项
@@ -71,6 +79,7 @@ allowed-tools: Read, Task, Glob, Grep
   2. **参考链接**: 请确保草稿中包含 Stripe 文档链接,以便 Agent 学习参考
   3. **保持意图**: Agent 会尊重你的原始意图和表达方式,只提供风格优化建议
   4. **项目标准**: 优化建议会平衡 Stripe 风格与 Onerway 项目标准
+  5. **链接替换**: Agent 会自动移除 Stripe 链接并用 `{badge="TODO"}` 占位符标记,方便后期批量替换
 
 ---
 

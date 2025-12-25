@@ -204,6 +204,7 @@ pnpm preview
 - **scope**: 可选，影响范围（如组件名、模块名）
 - **body**: 可选但推荐，使用 `-` bullet points 详细说明每个改动
 - **footer**: 可选，Breaking Changes 或关联 issue
+- **不要添加 AI 生成标识**：commit message 中不包含 "Generated with Claude Code" 或 "Co-Authored-By: Claude" 等 AI 标识
 
 ### 示例
 ```
@@ -283,7 +284,13 @@ Closes #123
 4. **样式问题**：检查 `nuxt.config.ts` 中的 CSS 导入顺序
 
 ## 相关资源
+
+### 官方文档
 - [Nuxt 文档](https://nuxt.com/docs)
 - [Nuxt Content](https://content.nuxt.com/)
 - [Nuxt UI](https://ui.nuxt.com/)
 - [Nuxt i18n](https://i18n.nuxtjs.org/)
+
+### 项目技术文档
+- [Nuxt Content & MDC 技术架构深度解析](docs/technical-references/nuxt-content-architecture.md) - Remark/Rehype 插件系统详解、自定义插件开发指南
+- [Task List 可交互功能调研](docs/investigations/task-list-investigation.md) - 可交互任务列表的实现方案对比与技术细节

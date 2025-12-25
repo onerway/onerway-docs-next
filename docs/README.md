@@ -8,8 +8,9 @@
 
 ```
 docs/
-├── investigations/    # 技术调研（设计前）
-├── designs/          # 设计文档（设计时）
+├── investigations/         # 技术调研（设计前）
+├── designs/               # 设计文档（设计时）
+├── technical-references/  # 技术参考文档
 └── README.md
 ```
 
@@ -17,22 +18,37 @@ docs/
 
 ## 文档类型
 
-### investigations/ - 技术调研
+### technical-references/ - 技术参考文档
 
-**目的**：深入理解上游组件实现
+**目的**：深度技术参考和架构解析
 
-**内容**：源码分析、完整 API、依赖关系、实现原理
+**内容**：底层架构、处理流程、插件系统、开发指南
 
-**命名**：`{upstream-component}-investigation.md`
+**命名**：`{topic}-{subtopic}.md`
 
 **现有文档**：
 
-- `nuxt-ui-tabs-investigation.md`
-- `nuxt-ui-accordion-investigation.md`
-- `nuxt-ui-carousel-investigation.md`
-- `nuxt-ui-content-toc-investigation.md`
-- `nuxt-ui-prose-a-investigation.md`
-- `nuxt-ui-steps-investigation.md`
+- `nuxt-content-architecture.md`
+
+---
+
+### investigations/ - 技术调研
+
+  **目的**：深入理解上游组件实现
+
+  **内容**：源码分析、完整 API、依赖关系、实现原理
+
+  **命名**：`{upstream-component}-investigation.md`
+
+  **现有文档**：
+
+  - `nuxt-ui-tabs-investigation.md` - Nuxt UI Tabs 组件调研
+  - `nuxt-ui-accordion-investigation.md` - Nuxt UI Accordion 组件调研
+  - `nuxt-ui-carousel-investigation.md` - Nuxt UI Carousel 组件调研
+  - `nuxt-ui-content-toc-investigation.md` - Nuxt UI Content TOC 组件调研
+  - `nuxt-ui-prose-a-investigation.md` - Nuxt UI ProseA 组件调研
+  - `nuxt-ui-steps-investigation.md` - Nuxt UI Steps 组件调研
+  - `task-list-investigation.md` - Task List 可交互功能调研
 
 ---
 
@@ -45,6 +61,10 @@ docs/
 **命名**：`{ComponentName}.md`
 
 **生成方式**：使用 `component-designer` skill 自动生成
+
+**现有文档**：
+
+- `ProseTaskItem.md` - 可交互任务列表项
 
 **待补充**（现有组件缺设计文档）：
 
@@ -139,6 +159,6 @@ docs/investigations/nuxt-ui-tabs-investigation.md
 
 ## 相关资源
 
-- 组件索引：`../app/components/README.md`
-- 设计 Skill：`../.claude/skills/component-designer/`
-- 项目规范：`../CLAUDE.md`
+  - 组件索引：`../app/components/README.md`
+  - 设计 Skill：`../.claude/skills/component-designer/`
+  - 项目规范：`../CLAUDE.md`

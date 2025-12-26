@@ -509,6 +509,16 @@ visit(tree, 'element', (node: Element) => {
 - `modules/task-list/` - Nuxt Content Transformer 实现示例（可交互 Task List）
 - `modules/include/` - 自定义 Nuxt 模块示例
 
+#### `@include` partial 组织与拆分建议
+- 作用范围优先：局部复用就放在页面同级的 `_partials/`；同一章节多页复用放在章节根 `_partials/`；跨章节复用放在语言根 `_partials/` 并按主题分子目录，避免长距离相对路径。
+- 路径示例（拆分 `content/en/1.get-started/3.start-building/1.start-developing/3.accept-a-payment.md` 为 checkout / sdk / direct）：  
+  `content/en/1.get-started/3.start-building/1.start-developing/_partials/accept-payment/checkout.md`  
+  `content/en/1.get-started/3.start-building/1.start-developing/_partials/accept-payment/sdk.md`  
+  `content/en/1.get-started/3.start-building/1.start-developing/_partials/accept-payment/direct.md`
+- 引用示例：在主文件中按需插入 `<!-- @include: ./_partials/accept-payment/checkout.md -->` 等；路径从当前文件开始计算。
+- 语言隔离：中英内容各自维护 `_partials/`，命名一致便于对照，避免跨语言混用同一片段。
+- HMR 依赖：partial 必须放在 `_partials` 下才会被 `content.config.ts` 的 data collection 追踪，编辑后才能触发引用页刷新。
+
 ---
 
 ## 十一、总结：选择正确的方式

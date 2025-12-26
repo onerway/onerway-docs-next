@@ -91,6 +91,7 @@
 | Permission | 权限 | |
 | Role | 角色 | |
 | Session | 会话 | |
+| Checkout Session | 收银台会话 | Onerway 托管支付页面的会话对象 |
 | Credential | 凭证 | |
 
 ### 支付和交易

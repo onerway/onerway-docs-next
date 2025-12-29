@@ -5,16 +5,16 @@
  *
  * @example MDC 用法
  * ```mdc
- * ::tabs{sync="package-manager"}
+ * ::prose-tabs{sync="package-manager"}
  *
- * :::tabs-item{label="pnpm" icon="i-simple-icons-pnpm"}
+ * :::prose-tabs-item{label="pnpm" icon="i-simple-icons-pnpm"}
  * 使用 pnpm 安装：
  * ```bash
  * pnpm add @nuxt/ui
  * ```
  * :::
  *
- * :::tabs-item{label="npm" icon="i-simple-icons-npm"}
+ * :::prose-tabs-item{label="npm" icon="i-simple-icons-npm"}
  * 使用 npm 安装：
  * ```bash
  * npm install @nuxt/ui

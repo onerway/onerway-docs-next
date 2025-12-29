@@ -14,13 +14,13 @@
  *
  * @example MDC 用法
  * ```mdc
- * ::tabs{variant="pill" sync="package-manager"}
+ * ::prose-tabs{variant="pill" sync="package-manager"}
  *
- * :::tabs-item{label="pnpm" icon="i-simple-icons-pnpm"}
+ * :::prose-tabs-item{label="pnpm" icon="i-simple-icons-pnpm"}
  * pnpm 的内容
  * :::
  *
- * :::tabs-item{label="npm" icon="i-simple-icons-npm"}
+ * :::prose-tabs-item{label="npm" icon="i-simple-icons-npm"}
  * npm 的内容
  * :::
  *

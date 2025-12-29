@@ -79,18 +79,18 @@ function applyIndent(content: string, indent: string): string {
  * @example
  * ```markdown
  * // 主文件
- * ::tabs
+ * ::prose-tabs
  *   <!-- @include: ./_partials/my-tab.md -->
  * ::
  *
  * // _partials/my-tab.md
- * :::tabs-item{label="Tab 1"}
+ * :::prose-tabs-item{label="Tab 1"}
  * Content here
  * :::
  *
  * // 展开后（注意缩进自动继承）
- * ::tabs
- *   :::tabs-item{label="Tab 1"}
+ * ::prose-tabs
+ *   :::prose-tabs-item{label="Tab 1"}
  *   Content here
  *   :::
  * ::

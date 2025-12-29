@@ -82,7 +82,9 @@ const { handleClick: handleNavigationClick } =
       <!-- 右侧内容区 -->
       <UDashboardPanel
         class="pt-layout"
-        :ui="{ body: 'docs-scroll-container p-6' }">
+        :ui="{
+          body: 'docs-scroll-container p-8 sm:p-12',
+        }">
         <template #body>
           <slot />
         </template>

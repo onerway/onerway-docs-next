@@ -169,10 +169,14 @@ useSeoMeta({
 
 const breadcrumb = computed(() =>
   mapContentNavigation(
-    findPageBreadcrumb(navigation?.value, page.value?.path, {
-      current: true,
-      indexAsChild: true,
-    })
+    findPageBreadcrumb(
+      navigation?.value,
+      page.value?.path,
+      {
+        current: true,
+        indexAsChild: true,
+      }
+    )
   )
 );
 
@@ -236,7 +240,10 @@ watch(
 
 // 页面首次加载时，等待 Nuxt 页面完全渲染后再处理初始 hash
 // 例如：用户直接访问 /docs/page#section-1
-nuxtApp.hooks.hookOnce("page:finish", handleRouteHashChange);
+nuxtApp.hooks.hookOnce(
+  "page:finish",
+  handleRouteHashChange
+);
 
 // ============================================================================
 // 访问历史记录
@@ -262,7 +269,7 @@ watch(
 <template>
   <!-- 两栏布局：主内容 + TOC（移除 UContainer，避免与 layout 双重嵌套） -->
   <div
-    class="w-full max-w-7xl mx-auto lg:grid lg:grid-cols-[1fr_250px] lg:gap-8">
+    class="w-full max-w-7xl mx-auto lg:grid lg:grid-cols-[1fr_250px] lg:gap-16">
     <!-- 左侧：主内容区 -->
     <div class="min-w-0">
       <UBreadcrumb

@@ -91,10 +91,9 @@ const emit = defineEmits<{
 // ============================================================================
 
 const nuxtApp = useNuxtApp();
-const router = useRouter();
 const { t } = useI18n();
 const { activeHeadings, updateHeadings } = useScrollSpy();
-const { scrollToElement } = useDocsScroll();
+const { navigateToHash, isElementVisible } = useDocsScroll();
 
 // ============================================================================
 // Constants
@@ -124,39 +123,6 @@ const visibleHeadingIds = ref<Set<string> | null>(null);
 // ============================================================================
 
 /**
- * 检查元素是否在所有激活的 Tab 中
- * 支持嵌套 tabs：需要所有层级的 data-tab-active 都为 true
- * @param el - 要检查的元素
- * @returns 如果元素在所有激活的 Tab 中，返回 true
- */
-const isInActiveTab = (el: Element): boolean => {
-  let current: Element | null = el;
-
-  // 向上遍历所有祖先元素，检查每一层的 data-tab-active
-  while (current) {
-    const tabContent: Element | null = current.closest(
-      "[data-tab-active]"
-    );
-    if (!tabContent) {
-      // 没有更多的 tab 容器，说明已检查完所有层级
-      break;
-    }
-
-    // 如果当前层级的 tab 不是激活状态，返回 false
-    if (
-      tabContent.getAttribute("data-tab-active") !== "true"
-    ) {
-      return false;
-    }
-
-    // 继续检查上一层的 tab 容器
-    current = tabContent.parentElement;
-  }
-
-  return true;
-};
-
-/**
  * 刷新标题元素列表
  * 根据 headingSelector 从 DOM 中获取标题元素并更新 ScrollSpy
  * 过滤掉隐藏 Tab 中的标题（支持嵌套 tabs）
@@ -167,9 +133,10 @@ const refreshHeadings = () => {
   );
 
   // 过滤掉隐藏 Tab 中的标题
-  // 对于嵌套 tabs，需要检查所有层级的 data-tab-active 属性
-  const visibleHeadings =
-    Array.from(allHeadings).filter(isInActiveTab);
+  // 使用 useDocsScroll 中的通用函数
+  const visibleHeadings = Array.from(allHeadings).filter(
+    isElementVisible
+  );
 
   // 更新可见标题 ID 列表（用于过滤 TOC 链接）
   visibleHeadingIds.value = new Set(
@@ -233,10 +200,7 @@ function filterLinks(links: DocsTocLink[]): DocsTocLink[] {
  * 点击目录链接时滚动到对应标题
  */
 function scrollToHeading(id: string) {
-  scrollToElement(id);
-  // 使用 router.replace 更新 hash，保持 Vue Router 状态同步
-  // 由于 page 的 watch 只监听 route.path，不会触发重复滚动
-  router.replace({ hash: `#${encodeURIComponent(id)}` });
+  navigateToHash(id);
   emit("move", id);
 }
 
@@ -245,7 +209,8 @@ function scrollToHeading(id: string) {
  */
 function handleMobileScrollTo(id: string) {
   isOpen.value = false;
-  scrollToHeading(id);
+  navigateToHash(id);
+  emit("move", id);
 }
 
 // ============================================================================
@@ -401,7 +366,7 @@ if (import.meta.client) {
 
     <!-- 桌面端：始终显示 -->
     <div
-      class="hidden lg:block sticky top-16 max-h-[calc(100vh-4rem)] overflow-y-auto">
+      class="hidden lg:block sticky top-0 max-h-[calc(100vh-4rem)] overflow-y-auto">
       <!-- 标题 -->
       <p
         class="text-sm font-semibold text-highlighted mb-3">

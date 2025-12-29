@@ -1,4 +1,26 @@
 <script setup lang="ts">
+/**
+ * 文档页面（动态路由）
+ *
+ * 这是文档站点的核心页面组件，处理所有文档内容的渲染和交互。
+ *
+ * 主要功能：
+ * 1. 动态加载 Markdown 文档内容
+ * 2. 生成面包屑导航
+ * 3. 处理页面内 hash 导航（支持浏览器前进/后退）
+ * 4. SEO 优化（标题、描述）
+ * 5. 上下页导航（Surround）
+ * 6. 访问历史记录
+ *
+ * 路由示例：
+ * - /get-started/installation → 渲染对应的 Markdown 文件
+ * - /api/checkout#create-session → 渲染并滚动到指定锚点
+ */
+
+// ============================================================================
+// 类型导入
+// ============================================================================
+
 import type { PageCollections } from "@nuxt/content";
 import { findPageBreadcrumb } from "~/composables/useDocsNav";
 import {
@@ -8,45 +30,91 @@ import {
 } from "~/types/injection-keys";
 import { mapContentNavigation } from "@nuxt/ui/utils/content";
 
+// ============================================================================
+// 常量
+// ============================================================================
+
+/** Nuxt 内部路径前缀（不应该被文档 catch-all 路由处理） */
+const NUXT_INTERNAL_PATHS = ["/_nuxt", "/__nuxt"] as const;
+
+/** 默认文档图标 */
+const DEFAULT_DOC_ICON = "i-lucide-file" as const;
+
+// ============================================================================
+// 辅助函数
+// ============================================================================
+
+/**
+ * 获取内容集合名称
+ * @param locale - 当前语言
+ */
+const getCollectionName = (
+  locale: string
+): keyof PageCollections => {
+  return `docs_${locale}` as keyof PageCollections;
+};
+
+/**
+ * 从页面导航配置中提取图标
+ * @param navigation - 页面的 navigation 配置
+ */
+const getPageIcon = (
+  navigation: DocPage["navigation"]
+): string => {
+  if (navigation === true) {
+    return DEFAULT_DOC_ICON;
+  }
+  return (navigation as { icon?: string })?.icon || "";
+};
+
+// ============================================================================
+// Page Meta 配置
+// ============================================================================
+
 definePageMeta({
   layout: "docs",
   validate: (route) => {
     // 不要用文档 catch-all 来处理 Nuxt 内部前缀
-    if (
-      route.path.startsWith("/_nuxt") ||
-      route.path.startsWith("/__nuxt")
-    ) {
-      return false;
-    }
-    return true;
+    return !NUXT_INTERNAL_PATHS.some((prefix) =>
+      route.path.startsWith(prefix)
+    );
   },
 });
 
+// ============================================================================
+// 全局状态和 Composables
+// ============================================================================
+
 const route = useRoute();
 const { locale, t } = useI18n();
-
-// 记录最近访问的页面
-const { addPage } = useRecentPages();
+const nuxtApp = useNuxtApp();
 
 // 使用类型安全的 injection key 获取导航树
 const navigation = inject(NAVIGATION_KEY);
 
+// 访问历史记录
+const { addPage } = useRecentPages();
+
+// ============================================================================
+// 数据获取：页面内容
+// ============================================================================
+
 const { data: page } = await useAsyncData(
   `${route.path}-${locale.value}`,
   () => {
-    const collection =
-      `docs_${locale.value}` as keyof PageCollections;
-    return queryCollection(collection)
+    return queryCollection(getCollectionName(locale.value))
       .path(route.path)
       .first();
   },
   { watch: [() => locale.value] }
 );
 
+// 开发模式日志
 if (import.meta.client && import.meta.dev) {
   console.log("[slug] page", page.value);
 }
 
+// 404 处理
 if (!page.value) {
   throw createError({
     statusCode: 404,
@@ -63,13 +131,15 @@ watchEffect(() => {
   sharedPageState.value = page.value as DocPage | null;
 });
 
+// ============================================================================
+// 数据获取：上下页导航
+// ============================================================================
+
 const { data: surround } = await useAsyncData(
   `${route.path}-${locale.value}-surround`,
   () => {
-    const collection =
-      `docs_${locale.value}` as keyof PageCollections;
     return queryCollectionItemSurroundings(
-      collection,
+      getCollectionName(locale.value),
       route.path,
       {
         fields: ["description"],
@@ -79,43 +149,100 @@ const { data: surround } = await useAsyncData(
   { watch: [() => locale.value] }
 );
 
-const title = page.value.seo?.title || page.value.title;
-const description =
+// ============================================================================
+// SEO 配置
+// ============================================================================
+
+const seoTitle = page.value.seo?.title || page.value.title;
+const seoDescription =
   page.value.seo?.description || page.value.description;
 
 useSeoMeta({
-  title,
-  ogTitle: title,
-  description,
+  title: seoTitle,
+  ogTitle: seoTitle,
+  description: seoDescription,
 });
 
-// 使用 useState 设置全局状态，让 layout 和其他组件可以访问
-// useState 是 Nuxt 提供的 SSR 安全的全局状态管理
+// ============================================================================
+// Breadcrumb 生成
+// ============================================================================
+
 const breadcrumb = computed(() =>
   mapContentNavigation(
-    findPageBreadcrumb(
-      navigation?.value,
-      page.value?.path,
-      { current: true, indexAsChild: true }
-    )
+    findPageBreadcrumb(navigation?.value, page.value?.path, {
+      current: true,
+      indexAsChild: true,
+    })
   )
 );
 
-// 处理路由切换和初始 hash 的滚动行为
-const { scrollToHash } = useDocsScroll();
-const handleScroll = () => scrollToHash(route.hash);
+// ============================================================================
+// Hash 导航处理逻辑
+// ============================================================================
+//
+// 本页面负责监听路由变化并响应 hash 导航，与 useDocsScroll 配合工作：
+//
+// 职责划分：
+// - useDocsScroll: 提供滚动能力（scrollToHash、checkProgrammaticScroll）
+// - 本页面: 监听路由变化，决定何时滚动
+//
+// 为什么使用 scrollToHash 而非 navigateToHash？
+// - 路由变化时，URL 已经由路由器/浏览器更新完成
+// - 我们只需执行滚动操作，无需再次调用 router.replace()
+// - 使用 navigateToHash() 会导致重复的 URL 更新
+//
+// 场景覆盖：
+// 1. 浏览器前进/后退 → checkProgrammaticScroll() = false → 执行滚动
+// 2. TOC 点击 → checkProgrammaticScroll() = true → 跳过（避免重复）
+// 3. 页面首次加载 → page:finish hook → 执行滚动
+//
+const { scrollToHash, checkProgrammaticScroll } =
+  useDocsScroll();
 
-// 监听页面路径变化（不监听 hash，避免与 TOC 点击滚动冲突）
+/**
+ * 处理路由 hash 变化时的滚动行为
+ */
+const handleRouteHashChange = () => {
+  // 如果是程序触发的滚动（TOC 点击、链接点击），跳过
+  if (checkProgrammaticScroll()) {
+    if (import.meta.dev) {
+      console.log("[slug] 跳过程序触发的 hash 变化");
+    }
+    return;
+  }
+
+  // 使用底层 scrollToHash（不更新 URL）
+  scrollToHash(route.hash);
+};
+
+// 监听路由变化，处理页面切换和 hash 导航
 watch(
-  () => route.path,
-  () => nextTick(handleScroll)
+  () => [route.path, route.hash] as const,
+  ([newPath, newHash], [oldPath, oldHash]) => {
+    // 场景 1: 页面切换（如 /docs/a → /docs/b）
+    // 需要等待 DOM 渲染后再处理 hash
+    if (newPath !== oldPath) {
+      nextTick(handleRouteHashChange);
+      return;
+    }
+
+    // 场景 2: 仅 hash 变化（浏览器前进/后退或 TOC 点击）
+    // TOC 点击会被 checkProgrammaticScroll() 拦截
+    if (newHash !== oldHash) {
+      handleRouteHashChange();
+    }
+  }
 );
 
-// 初始加载时，等待页面渲染完成后再处理 hash 滚动
-const nuxtApp = useNuxtApp();
-nuxtApp.hooks.hookOnce("page:finish", handleScroll);
+// 页面首次加载时，等待 Nuxt 页面完全渲染后再处理初始 hash
+// 例如：用户直接访问 /docs/page#section-1
+nuxtApp.hooks.hookOnce("page:finish", handleRouteHashChange);
 
-// 记录页面访问历史（仅客户端）
+// ============================================================================
+// 访问历史记录
+// ============================================================================
+
+// 记录页面访问历史（仅客户端），用于"最近访问"功能
 watch(
   () => page.value,
   (newPage) => {
@@ -124,11 +251,7 @@ watch(
         path: newPage.path || route.path,
         title: newPage.title || "",
         description: newPage.description,
-        icon:
-          newPage.navigation === true
-            ? "i-lucide-file"
-            : (newPage.navigation as { icon?: string })
-                ?.icon,
+        icon: getPageIcon(newPage.navigation),
       });
     }
   },

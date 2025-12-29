@@ -10,6 +10,7 @@
  * - 外部链接自动添加 rel="noopener noreferrer" 安全属性
  * - 支持 Badge：在链接和图标之间显示徽章标签
  * - 页面内锚点链接：自动处理自定义滚动容器中的滚动
+ * - 特殊协议链接（mailto/tel/sms）：不显示导航图标
  *
  * @example MDC 用法
  * ```markdown
@@ -28,12 +29,30 @@
  *
  * # 页面内锚点链接
  * [跳转到配置](#configure-base-settings)
+ *
+ * # 特殊协议链接
+ * [发送邮件](mailto:support@onerway.com)
+ * [拨打电话](tel:+1234567890)
  * ```
  */
 
 // ============================================================================
 // Types
 // ============================================================================
+
+/**
+ * 链接类型枚举
+ */
+enum LinkType {
+  /** 特殊协议链接（mailto、tel、sms 等） */
+  SPECIAL = "special",
+  /** 外部链接（http、https、// 开头） */
+  EXTERNAL = "external",
+  /** 页面内锚点链接 */
+  HASH = "hash",
+  /** 内部路由链接 */
+  INTERNAL = "internal",
+}
 
 export interface ProseAProps {
   /** 链接目标 URL */
@@ -61,66 +80,123 @@ const props = withDefaults(defineProps<ProseAProps>(), {
 });
 
 // ============================================================================
+// Constants
+// ============================================================================
+
+/** 外部链接的 rel 安全属性 */
+const EXTERNAL_LINK_REL = "noopener noreferrer" as const;
+
+/** 特殊协议链接的正则表达式（mailto、tel、sms、javascript） */
+const SPECIAL_PROTOCOLS = /^(mailto|tel|sms|javascript):/i;
+
+/** 图标名称常量 */
+const ICON_EXTERNAL = "i-lucide-external-link" as const;
+const ICON_INTERNAL = "i-lucide-arrow-right" as const;
+
+// ============================================================================
 // Composables
 // ============================================================================
 
-const router = useRouter();
 const route = useRoute();
-const { scrollToElement } = useDocsScroll();
+const { navigateToHash } = useDocsScroll();
+
+// ============================================================================
+// Helpers
+// ============================================================================
+
+/**
+ * 规范化路径：移除尾部斜杠和查询参数
+ */
+const normalizePath = (path: string): string => {
+  // 移除查询参数
+  const pathWithoutQuery = path.split("?")[0] ?? path;
+  // 移除尾部斜杠（保留根路径 "/"）
+  return pathWithoutQuery.replace(/\/$/, "") || "/";
+};
+
+/**
+ * 判断 href 是否为当前页面的锚点链接
+ * @param href - 链接地址
+ * @param currentPath - 当前路由路径
+ */
+const isCurrentPageHash = (
+  href: string,
+  currentPath: string
+): boolean => {
+  if (!href.includes("#")) return false;
+  // 纯 hash 链接：#section-id
+  if (href.startsWith("#")) return true;
+
+  // 同页面 hash 链接：/current-path#section-id
+  const [path = ""] = href.split("#");
+  const hrefPath = normalizePath(path);
+  const normalizedCurrent = normalizePath(currentPath);
+
+  // 空路径或与当前路径相同
+  return (
+    !hrefPath ||
+    hrefPath === "/" ||
+    hrefPath === normalizedCurrent
+  );
+};
 
 // ============================================================================
 // Computed Properties
 // ============================================================================
 
 /**
- * 判断是否为外部链接
- * - 以 http:// 或 https:// 开头
- * - 以 // 开头（协议相对 URL）
- * - 明确设置 target="_blank"
+ * 解析 href，提取路径和 hash
+ * 缓存 split 结果，避免重复计算
  */
-const isExternal = computed(() => {
-  if (!props.href) return false;
-  return (
+const parsedHref = computed(() => {
+  if (!props.href) return { path: "", hash: "" };
+  const [path = "", hash = ""] = props.href.split("#");
+  return { path, hash };
+});
+
+/**
+ * 统一的链接类型判断
+ * 所有链接类型逻辑集中在此处，便于维护和扩展
+ */
+const linkType = computed<LinkType>(() => {
+  if (!props.href) return LinkType.INTERNAL;
+
+  // 特殊协议链接（mailto、tel、sms、javascript）
+  if (SPECIAL_PROTOCOLS.test(props.href)) {
+    return LinkType.SPECIAL;
+  }
+
+  // 外部链接（http、https、协议相对 URL、或显式 target="_blank"）
+  if (
     props.href.startsWith("http://") ||
     props.href.startsWith("https://") ||
     props.href.startsWith("//") ||
     props.target === "_blank"
-  );
-});
-
-/**
- * 判断是否为页面内锚点链接
- * - 纯 hash 链接：#section-id
- * - 同页面 hash 链接：/current-path#section-id
- */
-const isHashLink = computed(() => {
-  if (!props.href) return false;
-  // 纯 hash 链接
-  if (props.href.startsWith("#")) return true;
-  // 同页面 hash 链接（包含 # 且路径与当前页面相同）
-  if (props.href.includes("#")) {
-    const [path] = props.href.split("#");
-    // 空路径或与当前路径相同
-    return !path || path === route.path;
+  ) {
+    return LinkType.EXTERNAL;
   }
-  return false;
+
+  // 页面内锚点链接
+  if (isCurrentPageHash(props.href, route.path)) {
+    return LinkType.HASH;
+  }
+
+  // 默认：内部路由链接
+  return LinkType.INTERNAL;
 });
 
 /**
  * 从 href 中提取 hash 值（不含 # 前缀）
  */
-const hashId = computed(() => {
-  if (!props.href?.includes("#")) return "";
-  return props.href.split("#")[1] || "";
-});
+const hashId = computed(() => parsedHref.value.hash);
 
 /**
  * 外部链接的 rel 属性
  * 添加 noopener noreferrer 以防止安全漏洞
  */
 const relAttr = computed(() => {
-  return isExternal.value
-    ? "noopener noreferrer"
+  return linkType.value === LinkType.EXTERNAL
+    ? EXTERNAL_LINK_REL
     : undefined;
 });
 
@@ -130,7 +206,30 @@ const relAttr = computed(() => {
  */
 const targetAttr = computed(() => {
   if (props.target) return props.target;
-  return isExternal.value ? "_blank" : undefined;
+  return linkType.value === LinkType.EXTERNAL
+    ? "_blank"
+    : undefined;
+});
+
+/**
+ * 是否应该显示导航图标
+ * Hash 链接和特殊协议链接不显示图标
+ */
+const shouldShowIcon = computed(() => {
+  return (
+    linkType.value !== LinkType.HASH &&
+    linkType.value !== LinkType.SPECIAL
+  );
+});
+
+/**
+ * 图标名称
+ * 外部链接显示外链图标，内部链接显示箭头图标
+ */
+const iconName = computed(() => {
+  return linkType.value === LinkType.EXTERNAL
+    ? ICON_EXTERNAL
+    : ICON_INTERNAL;
 });
 
 // ============================================================================
@@ -143,42 +242,57 @@ const targetAttr = computed(() => {
  */
 const handleClick = (event: MouseEvent) => {
   // 非锚点链接，使用默认行为
-  if (!isHashLink.value || !hashId.value) return;
+  if (linkType.value !== LinkType.HASH || !hashId.value)
+    return;
 
   event.preventDefault();
-  scrollToElement(hashId.value);
-  router.replace({
-    hash: `#${encodeURIComponent(hashId.value)}`,
-  });
+  navigateToHash(hashId.value);
 };
 
 // ============================================================================
 // Styles
 // ============================================================================
 
-/** 链接基础样式 */
-const linkClass = [
+/**
+ * 链接基础样式
+ * 使用 computed 便于未来根据 props 动态调整
+ */
+const linkClass = computed(() => [
   "inline-flex items-center gap-1.5",
   "text-primary font-medium",
   "hover:text-default",
   "transition duration-200",
   "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary focus-visible:rounded-sm",
-];
+]);
 
-/** Badge 样式 */
-const badgeClass = [
+/**
+ * Badge 样式
+ * 使用 computed 保持与其他样式定义一致
+ */
+const badgeClass = computed(() => [
   "shrink-0",
   "transition-opacity duration-200",
   "group-hover/link:opacity-80",
-];
-
-/** 图标样式（响应式，根据链接类型动态计算） */
-const iconClass = computed(() => [
-  "size-3.5",
-  "transition-transform duration-200",
-  "group-hover/link:translate-x-0.5",
-  isExternal.value && "group-hover/link:-translate-y-0.5",
 ]);
+
+/**
+ * 图标样式
+ * 根据链接类型动态计算，外部链接增加向上移动效果
+ */
+const iconClass = computed(() => {
+  const base = [
+    "size-3.5",
+    "transition-transform duration-200",
+    "group-hover/link:translate-x-0.5",
+  ];
+
+  // 外部链接增加向上移动效果
+  if (linkType.value === LinkType.EXTERNAL) {
+    base.push("group-hover/link:-translate-y-0.5");
+  }
+
+  return base;
+});
 </script>
 
 <template>
@@ -197,15 +311,10 @@ const iconClass = computed(() => [
       variant="solid"
       size="sm"
       :class="badgeClass" />
-    <!-- 外部链接图标 -->
+    <!-- 导航图标（外部链接和内部链接） -->
     <UIcon
-      v-if="isExternal"
-      name="i-lucide-external-link"
-      :class="iconClass" />
-    <!-- 内部链接图标（锚点链接不显示） -->
-    <UIcon
-      v-else-if="!isHashLink"
-      name="i-lucide-arrow-right"
+      v-if="shouldShowIcon"
+      :name="iconName"
       :class="iconClass" />
   </NuxtLink>
 </template>

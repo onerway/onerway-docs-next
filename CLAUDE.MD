@@ -204,16 +204,17 @@ pnpm preview
 - **scope**: 可选，影响范围（如组件名、模块名）
 - **body**: 可选但推荐，使用 `-` bullet points 详细说明每个改动
 - **footer**: 可选，Breaking Changes 或关联 issue
+- **优先使用中文**：commit message 优先使用中文编写，以提升团队协作效率
 - **不要添加 AI 生成标识**：commit message 中不包含 "Generated with Claude Code" 或 "Co-Authored-By: Claude" 等 AI 标识
 
 ### 示例
 ```
-feat(ProseA): add badge support for MDC links
+feat(ProseA): 为 MDC 链接添加徽章支持
 
-- Introduced badge prop to display labels on links
-- Added UBadge component rendering between text and icons
-- Enhanced link styling with increased gap spacing
-- Maintained full backward compatibility
+- 新增 badge 属性用于在链接上显示标签
+- 在文本和图标之间渲染 UBadge 组件
+- 增加链接间距以改善样式
+- 保持完全向后兼容
 
 Closes #123
 ```

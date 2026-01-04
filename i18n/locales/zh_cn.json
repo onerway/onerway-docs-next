@@ -195,5 +195,17 @@
   "timeJustNow": "刚刚",
   "timeMinutesAgo": "{count} 分钟前",
   "timeHoursAgo": "{count} 小时前",
-  "timeDaysAgo": "{count} 天前"
+  "timeDaysAgo": "{count} 天前",
+
+  "mermaid": {
+    "loading": "正在渲染图表...",
+    "errorTitle": "图表渲染错误",
+    "unknownError": "未知错误",
+    "zoomIn": "放大",
+    "zoomOut": "缩小",
+    "reset": "重置视图",
+    "fullscreen": "全屏查看",
+    "fullscreenTitle": "图表预览",
+    "zoomHint": "Alt + 拖拽平移 · Alt + 滚轮缩放"
+  }
 }

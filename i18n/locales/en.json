@@ -195,5 +195,17 @@
   "timeJustNow": "Just now",
   "timeMinutesAgo": "{count} min ago",
   "timeHoursAgo": "{count}h ago",
-  "timeDaysAgo": "{count}d ago"
+  "timeDaysAgo": "{count}d ago",
+
+  "mermaid": {
+    "loading": "Rendering diagram...",
+    "errorTitle": "Diagram Rendering Error",
+    "unknownError": "Unknown error",
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out",
+    "reset": "Reset view",
+    "fullscreen": "Fullscreen",
+    "fullscreenTitle": "Diagram Preview",
+    "zoomHint": "Alt + Drag to pan • Alt + Scroll to zoom"
+  }
 }

@@ -281,7 +281,13 @@ watch(
       <UPageHeader
         :title="page?.title ?? ''"
         :description="page?.description ?? ''"
-        class="py-2" />
+        :ui="{
+          root: 'border-none py-2 sm:py-4',
+        }" />
+      <USeparator
+        v-if="surround?.length"
+        icon="i-custom-onerway" />
+
       <ContentRenderer
         v-if="page"
         :value="page" />

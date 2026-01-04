@@ -136,7 +136,7 @@ app/
 │   ├── ProseMermaid.vue  # Mermaid 渲染组件
 │   └── ProsePre.vue      # 代码块包装组件（拦截 mermaid）
 └── config/
-    └── mermaid-themes.ts # Mermaid 主题配置
+    └── mermaid.ts # Mermaid 主题配置
 
 i18n/locales/
 ├── en.json               # 英文翻译（mermaid.*）
@@ -199,7 +199,7 @@ ProseMermaid 动态导入 mermaid.js
 
 ## 主题配置
 
-### mermaid-themes.ts
+### mermaid.ts
 
 集中管理 Mermaid 主题配置，支持明暗模式：
 
@@ -301,7 +301,7 @@ export const getMermaidConfig = (isDark: boolean) => ({
 
 - 监听 `colorMode.value` 变化
 - 自动调用 `renderDiagram()` 重新渲染
-- 配置来自 `mermaid-themes.ts`
+- 配置来自 `mermaid.ts`
 
 ---
 
@@ -443,7 +443,7 @@ figure.mermaid-dotted-bg {
 ### 阶段 2：体验优化 ✅
 
   - [x] 骨架屏加载动画
-  - [x] 自定义 Mermaid 主题变量（mermaid-themes.ts）
+  - [x] 自定义 Mermaid 主题变量（mermaid.ts）
   - [x] 点状背景
   - [x] 国际化支持
   - [x] 可访问性增强
@@ -572,7 +572,7 @@ figure.mermaid-dotted-bg {
 2. 更新 `nuxt.config.ts` rehypePlugins 配置
 3. 移除 `mermaid` 和 `panzoom` 依赖
 4. 删除 `ProseMermaid.vue` 和 `ProsePre.vue`
-5. 删除 `mermaid-themes.ts`
+5. 删除 `mermaid.ts`
 6. 测试构建输出
 
 **兼容性**：

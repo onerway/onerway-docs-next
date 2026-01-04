@@ -6,17 +6,17 @@ Mermaid 图表的深度样式定制调研报告,涵盖主题系统、颜色变�
 
 ## 调研结论
 
-**推荐方案**：themeVariables 配置方案
+  **推荐方案**：themeVariables 配置方案
 
-**理由**：
-- 类型安全,与 TypeScript 良好集成
-- 覆盖大部分样式定制需求
-- 自动处理颜色衍生和主题一致性
-- 无需处理 Shadow DOM 限制
+  **理由**：
+  - 类型安全,与 TypeScript 良好集成
+  - 覆盖大部分样式定制需求
+  - 自动处理颜色衍生和主题一致性
+  - 无需处理 Shadow DOM 限制
 
-**高级需求**：结合 themeCSS 注入自定义 CSS
+  **高级需求**：结合 themeCSS 注入自定义 CSS
 
-**适用场景**：当 themeVariables 无法满足特殊样式需求时
+  **适用场景**：当 themeVariables 无法满足特殊样式需求时
 
 ---
 
@@ -60,12 +60,12 @@ Mermaid 图表的深度样式定制调研报告,涵盖主题系统、颜色变�
 
 ### 2.1 四种定制方案对比
 
-| 方案 | 配置位置 | 灵活性 | 复杂度 | 适用场景 |
-|------|----------|--------|--------|----------|
-| **A: 内置主题** | `theme: 'default'\|'dark'\|'neutral'\|'forest'` | 低 | 极低 | 快速应用预设风格 |
-| **B: themeVariables** | `theme: 'base'` + `themeVariables: {...}` | 高 | 低 | 大部分定制需求 ✅ |
-| **C: themeCSS** | `themeCSS: "..."` | 极高 | 中 | 特殊样式需求 |
-| **D: %%init%% 指令** | Markdown frontmatter | 高 | 低 | 单个图表定制 |
+  | 方案 | 配置位置 | 灵活性 | 复杂度 | 适用场景 |
+  |------|----------|--------|--------|----------|
+  | **A: 内置主题** | `theme: 'default'\|'dark'\|'neutral'\|'forest'` | 低 | 极低 | 快速应用预设风格 |
+  | **B: themeVariables** | `theme: 'base'` + `themeVariables: {...}` | 高 | 低 | 大部分定制需求 ✅ |
+  | **C: themeCSS** | `themeCSS: "..."` | 极高 | 中 | 特殊样式需求 |
+  | **D: %%init%% 指令** | Markdown frontmatter | 高 | 低 | 单个图表定制 |
 
 ### 2.2 方案选择指南
 
@@ -111,13 +111,13 @@ const mermaidConfig = computed(() => ({
 
 ### 3.2 方案 B: themeVariables 定制 (推荐)
 
-**适用场景**：需要调整颜色、字体、间距等常见样式属性。
+  **适用场景**：需要调整颜色、字体、间距等常见样式属性。
 
 #### 核心概念
 
-1. **基础主题**：必须设置 `theme: 'base'`
-2. **变量覆盖**：通过 `themeVariables` 对象覆盖默认值
-3. **自动衍生**：系统自动计算相关颜色(如边框色、文本色)
+  1. **基础主题**：必须设置 `theme: 'base'`
+  2. **变量覆盖**：通过 `themeVariables` 对象覆盖默认值
+  3. **自动衍生**：系统自动计算相关颜色(如边框色、文本色)
 
 #### 配置示例
 
@@ -154,36 +154,36 @@ const mermaidConfig = computed(() => ({
 
 ##### 核心变量
 
-| 变量名 | 类型 | 默认值 | 说明 |
-|--------|------|--------|------|
-| `darkMode` | boolean | `false` | 是否为深色模式,影响衍生颜色计算 |
-| `background` | hex | `#f4f4f4` | 图表背景色 |
-| `fontFamily` | string | `"trebuchet ms", verdana, arial, sans-serif` | 字体族 |
-| `fontSize` | string | `16px` | 基础字号 |
+  | 变量名 | 类型 | 默认值 | 说明 |
+  |--------|------|--------|------|
+  | `darkMode` | boolean | `false` | 是否为深色模式,影响衍生颜色计算 |
+  | `background` | hex | `#f4f4f4` | 图表背景色 |
+  | `fontFamily` | string | `"trebuchet ms", verdana, arial, sans-serif` | 字体族 |
+  | `fontSize` | string | `16px` | 基础字号 |
 
 ##### 主要颜色
 
-| 变量名 | 默认值 (浅色) | 说明 | 自动衍生 |
-|--------|---------------|------|----------|
-| `primaryColor` | `#fff4dd` | 主色 | → `primaryBorderColor` |
-| `primaryTextColor` | `#333` | 主文本色 | 深色模式自动调整为 `#eee` |
-| `primaryBorderColor` | 自动计算 | 主边框色 | 基于 `primaryColor` 衍生 |
-| `secondaryColor` | 自动计算 | 次要色 | 主色色相 -120° |
-| `secondaryBorderColor` | 自动计算 | 次要边框色 | 基于 `secondaryColor` |
-| `secondaryTextColor` | 自动计算 | 次要文本色 | - |
-| `tertiaryColor` | 自动计算 | 第三色 | 主色色相 +180°,亮度 +5 |
-| `tertiaryBorderColor` | 自动计算 | 第三边框色 | 基于 `tertiaryColor` |
-| `tertiaryTextColor` | 自动计算 | 第三文本色 | - |
+  | 变量名 | 默认值 (浅色) | 说明 | 自动衍生 |
+  |--------|---------------|------|----------|
+  | `primaryColor` | `#fff4dd` | 主色 | → `primaryBorderColor` |
+  | `primaryTextColor` | `#333` | 主文本色 | 深色模式自动调整为 `#eee` |
+  | `primaryBorderColor` | 自动计算 | 主边框色 | 基于 `primaryColor` 衍生 |
+  | `secondaryColor` | 自动计算 | 次要色 | 主色色相 -120° |
+  | `secondaryBorderColor` | 自动计算 | 次要边框色 | 基于 `secondaryColor` |
+  | `secondaryTextColor` | 自动计算 | 次要文本色 | - |
+  | `tertiaryColor` | 自动计算 | 第三色 | 主色色相 +180°,亮度 +5 |
+  | `tertiaryBorderColor` | 自动计算 | 第三边框色 | 基于 `tertiaryColor` |
+  | `tertiaryTextColor` | 自动计算 | 第三文本色 | - |
 
 ##### 特殊元素
 
-| 变量名 | 默认值 | 说明 |
-|--------|--------|------|
-| `noteBkgColor` | `#fff5ad` | 注释背景色 |
-| `noteTextColor` | `#333` | 注释文本色 |
-| `noteBorderColor` | 自动计算 | 注释边框色 |
-| `lineColor` | `#333` | 连线颜色 |
-| `textColor` | `#333` | 通用文本色 |
+  | 变量名 | 默认值 | 说明 |
+  |--------|--------|------|
+  | `noteBkgColor` | `#fff5ad` | 注释背景色 |
+  | `noteTextColor` | `#333` | 注释文本色 |
+  | `noteBorderColor` | 自动计算 | 注释边框色 |
+  | `lineColor` | `#333` | 连线颜色 |
+  | `textColor` | `#333` | 通用文本色 |
 
 ---
 
@@ -370,23 +370,23 @@ themeVariables: {
 
 #### 颜色自动衍生机制
 
-**原理**：为保证视觉一致性,Mermaid 会根据你设置的核心颜色自动计算相关颜色。
+  **原理**：为保证视觉一致性,Mermaid 会根据你设置的核心颜色自动计算相关颜色。
 
-**衍生规则**：
+  **衍生规则**：
 
-1. **边框色**：通过 `mkBorder(color, darkMode)` 函数生成
-   - 浅色模式：原色 darken 10%
-   - 深色模式：原色 lighten 10%
+  1. **边框色**：通过 `mkBorder(color, darkMode)` 函数生成
+      - 浅色模式：原色 darken 10%
+      - 深色模式：原色 lighten 10%
 
-2. **辅助色**：
-   - `secondaryColor`：主色色相 -120°(色轮旋转)
-   - `tertiaryColor`：主色色相 +180°,亮度 +5
+  2. **辅助色**：
+      - `secondaryColor`：主色色相 -120°(色轮旋转)
+      - `tertiaryColor`：主色色相 +180°,亮度 +5
 
-3. **文本色**：
-   - 根据背景亮度自动选择深色或浅色文本
-   - `darkMode: true` 时,文本色自动变亮
+  3. **文本色**：
+      - 根据背景亮度自动选择深色或浅色文本
+      - `darkMode: true` 时,文本色自动变亮
 
-**示例**：
+  **示例**：
 
 ```typescript
 // 只设置主色
@@ -401,11 +401,11 @@ themeVariables: {
 // tertiaryColor: '#db3498' (色相 +180°, 粉色)
 ```
 
-**最佳实践**：
+  **最佳实践**：
 
-- ✅ 优先设置核心颜色,让系统自动衍生
-- ✅ 只在需要时手动覆盖衍生颜色
-- ⚠️ 避免设置过多变量,保持配色一致性
+  - ✅ 优先设置核心颜色,让系统自动衍生
+  - ✅ 只在需要时手动覆盖衍生颜色
+  - ⚠️ 避免设置过多变量,保持配色一致性
 
 ---
 
@@ -494,27 +494,27 @@ const mermaidConfig = computed(() => ({
 
 ### 3.4 方案 D: %%init%% 指令
 
-**适用场景**：为单个图表定制样式,不影响全局配置。
+  **适用场景**：为单个图表定制样式,不影响全局配置。
 
 #### 语法格式
 
-在 Mermaid 代码块开头使用 `%%init%%` 指令：
+  在 Mermaid 代码块开头使用 `%%init%%` 指令：
 
 ```markdown
 ```mermaid
-%%{init: {
-  'theme': 'base',
-  'themeVariables': {
+  %%{init: {
+    'theme': 'base',
+    'themeVariables': {
     'primaryColor': '#ff6b6b',
     'primaryTextColor': '#fff',
     'primaryBorderColor': '#c92a2a',
     'lineColor': '#495057',
     'fontFamily': 'monospace'
   }
-}}%%
-graph TD
-    A[开始] --> B[处理]
-    B --> C[结束]
+  }}%%
+  graph TD
+  A[开始] --> B[处理]
+  B --> C[结束]
 ```
 ```
 
@@ -522,15 +522,15 @@ graph TD
 
 ```markdown
 ```mermaid
-%%{init: {
-  'theme': 'base',
-  'themeVariables': {...},
-  'themeCSS': '...',
-  'logLevel': 'debug',
-  'securityLevel': 'loose'
-}}%%
-sequenceDiagram
-    ...
+  %%{init: {
+    'theme': 'base',
+    'themeVariables': {...},
+    'themeCSS': '...',
+    'logLevel': 'debug',
+    'securityLevel': 'loose'
+  }}%%
+  sequenceDiagram
+  ...
 ```
 ```
 
@@ -616,9 +616,9 @@ const mermaidConfig = computed(() => ({
 
 ### 4.2 深色模式优化
 
-**场景**：为深色主题优化对比度和可读性。
+  **场景**：为深色主题优化对比度和可读性。
 
-**配置实现**：
+  **配置实现**：
 
 ```typescript
 const mermaidConfig = computed(() => {
@@ -659,11 +659,11 @@ const mermaidConfig = computed(() => {
 });
 ```
 
-**关键点**：
-- ✅ 深色模式使用更高亮度的颜色(提升对比度)
-- ✅ 背景色和文本色对比度 ≥ 7:1(WCAG AAA 标准)
-- ✅ 边框色保持可见性
-- ✅ 注释使用暖色调在深色背景上更醒目
+  **关键点**：
+  - ✅ 深色模式使用更高亮度的颜色(提升对比度)
+  - ✅ 背景色和文本色对比度 ≥ 7:1(WCAG AAA 标准)
+  - ✅ 边框色保持可见性
+  - ✅ 注释使用暖色调在深色背景上更醒目
 
 ---
 
@@ -753,9 +753,9 @@ themeCSS: `
 
 ### 4.4 响应式样式
 
-**场景**：根据容器宽度调整字号和间距。
+  **场景**：根据容器宽度调整字号和间距。
 
-**实现方案**：通过 `themeCSS` 使用 CSS 自定义属性。
+  **实现方案**：通过 `themeCSS` 使用 CSS 自定义属性。
 
 ```typescript
 themeCSS: `
@@ -790,7 +790,7 @@ themeCSS: `
 `
 ```
 
-**注意**：需要在父容器上设置 `container-type: inline-size`。
+  **注意**：需要在父容器上设置 `container-type: inline-size`。
 
 ---
 
@@ -878,43 +878,43 @@ const mermaidConfig = computed(() => ({
 
 #### 对比度要求(WCAG 标准)
 
-| 级别 | 对比度 | 适用场景 |
-|------|--------|----------|
-| **AA** | ≥ 4.5:1 (正文)、≥ 3:1 (大字) | 最低要求 |
-| **AAA** | ≥ 7:1 (正文)、≥ 4.5:1 (大字) | 增强无障碍 |
+  | 级别 | 对比度 | 适用场景 |
+  |------|--------|----------|
+  | **AA** | ≥ 4.5:1 (正文)、≥ 3:1 (大字) | 最低要求 |
+  | **AAA** | ≥ 7:1 (正文)、≥ 4.5:1 (大字) | 增强无障碍 |
 
-**工具推荐**：
-- [WebAIM Contrast Checker](https://webaim.org/resources/contrastchecker/)
-- [Coolors Contrast Checker](https://coolors.co/contrast-checker)
+  **工具推荐**：
+  - [WebAIM Contrast Checker](https://webaim.org/resources/contrastchecker/)
+  - [Coolors Contrast Checker](https://coolors.co/contrast-checker)
 
 #### 配色方案生成
 
-**工具推荐**：
-- [Adobe Color](https://color.adobe.com/) - 配色轮
-- [Coolors](https://coolors.co/) - 快速生成配色
-- [Paletton](https://paletton.com/) - 高级配色工具
+  **工具推荐**：
+  - [Adobe Color](https://color.adobe.com/) - 配色轮
+  - [Coolors](https://coolors.co/) - 快速生成配色
+  - [Paletton](https://paletton.com/) - 高级配色工具
 
-**配色策略**：
+  **配色策略**：
 
-1. **单色配色**：使用同一色相的不同明度
-   ```typescript
-   primaryColor: '#0066FF',      // H: 210°
-   secondaryColor: '#0052CC',    // 深 20%
-   tertiaryColor: '#66A3FF',     // 浅 40%
-   ```
+  1. **单色配色**：使用同一色相的不同明度
+```typescript
+primaryColor: '#0066FF',      // H: 210°
+secondaryColor: '#0052CC',    // 深 20%
+tertiaryColor: '#66A3FF',     // 浅 40%
+```
 
-2. **互补色配色**：色轮上相对的颜色(180° 对角)
-   ```typescript
-   primaryColor: '#0066FF',   // 蓝色 (H: 210°)
-   secondaryColor: '#FF6600', // 橙色 (H: 30°, 210-180=30)
-   ```
+  2. **互补色配色**：色轮上相对的颜色(180° 对角)
+```typescript
+primaryColor: '#0066FF',   // 蓝色 (H: 210°)
+secondaryColor: '#FF6600', // 橙色 (H: 30°, 210-180=30)
+```
 
-3. **三角配色**：色轮上等距 120° 的三个颜色
-   ```typescript
-   primaryColor: '#0066FF',   // 蓝色 (H: 210°)
-   secondaryColor: '#FF0066', // 红色 (H: 330°, 210+120=330)
-   tertiaryColor: '#66FF00',  // 绿色 (H: 90°, 210-120=90)
-   ```
+  3. **三角配色**：色轮上等距 120° 的三个颜色
+```typescript
+primaryColor: '#0066FF',   // 蓝色 (H: 210°)
+secondaryColor: '#FF0066', // 红色 (H: 330°, 210+120=330)
+tertiaryColor: '#66FF00',  // 绿色 (H: 90°, 210-120=90)
+```
 
 ---
 
@@ -973,7 +973,7 @@ themeCSS: `
 #### 版本控制
 
 ```typescript
-// config/mermaid-themes.ts
+// app/utils/mermaid.ts
 export const MERMAID_THEME_VERSION = '1.0.0';
 
 export const LIGHT_THEME = {
@@ -1025,7 +1025,7 @@ export const useMermaidTheme = (
 ```typescript
 // mermaid-theme.spec.ts
 import { describe, it, expect } from 'vitest';
-import { getLightTheme, getDarkTheme } from './mermaid-themes';
+import { getLightTheme, getDarkTheme } from '@/utils/mermaid';
 
 describe('Mermaid Themes', () => {
   it('should have valid hex colors', () => {
@@ -1083,9 +1083,9 @@ const mermaidConfig = computed(() => ({
 
 #### 方案一: 基础定制(最小改动)
 
-**目标**：保持简单,仅调整核心颜色和字体。
+  **目标**：保持简单,仅调整核心颜色和字体。
 
-**实现**：
+  **实现**：
 
 ```typescript
 // app/components/content/ProseMermaid.vue
@@ -1119,10 +1119,10 @@ const mermaidConfig = computed(() => {
 });
 ```
 
-**优点**：
-- ✅ 改动最小(10 行代码)
-- ✅ 视觉效果立即改善
-- ✅ 保持向后兼容
+  **优点**：
+  - ✅ 改动最小(10 行代码)
+  - ✅ 视觉效果立即改善
+  - ✅ 保持向后兼容
 
 ---
 
@@ -1133,7 +1133,7 @@ const mermaidConfig = computed(() => {
 **步骤 1**：创建主题配置文件
 
 ```typescript
-// app/config/mermaid-themes.ts
+// app/utils/mermaid.ts
 import type { MermaidConfig } from 'mermaid';
 
 /** Onerway 品牌色 */
@@ -1221,7 +1221,7 @@ export const getMermaidConfig = (isDark: boolean): MermaidConfig => ({
 
 ```typescript
 // app/components/content/ProseMermaid.vue
-import { getMermaidConfig } from '@/config/mermaid-themes';
+import { getMermaidConfig } from '@/utils/mermaid';
 
 const colorMode = useColorMode();
 
@@ -1240,12 +1240,12 @@ const mermaidConfig = computed(() =>
 
 #### 方案三: 高级定制(可选)
 
-**目标**：添加自定义 CSS,实现动画和特殊效果。
+  **目标**：添加自定义 CSS,实现动画和特殊效果。
 
-**实现**：
+  **实现**：
 
 ```typescript
-// app/config/mermaid-themes.ts
+// app/utils/mermaid.ts
 export const CUSTOM_CSS = `
   /* 圆角节点 */
   .node rect,
@@ -1288,7 +1288,7 @@ export const getMermaidConfig = (isDark: boolean): MermaidConfig => ({
 
 ### 6.3 迁移检查清单
 
-- [ ] 创建 `app/config/mermaid-themes.ts` 配置文件
+- [ ] 创建 `app/utils/mermaid.ts` 配置文件
 - [ ] 定义 `BRAND_COLORS` 常量
 - [ ] 实现 `getLightThemeVariables()` 函数
 - [ ] 实现 `getDarkThemeVariables()` 函数
@@ -1309,14 +1309,14 @@ export const getMermaidConfig = (isDark: boolean): MermaidConfig => ({
 
 #### 问题 1: 颜色不生效
 
-**症状**：设置了 `themeVariables`,但图表颜色没有变化。
+  **症状**：设置了 `themeVariables`,但图表颜色没有变化。
 
-**原因**：
-1. ❌ 未使用 `base` 主题
-2. ❌ 颜色格式错误(使用了颜色名称而非 HEX)
-3. ❌ 变量名拼写错误
+  **原因**：
+  1. ❌ 未使用 `base` 主题
+  2. ❌ 颜色格式错误(使用了颜色名称而非 HEX)
+  3. ❌ 变量名拼写错误
 
-**解决方案**：
+  **解决方案**：
 
 ```typescript
 // ❌ 错误
@@ -1369,9 +1369,9 @@ themeCSS: `
 **调试技巧**：
 
 1. 在浏览器中检查 SVG 的 `<style>` 标签:
-   ```javascript
-   document.querySelector('svg style').textContent
-   ```
+```javascript
+document.querySelector('svg style').textContent
+```
 
 2. 使用浏览器开发者工具查看实际应用的样式
 
@@ -1381,14 +1381,14 @@ themeCSS: `
 
 #### 问题 3: 深色模式颜色不理想
 
-**症状**：深色模式下颜色对比度不足或过于刺眼。
+  **症状**：深色模式下颜色对比度不足或过于刺眼。
 
-**原因**：
-1. ❌ 直接使用浅色模式的颜色
-2. ❌ 未设置 `darkMode: true`
-3. ❌ 对比度不足
+  **原因**：
+  1. ❌ 直接使用浅色模式的颜色
+  2. ❌ 未设置 `darkMode: true`
+  3. ❌ 对比度不足
 
-**解决方案**：
+  **解决方案**：
 
 ```typescript
 // ❌ 错误
@@ -1406,12 +1406,12 @@ themeVariables: {
 }
 ```
 
-**对比度检查**：
+  **对比度检查**：
 
-使用在线工具验证对比度:
-- [WebAIM Contrast Checker](https://webaim.org/resources/contrastchecker/)
-- 输入背景色和文本色
-- 确保对比度 ≥ 4.5:1
+  使用在线工具验证对比度:
+  - [WebAIM Contrast Checker](https://webaim.org/resources/contrastchecker/)
+  - 输入背景色和文本色
+  - 确保对比度 ≥ 4.5:1
 
 ---
 
@@ -1451,13 +1451,13 @@ document.fonts.check('16px Inter')
 
 #### 问题 5: 配置不同步
 
-**症状**：主题切换后,Mermaid 图表没有更新。
+  **症状**：主题切换后,Mermaid 图表没有更新。
 
-**原因**：
-1. ❌ 未使用 `computed` 或 `watch`
-2. ❌ Mermaid 未重新初始化
+  **原因**：
+  1. ❌ 未使用 `computed` 或 `watch`
+  2. ❌ Mermaid 未重新初始化
 
-**解决方案**：
+  **解决方案**：
 
 ```typescript
 // ✅ 正确实现
@@ -1506,41 +1506,41 @@ console.log('Generated SVG:', svgContent.value);
 
 ### 8.1 官方文档
 
-- [Mermaid Theme Configuration](https://mermaid.js.org/config/theming.html) - 官方主题配置文档
-- [Mermaid Config Schema](https://mermaid.js.org/config/schema-docs/config.html) - 完整配置选项
-- [Mermaid Live Editor](https://mermaid.live/) - 在线编辑器和测试工具
-- [Mermaid GitHub - theme-base.js](https://github.com/mermaid-js/mermaid/blob/develop/packages/mermaid/src/themes/theme-base.js) - 基础主题源码
+  - [Mermaid Theme Configuration](https://mermaid.js.org/config/theming.html) - 官方主题配置文档
+  - [Mermaid Config Schema](https://mermaid.js.org/config/schema-docs/config.html) - 完整配置选项
+  - [Mermaid Live Editor](https://mermaid.live/) - 在线编辑器和测试工具
+  - [Mermaid GitHub - theme-base.js](https://github.com/mermaid-js/mermaid/blob/develop/packages/mermaid/src/themes/theme-base.js) - 基础主题源码
 
 ### 8.2 社区资源
 
-- [Customising Mermaid diagram font and colors - DEV Community](https://dev.to/leonards/customising-mermaid-diagram-font-and-colors-4pm9) - 字体和颜色定制教程
-- [GitHub - Gordonby/MermaidTheming](https://github.com/Gordonby/MermaidTheming) - Mermaid 主题实验项目
-- [Custom-themed Mermaid diagrams in Eleventy](https://traveling-coderman.net/code/eleventy-mermaid/) - Eleventy 中的自定义主题案例
+  - [Customising Mermaid diagram font and colors - DEV Community](https://dev.to/leonards/customising-mermaid-diagram-font-and-colors-4pm9) - 字体和颜色定制教程
+  - [GitHub - Gordonby/MermaidTheming](https://github.com/Gordonby/MermaidTheming) - Mermaid 主题实验项目
+  - [Custom-themed Mermaid diagrams in Eleventy](https://traveling-coderman.net/code/eleventy-mermaid/) - Eleventy 中的自定义主题案例
 
 ### 8.3 工具推荐
 
-**配色工具**：
-- [Adobe Color](https://color.adobe.com/) - 专业配色工具
-- [Coolors](https://coolors.co/) - 快速配色生成器
-- [Paletton](https://paletton.com/) - 高级配色系统
+  **配色工具**：
+  - [Adobe Color](https://color.adobe.com/) - 专业配色工具
+  - [Coolors](https://coolors.co/) - 快速配色生成器
+  - [Paletton](https://paletton.com/) - 高级配色系统
 
-**对比度检查**：
-- [WebAIM Contrast Checker](https://webaim.org/resources/contrastchecker/) - WCAG 对比度验证
-- [Coolors Contrast Checker](https://coolors.co/contrast-checker) - 快速对比度检查
+  **对比度检查**：
+  - [WebAIM Contrast Checker](https://webaim.org/resources/contrastchecker/) - WCAG 对比度验证
+  - [Coolors Contrast Checker](https://coolors.co/contrast-checker) - 快速对比度检查
 
-**开发工具**：
-- [Mermaid CLI](https://github.com/mermaid-js/mermaid-cli) - 命令行工具
-- [VS Code Mermaid Preview](https://marketplace.visualstudio.com/items?itemName=bierner.markdown-mermaid) - VS Code 预览插件
+  **开发工具**：
+  - [Mermaid CLI](https://github.com/mermaid-js/mermaid-cli) - 命令行工具
+  - [VS Code Mermaid Preview](https://marketplace.visualstudio.com/items?itemName=bierner.markdown-mermaid) - VS Code 预览插件
 
 ### 8.4 项目相关文档
 
-| 文档 | 内容 |
-|------|------|
-| `docs/investigations/mermaid-integration-investigation.md` | Mermaid 集成调研(基础) |
-| `docs/designs/ProseMermaid.md` | ProseMermaid 组件设计 |
-| `app/components/content/ProseMermaid.vue` | Mermaid 渲染组件实现 |
-| `content/en/5.developer-resources/2.mermaid-test.md` | Mermaid 测试文档(英文) |
-| `content/zh_cn/5.developer-resources/2.mermaid-test.md` | Mermaid 测试文档(中文) |
+  | 文档 | 内容 |
+  |------|------|
+  | `docs/investigations/mermaid-integration-investigation.md` | Mermaid 集成调研(基础) |
+  | `docs/designs/ProseMermaid.md` | ProseMermaid 组件设计 |
+  | `app/components/content/ProseMermaid.vue` | Mermaid 渲染组件实现 |
+  | `content/en/5.developer-resources/2.mermaid-test.md` | Mermaid 测试文档(英文) |
+  | `content/zh_cn/5.developer-resources/2.mermaid-test.md` | Mermaid 测试文档(中文) |
 
 ---
 
@@ -1549,7 +1549,7 @@ console.log('Generated SVG:', svgContent.value);
 ### 9.1 完整配置模板
 
 ```typescript
-// app/config/mermaid-themes.ts
+// app/utils/mermaid.ts
 import type { MermaidConfig } from 'mermaid';
 
 /** 完整的 themeVariables 类型定义 */
@@ -1777,9 +1777,9 @@ export const FULL_CONFIG_TEMPLATE: MermaidConfig = {
 
 ## 10. 版本历史
 
-| 版本 | 日期 | 变更内容 |
-|------|------|----------|
-| 1.0.0 | 2025-12-30 | 初始版本,完整调研报告 |
+  | 版本 | 日期 | 变更内容 |
+  |------|------|----------|
+  | 1.0.0 | 2025-12-30 | 初始版本,完整调研报告 |
 
 ---
 

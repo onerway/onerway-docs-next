@@ -74,6 +74,18 @@ export interface ProseTabsProps {
    * @defaultValue 'pill'
    */
   variant?: TabsVariant;
+  /**
+   * 切换 Tab 时是否卸载隐藏的内容
+   *
+   * - false（默认）：所有 Tab 内容同时存在于 DOM，切换流畅
+   * - true：只保留当前 Tab 内容，切换时重新渲染
+   *
+   * 当 Tab 内包含多个 Mermaid 图表时，建议设为 true 以避免 SVG marker ID 冲突
+   *
+   * @remarks MDC 语法传递的值是字符串，需要在组件内转换
+   * @defaultValue false
+   */
+  unmountOnHide?: boolean;
   /** 自定义 class */
   class?: string;
 }
@@ -96,6 +108,7 @@ const props = withDefaults(defineProps<ProseTabsProps>(), {
   sync: undefined,
   hash: undefined,
   variant: "pill",
+  unmountOnHide: false,
   class: undefined,
 });
 
@@ -540,7 +553,7 @@ const styles = computed(() => {
   <TabsRoot
     :model-value="model"
     :default-value="defaultValue"
-    :unmount-on-hide="false"
+    :unmount-on-hide="unmountOnHide"
     :class="[styles.root, props.class]"
     @update:model-value="handleTabChange">
     <div class="relative w-full">

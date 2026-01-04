@@ -112,6 +112,8 @@ onerway-docs-next2/
 - **ProseInlineBlocks**：强制块级元素在同一行内联渲染
 - **ProseLinkSwitch**：多链接选择器，支持预设（如沙盒/生产环境的商户后台切换）
 - **ProseTabs/ProseTabsItem**：增强的标签页组件，支持多种变体（pill、link、underline、segment），localStorage 同步，可滚动的标签页头部（带左右控制），自动滚动到活动标签，以及动态 TOC 集成
+- **ProseMermaid**：Mermaid 图表渲染，支持拖拽缩放（Alt+拖拽/滚轮）、全屏预览、点状背景、骨架屏加载、明暗主题适配
+- **ProsePre**：代码块包装器，拦截 `language="mermaid"` 并保留 Nuxt UI 完整功能（复制按钮、文件名、行高亮）
 - **AppHeader**：主导航头部
 - **AppHeaderMobileNav**：移动端友好的导航菜单
 - **AppLogo**：应用 Logo 组件

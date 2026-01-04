@@ -49,6 +49,7 @@ docs/
   - `nuxt-ui-prose-a-investigation.md` - Nuxt UI ProseA 组件调研
   - `nuxt-ui-steps-investigation.md` - Nuxt UI Steps 组件调研
   - `task-list-investigation.md` - Task List 可交互功能调研
+  - `mermaid-integration-investigation.md` - Mermaid 图表集成调研
 
 ---
 
@@ -65,6 +66,7 @@ docs/
 **现有文档**：
 
 - `ProseTaskItem.md` - 可交互任务列表项
+- `ProseMermaid.md` - Mermaid 图表渲染组件
 
 **待补充**（现有组件缺设计文档）：
 

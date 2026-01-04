@@ -112,6 +112,7 @@ export default defineNuxtConfig({
             "php",
             "html",
             "xml",
+            "mermaid",
           ],
           theme: {
             default: "catppuccin-latte",

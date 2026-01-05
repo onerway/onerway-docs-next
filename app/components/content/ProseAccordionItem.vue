@@ -7,7 +7,7 @@
  * - #label: 用于放置 markdown 标题作为 trigger
  * - #content: 用于放置展开内容
  *
- * @example MDC 用法
+ * @example MDC 用法 - 基础
  * ```mdc
  * :::accordion-item{icon="i-lucide-circle-help"}
  *
@@ -19,7 +19,29 @@
  *
  * :::
  * ```
+ *
+ * @example MDC 用法 - 单个 badge
+ * ```mdc
+ * :::accordion-item{icon="i-lucide-credit-card" badge="NEW"}
+ * ```
+ *
+ * @example MDC 用法 - 多个 badges（YAML 形式）
+ * ```mdc
+ * :::accordion-item{icon="i-lucide-credit-card"}
+ * ---
+ * badges:
+ *   - label: NEW
+ *     color: primary
+ *   - label: Beta
+ *     color: neutral
+ * ---
+ * :::
+ * ```
  */
+
+// 从 ProseAccordion 导入 BadgeConfig 类型，避免重复定义
+import type { BadgeConfig } from "./ProseAccordion.vue";
+
 export interface ProseAccordionItemProps {
   /**
    * 前置图标名称
@@ -30,6 +52,16 @@ export interface ProseAccordionItemProps {
    * 覆盖父组件的默认 chevron-down 图标
    */
   trailingIcon?: string;
+  /**
+   * 单个 badge（简单场景）
+   * @example badge="NEW"
+   */
+  badge?: string;
+  /**
+   * 多个 badges（灵活场景）
+   * @example :badges='[{"label":"NEW","color":"primary"}]'
+   */
+  badges?: BadgeConfig[];
   /** 自定义 class */
   class?: string;
 }
@@ -60,4 +92,3 @@ defineSlots<{
     <slot name="content" />
   </div>
 </template>
-

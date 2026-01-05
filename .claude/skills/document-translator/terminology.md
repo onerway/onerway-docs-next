@@ -104,6 +104,7 @@
 | Invoice | 发票 | |
 | Receipt | 收据 | |
 | Refund | 退款 | |
+| Capture | 扣款 | 预授权场景下使用，不翻译为"捕获" |
 | Chargeback | 拒付 | |
 | Payout | 打款/转账 | 商户收款场景用"打款"，资金转移场景用"转账" |
 | Balance | 余额 | |

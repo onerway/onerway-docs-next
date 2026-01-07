@@ -46,6 +46,22 @@
 }
 
 /**
+ * 表格对齐样式
+ * 
+ * 恢复 GFM 表格对齐语法支持（:---:, ---:）
+ * Nuxt UI prose 组件默认 text-left 覆盖了 HTML align 属性
+ */
+th[align="center"],
+td[align="center"] {
+  text-align: center !important;
+}
+
+th[align="right"],
+td[align="right"] {
+  text-align: right !important;
+}
+
+/**
  * docs-scroll-container
  * 
  * 标识符 class，用于 JavaScript 定位文档页面的滚动容器。

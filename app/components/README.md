@@ -38,6 +38,7 @@
 | ProseTabs                      | 标签页容器，支持 localStorage 同步和动态 TOC  | `variant`: pill · link · underline · segment; `sync`                                | Reka UI Tabs      | [查看](content/ProseTabs.vue)                                |
 | ProseTabsItem                  | 标签项数据容器                                | `icon`                                                                              | -                 | `:::tabs-item{label="Tab" icon="i-lucide-x"}`                |
 | ProseTaskItem                  | 可交互任务列表项，支持 localStorage 持久化    | `initialChecked`                                                                    | UCheckbox         | 自动注入，无需手动使用                                       |
+|| ProsePdfLink                   | PDF 预览链接，模态框内预览 + 下载              | `title`; 安全：白名单域名; 降级：超时错误显示下载选项                               | UModal, UButton       | `:prose-pdf-link{href="/path/file.pdf"}[Preview]`            |
 
 ## Docs - 文档页面结构组件
 

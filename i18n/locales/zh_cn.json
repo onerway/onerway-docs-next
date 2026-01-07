@@ -207,5 +207,16 @@
     "fullscreen": "全屏查看",
     "fullscreenTitle": "图表预览",
     "zoomHint": "Alt + 拖拽平移 · Alt + 滚轮缩放"
+  },
+  "pdfPreview": {
+    "open": "预览 {title}",
+    "preview": "预览",
+    "download": "下载",
+    "close": "关闭",
+    "loading": "正在加载 PDF...",
+    "modalDescription": "PDF 文档预览对话框",
+    "errorTitle": "无法加载 PDF",
+    "errorDescription": "PDF 文件无法在浏览器中加载。请尝试在新标签页中打开。",
+    "openInNewTab": "在新标签页中打开"
   }
 }

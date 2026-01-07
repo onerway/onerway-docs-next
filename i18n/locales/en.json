@@ -207,5 +207,16 @@
     "fullscreen": "Fullscreen",
     "fullscreenTitle": "Diagram Preview",
     "zoomHint": "Alt + Drag to pan • Alt + Scroll to zoom"
+  },
+  "pdfPreview": {
+    "open": "Preview {title}",
+    "preview": "Preview",
+    "download": "Download",
+    "close": "Close",
+    "loading": "Loading PDF...",
+    "modalDescription": "PDF document preview dialog",
+    "errorTitle": "Unable to load PDF",
+    "errorDescription": "The PDF file could not be loaded in the browser. Try opening it in a new tab.",
+    "openInNewTab": "Open in new tab"
   }
 }

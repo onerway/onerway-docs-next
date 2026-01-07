@@ -20,8 +20,8 @@
 | 组件                           | 用途                                          | 变体/状态                                                                           | 依赖              | 示例                                                         |
 | ------------------------------ | --------------------------------------------- | ----------------------------------------------------------------------------------- | ----------------- | ------------------------------------------------------------ |
 | ProseA                         | 内外链自动区分，外链 ↗ 内链 →，支持 Badge    | `badge`                                                                             | NuxtLink, UBadge  | `[链接](/path){badge="NEW"}`                                 |
-| ProseAccordion                 | 折叠面板容器，支持步骤编号                    | `type`: single · multiple; `numbered`                                               | Reka UI Accordion | [查看](content/ProseAccordion.vue)                           |
-| ProseAccordionItem             | 折叠面板子项，#label 和 #content slots        | `icon`, `trailingIcon`                                                              | -                 | [查看](content/ProseAccordionItem.vue)                       |
+| ProseAccordion                 | 折叠面板容器，支持步骤编号                    | `type`: single · multiple; `numbered`                                               | Reka UI Accordion | [查看](#proseaccordion-示例)                                 |
+| ProseAccordionItem             | 折叠面板子项，#label 和 #content slots        | `icon`, `badge`, `badges`                                                           | -                 | [查看](#proseaccordion-示例)                                 |
 | ProseAnnotation                | 行内术语注释，hover 显示 Popover              | `color`: inherit · primary · ...; `underline`: dotted · dashed · solid · none       | UPopover, UIcon   | `:prose-annotation[术语]{annotation="解释"}`                 |
 | ProseCode                      | 代码块渲染，支持高亮和复制                    | `language`, `filename`                                                              | Shiki             | TODO                                                         |
 | ProseCodeCard                  | 终端风格代码卡片，带复制和可选 footer actions | `actions[]`, `height`                                                               | UButton, ProsePre | [查看](content/ProseCodeCard.vue)                            |
@@ -49,6 +49,26 @@
 | DocsResourceItem | 资源列表子项数据容器                      | `icon`, `tags`, `external`                                     | -                         | `::docs-resource-item{to="/path" tags="快速入门"}` |
 | DocsToc          | 目录导航，桌面固定 + 移动端抽屉           | `highlight`, `headingSelector`                                 | USlideover, useScrollSpy  | TODO                                               |
 | DocsTocList      | 目录链接递归列表（内部组件）              | -                                                              | -                         | 内部组件                                           |
+
+## 组件使用示例
+
+### ProseAccordion 示例
+
+必须使用 `#label` 和 `#content` slot（不支持 `label` 属性）。推荐在 `#label` 中使用 markdown 标题以便 TOC 收录。
+
+```markdown
+::prose-accordion{multiple}
+  :::prose-accordion-item{icon="i-simple-icons-shopify"}
+  #label
+  ### Shopify 集成
+
+  #content
+  内容...
+  :::
+::
+```
+
+> ❌ 错误：`{label="Shopify"}` 属性不存在，会被忽略。
 
 ## 维护约定
 

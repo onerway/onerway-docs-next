@@ -275,11 +275,15 @@ const payment = await onerway.payments.list();
 ::link-switch{preset="dashboard"}
 ::
 
-<!-- 手风琴折叠 -->
-::accordion
-  ::accordion-item{title="常见问题"}
-  这里是答案内容
-  ::
+<!-- 手风琴折叠 - 推荐使用 #label slot + markdown 标题 -->
+::prose-accordion{multiple}
+  :::prose-accordion-item{icon="i-lucide-circle-help"}
+  #label
+  ### 常见问题标题
+
+  #content
+  这里是答案内容，支持完整 markdown 语法。
+  :::
 ::
 
 <!-- 标签页 -->
@@ -537,6 +541,40 @@ Nuxt UI 提供了 Callout 组件用于突出显示重要信息。支持快捷方
   ::
 :::
 ```
+
+#### Accordion 折叠面板组件
+
+**核心规则**：必须使用 `#label` 和 `#content` slot（不支持 `label` 属性）。推荐在 `#label` 中使用 markdown 标题以便 TOC 收录。
+
+```markdown
+::prose-accordion{multiple}
+  :::prose-accordion-item{icon="i-simple-icons-shopify"}
+  #label
+  ### Shopify 集成
+
+  #content
+  内容...
+  :::
+::
+```
+
+> ❌ 错误：`{label="Shopify"}` 属性不存在，会被忽略。
+
+#### See also / 相关资源
+
+文档末尾的相关链接统一使用 `DocsResources` 组件，支持 hover 预览和自动获取文档信息。
+
+```markdown
+::docs-resources
+  :::docs-resource-item{to="/get-started" icon="i-lucide-book" tags="快速入门"}
+  :::
+  :::docs-resource-item{to="https://example.com" icon="i-lucide-link"}
+  自定义标题
+  :::
+::
+```
+
+> 内部链接自动获取 title/description；外部链接需手动指定。
 
 ### 4.5 链接规范
 

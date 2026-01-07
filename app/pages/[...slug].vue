@@ -96,6 +96,33 @@ const navigation = inject(NAVIGATION_KEY);
 const { addPage } = useRecentPages();
 
 // ============================================================================
+// TOC 显示逻辑
+// ============================================================================
+
+/**
+ * 是否显示 TOC 组件
+ * - 需要 frontmatter 中 toc 为 true（默认值）
+ * - 且页面存在 TOC 链接
+ */
+const showToc = computed(() => {
+  return Boolean(
+    page.value?.toc && page.value?.body?.toc?.links?.length
+  );
+});
+
+/**
+ * 布局容器类名
+ * - 有 TOC 时：两栏布局（主内容 + TOC）
+ * - 无 TOC 时：单列布局，主内容占满宽度
+ */
+const layoutClass = computed(() => {
+  if (showToc.value) {
+    return "lg:grid lg:grid-cols-[1fr_250px] lg:gap-16";
+  }
+  return "";
+});
+
+// ============================================================================
 // 数据获取：页面内容
 // ============================================================================
 
@@ -258,7 +285,7 @@ watch(
         path: newPage.path || route.path,
         title: newPage.title || "",
         description: newPage.description,
-        icon: getPageIcon(newPage.navigation),
+        icon: getPageIcon(newPage.navigation!),
       });
     }
   },
@@ -268,8 +295,7 @@ watch(
 
 <template>
   <!-- 两栏布局：主内容 + TOC（移除 UContainer，避免与 layout 双重嵌套） -->
-  <div
-    class="w-full max-w-7xl mx-auto lg:grid lg:grid-cols-[1fr_250px] lg:gap-16">
+  <div :class="['w-full max-w-7xl mx-auto', layoutClass]">
     <!-- 左侧：主内容区 -->
     <div class="min-w-0">
       <UBreadcrumb
@@ -305,10 +331,8 @@ watch(
     <!-- TOC：移动端浮动按钮，桌面端右侧显示 -->
     <ClientOnly>
       <DocsToc
-        v-if="
-          page?.showToc && page?.body?.toc?.links?.length
-        "
-        :links="page.body.toc.links"
+        v-if="showToc"
+        :links="page?.body?.toc?.links ?? []"
         :title="t('toc.title')"
         heading-selector="h2, h3, h4, h5"
         highlight />

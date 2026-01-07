@@ -10,12 +10,12 @@ const commonSchema = z.object({
   /**
    * 控制右侧 ToC 是否显示（默认显示）
    */
-  showToc: z.boolean().default(true),
+  toc: z.boolean().default(true),
 
   /**
    * 控制文档 footer 是否显示（默认显示）
    */
-  showFooter: z.boolean().default(true),
+  footer: z.boolean().default(true),
 
   /**
    * 控制导航条目（用于菜单）的跳转路径

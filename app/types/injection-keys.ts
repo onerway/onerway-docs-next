@@ -80,9 +80,9 @@ export interface DocPage {
    */
   navigation: DocPageNavigation;
   /** 是否显示右侧目录（默认 true） */
-  showToc: boolean;
+  toc: boolean;
   /** 是否显示页面底部（默认 true） */
-  showFooter: boolean;
+  footer: boolean;
 
   // ==================== 兼容性字段 ====================
   /**

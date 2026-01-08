@@ -82,20 +82,14 @@ export default defineAppConfig({
       ],
     },
 
-    pageCTA: {
-      slots: {
-        container:
-          "px-0 py-0 lg:py-0 lg:px-0 flex flex-col-reverse",
-        footer: "mt-0",
-      },
-    },
-
     // PageCard 增强样式
     // 基础：hover 上浮效果 + 平滑过渡
     // spotlight 模式：额外添加阴影和微妙渐变
     pageCard: {
       slots: {
-        root: "transition-all duration-300 ease-out hover:-translate-y-1",
+        root: "transition-all duration-300 ease-out hover:-translate-y-1 group",
+        title:
+          "text-primary group-hover:text-highlighted transition-colors duration-200",
       },
       variants: {
         spotlight: {
@@ -103,6 +97,14 @@ export default defineAppConfig({
             root: "shadow-md hover:shadow-xl bg-linear-to-br from-default to-primary/5",
           },
         },
+      },
+    },
+
+    pageCTA: {
+      slots: {
+        container:
+          "px-0 py-0 lg:py-0 lg:px-0 flex flex-col-reverse",
+        footer: "mt-0",
       },
     },
 

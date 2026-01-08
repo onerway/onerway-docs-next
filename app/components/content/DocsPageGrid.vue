@@ -44,7 +44,7 @@ const props = withDefaults(
   defineProps<DocsPageGridProps>(),
   {
     cols: () => ({ base: 1, md: 2, lg: 2, xl: 3 }),
-    gap: "gap-6",
+    gap: "gap-8",
     as: "div",
   }
 );

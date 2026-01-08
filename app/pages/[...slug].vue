@@ -126,15 +126,18 @@ const layoutClass = computed(() => {
 // 数据获取：页面内容
 // ============================================================================
 
-const { data: page } = await useAsyncData(
-  `${route.path}-${locale.value}`,
-  () => {
-    return queryCollection(getCollectionName(locale.value))
-      .path(route.path)
-      .first();
-  },
-  { watch: [() => locale.value] }
-);
+const { data: page, status: pageStatus } =
+  await useAsyncData(
+    `${route.path}-${locale.value}`,
+    () => {
+      return queryCollection(
+        getCollectionName(locale.value)
+      )
+        .path(route.path)
+        .first();
+    },
+    { watch: [() => locale.value] }
+  );
 
 // 开发模式日志
 if (import.meta.client && import.meta.dev) {
@@ -189,6 +192,25 @@ useSeoMeta({
   ogTitle: seoTitle,
   description: seoDescription,
 });
+
+// ============================================================================
+// 骨架屏显示逻辑
+// ============================================================================
+//
+// 策略说明：
+// - SSR 首屏：数据在服务端已获取，status 为 success，骨架屏不显示
+// - 客户端路由切换：如果加载超过 200ms 才显示骨架屏（避免快速加载时闪烁）
+//
+// 注意：由于 Nuxt Content 的客户端缓存机制，大部分情况下 pending 状态极短暂，
+// 骨架屏作为"保险"机制在极端慢网络或缓存未命中时生效。
+//
+
+/**
+ * 延迟显示骨架屏
+ * 加载超过 200ms 才显示，避免快速加载时骨架屏闪烁
+ */
+const { showSkeleton: shouldShowSkeleton } =
+  useDelayedLoading(pageStatus, 200);
 
 // ============================================================================
 // Breadcrumb 生成
@@ -298,44 +320,58 @@ watch(
   <div :class="['w-full max-w-7xl mx-auto', layoutClass]">
     <!-- 左侧：主内容区 -->
     <div class="min-w-0">
-      <UBreadcrumb
-        v-if="breadcrumb.length"
-        :ui="{
-          list: 'flex-wrap',
-        }"
-        :items="breadcrumb" />
-      <UPageHeader
-        :title="page?.title ?? ''"
-        :description="page?.description ?? ''"
-        :ui="{
-          root: 'border-none py-2 sm:py-4',
-        }" />
-      <USeparator
-        v-if="surround?.length"
-        icon="i-custom-onerway" />
+      <!-- 骨架屏：首屏加载或延迟超时后显示 -->
+      <DocsPageSkeleton v-if="shouldShowSkeleton" />
 
-      <ContentRenderer
-        v-if="page"
-        :value="page" />
+      <!-- 实际内容：加载完成后显示 -->
+      <template v-else>
+        <UBreadcrumb
+          v-if="breadcrumb.length"
+          :ui="{
+            list: 'flex-wrap',
+          }"
+          :items="breadcrumb" />
+        <UPageHeader
+          :title="page?.title ?? ''"
+          :description="page?.description ?? ''"
+          :ui="{
+            root: 'border-none py-2 sm:py-4',
+          }" />
+        <USeparator
+          v-if="surround?.length"
+          icon="i-custom-onerway" />
 
-      <USeparator
-        v-if="surround?.length"
-        class="my-4"
-        icon="i-custom-onerway" />
+        <ContentRenderer
+          v-if="page"
+          :value="page" />
 
-      <UContentSurround
-        v-if="surround?.length"
-        :surround="surround" />
+        <USeparator
+          v-if="surround?.length"
+          class="my-4"
+          icon="i-custom-onerway" />
+
+        <UContentSurround
+          v-if="surround?.length"
+          :surround="surround" />
+      </template>
     </div>
 
     <!-- TOC：移动端浮动按钮，桌面端右侧显示 -->
     <ClientOnly>
+      <!-- TOC 骨架屏：客户端加载中显示 -->
+      <DocsTocSkeleton v-if="shouldShowSkeleton" />
+      <!-- 实际 TOC -->
       <DocsToc
-        v-if="showToc"
+        v-else-if="showToc"
         :links="page?.body?.toc?.links ?? []"
         :title="t('toc.title')"
         heading-selector="h2, h3, h4, h5"
         highlight />
+
+      <!-- SSR fallback：服务端渲染时显示骨架屏占位，避免空白 -->
+      <template #fallback>
+        <DocsTocSkeleton v-if="showToc" />
+      </template>
     </ClientOnly>
   </div>
 </template>

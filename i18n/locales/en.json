@@ -218,5 +218,9 @@
     "errorTitle": "Unable to load PDF",
     "errorDescription": "The PDF file could not be loaded in the browser. Try opening it in a new tab.",
     "openInNewTab": "Open in new tab"
+  },
+  "emptyContent": {
+    "title": "Coming Soon",
+    "description": "This page is under construction. Check back later for updates."
   }
 }

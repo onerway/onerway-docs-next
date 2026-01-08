@@ -218,5 +218,9 @@
     "errorTitle": "无法加载 PDF",
     "errorDescription": "PDF 文件无法在浏览器中加载。请尝试在新标签页中打开。",
     "openInNewTab": "在新标签页中打开"
+  },
+  "emptyContent": {
+    "title": "即将推出",
+    "description": "此页面正在建设中，请稍后再来查看更新。"
   }
 }

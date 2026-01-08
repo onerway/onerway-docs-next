@@ -122,6 +122,17 @@ const layoutClass = computed(() => {
   return "";
 });
 
+/**
+ * 是否有正文内容
+ * - Nuxt Content 3 的 body.value 是 MinimarkNode[] 数组
+ * - 空文档的 body.value 为空数组 []
+ * - 用于判断是否显示"即将推出"占位组件
+ */
+const hasContent = computed(() => {
+  const bodyValue = page.value?.body?.value;
+  return Array.isArray(bodyValue) && bodyValue.length > 0;
+});
+
 // ============================================================================
 // 数据获取：页面内容
 // ============================================================================
@@ -317,9 +328,10 @@ watch(
 
 <template>
   <!-- 两栏布局：主内容 + TOC（移除 UContainer，避免与 layout 双重嵌套） -->
-  <div :class="['w-full max-w-7xl mx-auto', layoutClass]">
+  <div :class="['w-full max-w-6xl mx-auto', layoutClass]">
     <!-- 左侧：主内容区 -->
-    <div class="min-w-0">
+    <div
+      class="min-w-0 flex flex-col min-h-[calc(100vh-var(--header-height,64px))]">
       <!-- 骨架屏：首屏加载或延迟超时后显示 -->
       <DocsPageSkeleton v-if="shouldShowSkeleton" />
 
@@ -338,12 +350,23 @@ watch(
             root: 'border-none py-2 sm:py-4',
           }" />
         <USeparator
-          v-if="surround?.length"
+          v-if="page && hasContent"
           icon="i-custom-onerway" />
 
+        <!-- 有内容：渲染正常文档 -->
         <ContentRenderer
-          v-if="page"
+          v-if="page && hasContent"
           :value="page" />
+
+        <!-- 无内容：显示"即将推出"占位，填充剩余空间 -->
+        <UEmpty
+          v-else
+          variant="naked"
+          size="lg"
+          icon="i-lucide-file"
+          :title="t('emptyContent.title')"
+          :description="t('emptyContent.description')"
+          class="flex-1 flex items-center justify-center" />
 
         <USeparator
           v-if="surround?.length"

@@ -1,6 +1,6 @@
 title: 设置 Onerway
 description: 完整的安装与配置指南
 icon: i-lucide-cog
-order: 1
+
 module: true
 defaultOpen: void

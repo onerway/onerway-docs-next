@@ -1,9 +1,9 @@
 ---
 title: Overview
 description: Get your development environment ready for Onerway integration
-order: 1
 
-showNavigation: true
+
+
 ---
 
 ## Prerequisites

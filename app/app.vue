@@ -29,6 +29,8 @@ const { data: navigation } = await useAsyncData(
     return queryCollectionNavigation(collection, [
       "to",
       "hidden",
+      "toc",
+      "footer",
       "navigation"
     ]);
   },

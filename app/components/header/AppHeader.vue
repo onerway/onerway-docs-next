@@ -38,11 +38,8 @@ const { topLevelModuleLinks } = useDocsNav(
 // 语言切换菜单项
 const languageItems = computed<DropdownMenuItem[][]>(() => [
   locales.value.map((l) => ({
-    label: l.name || l.code.toUpperCase(),
-    icon:
-      locale.value === l.code
-        ? "i-lucide-check"
-        : undefined,
+    label: t(`header.language.${l.code}`),
+    icon: locale.value === l.code ? "i-lucide-check" : undefined,
     onSelect: () => setLocale(l.code),
   })),
 ]);
@@ -71,7 +68,7 @@ const apis = computed<DropdownMenuItem[][]>(() => [
       side: 'right',
     }"
     :ui="{
-      root: 'border-none bg-default',
+      root: 'border-b border-default bg-default',
     }">
     <!-- Left 插槽 - Logo 区域 -->
     <template #left>
@@ -104,11 +101,14 @@ const apis = computed<DropdownMenuItem[][]>(() => [
 
       <!-- 语言切换下拉菜单 -->
       <UDropdownMenu
+        size="sm"
         :items="languageItems"
-        :ui="{ content: 'min-w-32' }">
+        :content="{ align: 'end' }"
+        :ui="{ content: 'w-(--reka-dropdown-menu-trigger-width)' }">
         <UButton
-          :label="locale.toUpperCase()"
+          :label="t(`header.language.${locale}`)"
           icon="i-lucide-languages"
+          trailing-icon="i-lucide-chevron-down"
           color="neutral"
           variant="ghost"
           size="sm" />
@@ -130,7 +130,9 @@ const apis = computed<DropdownMenuItem[][]>(() => [
           variant="link" />
 
         <!-- 右侧：API 入口下拉菜单 -->
-        <UDropdownMenu :items="apis">
+        <UDropdownMenu
+          :items="apis"
+          :content="{ align: 'end' }">
           <UButton
             :label="t('header.api.title')"
             trailing-icon="i-lucide-chevron-down"

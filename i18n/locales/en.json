@@ -4,6 +4,10 @@
       "title": "API Reference",
       "payments": "Payments API",
       "transfer": "Transfer API"
+    },
+    "language": {
+      "en": "English",
+      "zh_cn": "简体中文"
     }
   },
   "toc": {

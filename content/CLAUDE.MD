@@ -315,10 +315,40 @@ MDC (Markdown Components) 是 Nuxt Content 的组件语法，用于在 Markdown 
 
 #### 基本结构
 
+MDC 支持两种组件形式：**块级组件**和**行内组件**。
+
+**块级组件（Block Component）**
+
+使用双冒号 `::` 语法，独立成块，支持多行内容和复杂结构：
+
 ```markdown
 ::component-name
 内容（默认插槽）
 ::
+```
+
+**行内组件（Inline Component）**
+
+使用单冒号 `:` 语法，嵌入在文本中，适用于行内增强：
+
+```markdown
+这是一段包含 :component-name[行内内容]{prop="value"} 的文本。
+```
+
+**重要规则**：
+- 行内组件使用单冒号 `:`，冒号前**必须**包含空格（或在行首）
+- 行内组件内容用方括号 `[...]` 包裹
+- 行内组件属性用花括号 `{...}` 传递
+- 行内组件不支持命名插槽和 YAML 块
+
+**常见行内组件示例**：
+
+```markdown
+<!-- ProseAnnotation: 为术语添加悬浮解释 -->
+The :prose-annotation[European Economic Area]{annotation="A regional single market..."} (EEA) includes...
+
+<!-- Badge 或其他行内增强 -->
+This feature is :badge[New]{color="green"} in version 2.0.
 ```
 
 #### 嵌套层级
@@ -458,6 +488,15 @@ TS 代码
 
 #### 快速参考
 
+**组件类型**
+
+| 组件类型 | 语法 | 使用场景 | 示例 |
+|---------|------|----------|------|
+| 块级组件 | `::name ... ::` | 独立内容块、复杂结构 | `::note\n内容\n::` |
+| 行内组件 | `:name[内容]{props}` | 文本内嵌增强、术语注释 | `:prose-annotation[EEA]{annotation="..."}` |
+
+**属性类型**
+
 | 数据类型 | 语法示例 | 前缀 |
 |---------|---------|------|
 | 字符串 | `type="info"` | 无 |
@@ -466,7 +505,10 @@ TS 代码
 | 对象 | `:config='{"key":"val"}'` | `:` |
 | 复杂数据 | YAML 块 | N/A |
 
-**核心原则：** 简单用内联，复杂用 YAML，数组/对象加冒号。
+**核心原则：**
+- 块级用 `::`，行内用 `:` (冒号前需空格)
+- 简单属性直接写，数组/对象加冒号
+- 复杂数据用 YAML
 
 #### Callout 提示框组件
 

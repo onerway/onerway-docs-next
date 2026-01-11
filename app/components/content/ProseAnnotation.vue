@@ -85,21 +85,18 @@ export interface ProseAnnotationProps {
 // Props & Slots
 // ============================================================================
 
-const props = withDefaults(
-  defineProps<ProseAnnotationProps>(),
-  {
-    text: undefined,
-    annotation: undefined,
-    color: "inherit",
-    icon: undefined,
-    trailingIcon: "i-lucide-info",
-    title: undefined,
-    class: undefined,
-    showOnMobile: true,
-    underline: "dashed",
-    inline: false,
-  }
-);
+const props = withDefaults(defineProps<ProseAnnotationProps>(), {
+  text: undefined,
+  annotation: undefined,
+  color: "inherit",
+  icon: undefined,
+  trailingIcon: "i-lucide-info",
+  title: undefined,
+  class: undefined,
+  showOnMobile: true,
+  underline: "dashed",
+  inline: false,
+});
 
 const slots = defineSlots<{
   default(): VNode[];
@@ -114,9 +111,7 @@ const slots = defineSlots<{
 const supportsHover = ref(false);
 
 onMounted(() => {
-  supportsHover.value = window.matchMedia(
-    "(hover: hover)"
-  ).matches;
+  supportsHover.value = window.matchMedia("(hover: hover)").matches;
 });
 
 // ============================================================================
@@ -181,9 +176,7 @@ const shouldShowPopover = computed(() => {
 });
 
 /** 是否有富内容注释 slot */
-const hasAnnotationSlot = computed(
-  () => !!slots.annotation
-);
+const hasAnnotationSlot = computed(() => !!slots.annotation);
 
 /** 是否有注释内容 */
 const hasAnnotation = computed(() => {
@@ -201,19 +194,33 @@ const hasAnnotation = computed(() => {
 const styles = computed(() => {
   const colorStyle = COLOR_MAP[props.color];
 
+  // 基础样式 - 用于 trigger 和 fallback 共享
+  const baseStyles = [
+    "inline-flex items-center gap-1 px-1",
+    UNDERLINE_MAP[props.underline],
+    colorStyle.text,
+    colorStyle.border,
+    "transition-colors duration-200",
+    props.class,
+  ];
+
   return {
-    // 触发元素样式 - 参考 React 版本使用 border-b 替代 underline
+    // 触发元素样式 - 使用 button 确保移动端可点击
     trigger: [
-      "inline-flex items-center gap-1 px-1",
+      // Button 重置样式
+      "appearance-none bg-transparent p-0 m-0 font-inherit text-inherit",
+      ...baseStyles,
       "cursor-help", // 帮助光标，表示可查看更多信息
-      UNDERLINE_MAP[props.underline],
-      colorStyle.text,
-      colorStyle.border,
-      "transition-colors duration-200",
-      props.class,
+      // Focus 环样式 - 与 Nuxt UI 保持一致
+      "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 focus-visible:rounded transition-shadow",
+      // 移动端触摸优化 - 禁用双击缩放延迟
+      "touch-manipulation",
     ]
       .filter(Boolean)
       .join(" "),
+
+    // 降级显示样式 - 无注释内容时使用，不暗示交互
+    fallback: baseStyles.filter(Boolean).join(" "),
 
     // Popover UI 配置 - 使用 Nuxt UI 主题令牌
     popover: {
@@ -246,7 +253,7 @@ const styles = computed(() => {
     <UPopover
       v-if="shouldShowPopover && hasAnnotation"
       :dismissible="showOnMobile"
-      :close-delay="200"
+      :close-delay="supportsHover ? 200 : 0"
       :mode="supportsHover ? 'hover' : 'click'"
       :content="{
         side: 'top',
@@ -255,8 +262,16 @@ const styles = computed(() => {
       }"
       arrow
       :ui="styles.popover">
-      <!-- 触发元素 -->
-      <span :class="styles.trigger">
+      <!--
+        触发元素 - 使用 button 确保移动端可点击
+        button 相比 span 有以下优势：
+        1. 原生支持点击/触摸事件
+        2. 可聚焦，支持键盘导航
+        3. 屏幕阅读器可识别
+      -->
+      <button
+        type="button"
+        :class="styles.trigger">
         <UIcon
           v-if="icon"
           :name="icon"
@@ -267,7 +282,7 @@ const styles = computed(() => {
           v-if="trailingIcon"
           :name="trailingIcon"
           class="inline size-3.5" />
-      </span>
+      </button>
 
       <!-- Popover 内容 -->
       <template #content>
@@ -296,10 +311,10 @@ const styles = computed(() => {
       </template>
     </UPopover>
 
-    <!-- 无注释内容时的降级显示 -->
+    <!-- 无注释内容时的降级显示 - 纯展示，无交互 -->
     <span
       v-else
-      :class="styles.trigger">
+      :class="styles.fallback">
       <UIcon
         v-if="icon"
         :name="icon"

@@ -12,9 +12,7 @@ const { locale } = useI18n();
  * locale code 与 Nuxt UI 导出名一致，可直接索引访问
  */
 const uiLocale = computed(
-  () =>
-    locales[locale.value as keyof typeof locales] ??
-    locales.en
+  () => locales[locale.value as keyof typeof locales] ?? locales.en
 );
 
 /**
@@ -24,14 +22,13 @@ const uiLocale = computed(
 const { data: navigation } = await useAsyncData(
   () => `navigation-${locale.value}`,
   () => {
-    const collection =
-      `docs_${locale.value}` as keyof PageCollections;
+    const collection = `docs_${locale.value}` as keyof PageCollections;
     return queryCollectionNavigation(collection, [
       "to",
       "hidden",
       "toc",
       "footer",
-      "navigation"
+      "navigation",
     ]);
   },
   { watch: [locale] }
@@ -48,8 +45,7 @@ if (import.meta.client && import.meta.dev) {
 const { data: files } = useLazyAsyncData(
   `search-${locale.value}`,
   () => {
-    const collection =
-      `docs_${locale.value}` as keyof PageCollections;
+    const collection = `docs_${locale.value}` as keyof PageCollections;
     return queryCollectionSearchSections(collection);
   },
   { server: false, watch: [locale] }

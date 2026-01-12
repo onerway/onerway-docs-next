@@ -186,6 +186,11 @@ Use webhooks to be notified about events that happen in a Stripe account...
 
 7. **原文补充**: 提供 Stripe 原文可以提高准确性，但不是必需的。Agent 会智能结合 MCP 和原文
 
+8. **清理 stripeDocUrl**: 增强完成后，需要从 frontmatter 中移除 `stripeDocUrl` 字段
+   - `stripeDocUrl` 仅用于增强过程中参考 Stripe 原文
+   - 完成增强后该字段不再需要，应该删除以保持 frontmatter 整洁
+   - Agent 会在完成增强后提醒你移除此字段
+
 ---
 
 ## 🚀 执行步骤
@@ -311,6 +316,35 @@ if (stripeOriginals.length > 0) {
 - Agent 的分析结果会直接返回给用户
 - 如果使用了原文，说明哪些信息来自原文
 - 用户可以根据建议决定是否修改文档
+
+### 6. **清理提醒**
+
+增强完成后，向用户确认移除 frontmatter 中的 `stripeDocUrl` 字段：
+
+```
+✅ 文档增强完成！
+
+📋 后续清理步骤：
+1. 应用上述优化建议
+2. 移除 frontmatter 中的 stripeDocUrl 字段
+
+当前 frontmatter:
+---
+title: [标题]
+description: [描述]
+stripeDocUrl: https://stripe.com/...  ← 请删除此行
+---
+
+修改后:
+---
+title: [标题]
+description: [描述]
+---
+
+原因：stripeDocUrl 仅用于增强参考，完成后不再需要。
+
+是否需要我帮你移除这个字段？
+```
 
 ---
 

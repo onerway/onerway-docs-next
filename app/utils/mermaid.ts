@@ -143,9 +143,7 @@ const DARK_THEME_CSS = BASE_THEME_CSS;
  * const config = getMermaidConfig(colorMode.value === 'dark');
  * ```
  */
-export const getMermaidConfig = (
-  isDark: boolean
-): MermaidConfig => ({
+export const getMermaidConfig = (isDark: boolean): MermaidConfig => ({
   darkMode: isDark,
   startOnLoad: false,
   theme: "base",
@@ -156,9 +154,7 @@ export const getMermaidConfig = (
   securityLevel: "strict",
   logLevel: "error",
   markdownAutoWrap: true,
-  themeVariables: isDark
-    ? DARK_THEME_VARIABLES
-    : LIGHT_THEME_VARIABLES,
+  themeVariables: isDark ? DARK_THEME_VARIABLES : LIGHT_THEME_VARIABLES,
   themeCSS: isDark ? DARK_THEME_CSS : LIGHT_THEME_CSS,
 
   // 时序图
@@ -175,7 +171,7 @@ export const getMermaidConfig = (
   },
   // 流程图配置 - 柔和曲线风格
   flowchart: {
-    curve: "natural", // 平滑曲线
+    curve: "basis", // 平滑曲线
     padding: 20,
     nodeSpacing: 40,
     rankSpacing: 50,

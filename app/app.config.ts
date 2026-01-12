@@ -33,8 +33,7 @@ export default defineAppConfig({
     navigationMenu: {
       slots: {
         item: "cursor-pointer text-left",
-        linkTrailingIcon:
-          "group-data-[state=open]:rotate-90",
+        linkTrailingIcon: "group-data-[state=open]:rotate-90",
       },
       variants: {
         orientation: {
@@ -46,8 +45,7 @@ export default defineAppConfig({
             childLink: "items-start",
             childLinkLabel: "whitespace-normal",
             childLinkWrapper: "min-w-0",
-            childLinkDescription:
-              "text-balance line-clamp-2",
+            childLinkDescription: "text-balance line-clamp-2",
           },
         },
         active: {
@@ -102,8 +100,7 @@ export default defineAppConfig({
 
     pageCTA: {
       slots: {
-        container:
-          "px-0 py-0 lg:py-0 lg:px-0 flex flex-col-reverse",
+        container: "px-0 py-0 lg:py-0 lg:px-0 flex flex-col-reverse",
         footer: "mt-0",
       },
     },
@@ -134,6 +131,34 @@ export default defineAppConfig({
       h6: {
         base: "mt-1 mb-0.5",
       },
+      // callout 组件样式
+      callout: {
+        variants: {
+          color: {
+            primary: {
+              base: "border-0 border-l-6 border-primary bg-transparent pl-5 pr-4 !text-default dark:!text-default",
+            },
+            secondary: {
+              base: "border-0 border-l-6 border-secondary bg-transparent pl-5 pr-4 !text-default dark:!text-default",
+            },
+            success: {
+              base: "border-0 border-l-6 border-success bg-transparent pl-5 pr-4 !text-default dark:!text-default",
+            },
+            info: {
+              base: "border-0 border-l-6 border-info bg-transparent pl-5 pr-4 !text-default dark:!text-default",
+            },
+            warning: {
+              base: "border-0 border-l-6 border-warning bg-transparent pl-5 pr-4 !text-default dark:!text-default",
+            },
+            error: {
+              base: "border-0 border-l-6 border-error bg-transparent pl-5 pr-4 !text-default dark:!text-default",
+            },
+            neutral: {
+              base: "border-0 border-l-6 border-muted bg-transparent pl-5 pr-4 !text-default dark:!text-default",
+            },
+          },
+        },
+      },
       // 代码图标
       codeIcon: {
         react: "vscode-icons:file-type-reactts",
@@ -143,36 +168,28 @@ export default defineAppConfig({
         json: "catppuccin:json",
         yaml: "vscode-icons:file-type-light-yaml-official",
         "package.json": "i-vscode-icons-file-type-node",
-        "tsconfig.json":
-          "i-vscode-icons-file-type-tsconfig",
+        "tsconfig.json": "i-vscode-icons-file-type-tsconfig",
         ".npmrc": "i-vscode-icons-file-type-npm",
-        ".editorconfig":
-          "i-vscode-icons-file-type-editorconfig",
+        ".editorconfig": "i-vscode-icons-file-type-editorconfig",
         ".eslintrc": "i-vscode-icons-file-type-eslint",
         ".eslintrc.cjs": "i-vscode-icons-file-type-eslint",
         ".eslintignore": "i-vscode-icons-file-type-eslint",
-        "eslint.config.js":
-          "i-vscode-icons-file-type-eslint",
-        "eslint.config.mjs":
-          "i-vscode-icons-file-type-eslint",
-        "eslint.config.cjs":
-          "i-vscode-icons-file-type-eslint",
+        "eslint.config.js": "i-vscode-icons-file-type-eslint",
+        "eslint.config.mjs": "i-vscode-icons-file-type-eslint",
+        "eslint.config.cjs": "i-vscode-icons-file-type-eslint",
         ".gitignore": "i-vscode-icons-file-type-git",
         "yarn.lock": "i-vscode-icons-file-type-yarn",
         ".env": "i-vscode-icons-file-type-dotenv",
         ".env.example": "i-vscode-icons-file-type-dotenv",
-        ".vscode/settings.json":
-          "i-vscode-icons-file-type-vscode",
+        ".vscode/settings.json": "i-vscode-icons-file-type-vscode",
         nuxt: "i-vscode-icons-file-type-nuxt",
         ".nuxtrc": "i-vscode-icons-file-type-nuxt",
         ".nuxtignore": "i-vscode-icons-file-type-nuxt",
         "nuxt.config.js": "i-vscode-icons-file-type-nuxt",
         "nuxt.config.ts": "i-vscode-icons-file-type-nuxt",
         "nuxt.schema.ts": "i-vscode-icons-file-type-nuxt",
-        "tailwind.config.js":
-          "i-vscode-icons-file-type-tailwind",
-        "tailwind.config.ts":
-          "i-vscode-icons-file-type-tailwind",
+        "tailwind.config.js": "i-vscode-icons-file-type-tailwind",
+        "tailwind.config.ts": "i-vscode-icons-file-type-tailwind",
         vue: "i-vscode-icons-file-type-vue",
         ts: "i-vscode-icons-file-type-typescript",
         tsx: "i-vscode-icons-file-type-typescript",

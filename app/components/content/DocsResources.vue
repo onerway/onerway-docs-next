@@ -71,12 +71,9 @@ interface ResolvedResourceItem extends SlotResourceItem {
 // Props & Slots
 // ============================================================================
 
-const props = withDefaults(
-  defineProps<DocsResourcesProps>(),
-  {
-    class: undefined,
-  }
-);
+const props = withDefaults(defineProps<DocsResourcesProps>(), {
+  class: undefined,
+});
 
 const slots = defineSlots<{
   title(): VNode[];
@@ -89,9 +86,7 @@ const slots = defineSlots<{
 
 const { locale, t } = useI18n();
 const navigation = inject(NAVIGATION_KEY);
-const { findTitleByPath } = useDocsNav(
-  computed(() => navigation?.value ?? [])
-);
+const { findTitleByPath } = useDocsNav(computed(() => navigation?.value ?? []));
 
 // ============================================================================
 // Reactive State
@@ -101,17 +96,13 @@ const { findTitleByPath } = useDocsNav(
 const slotUpdateCounter = ref(1);
 
 /** 懒加载的 description 缓存（undefined=未加载, null=加载中, string=已加载） */
-const descriptionCache = ref<Record<string, string | null>>(
-  {}
-);
+const descriptionCache = ref<Record<string, string | null>>({});
 
 /** 检测设备是否支持 hover（桌面端） */
 const supportsHover = ref(false);
 
 onMounted(() => {
-  supportsHover.value = window.matchMedia(
-    "(hover: hover)"
-  ).matches;
+  supportsHover.value = window.matchMedia("(hover: hover)").matches;
 });
 
 onBeforeUpdate(() => slotUpdateCounter.value++);
@@ -124,10 +115,7 @@ onBeforeUpdate(() => slotUpdateCounter.value++);
  * 检测是否为外部链接
  */
 const isExternalUrl = (url: string): boolean => {
-  return (
-    url?.startsWith("http://") ||
-    url?.startsWith("https://")
-  );
+  return url?.startsWith("http://") || url?.startsWith("https://");
 };
 
 /**
@@ -136,8 +124,7 @@ const isExternalUrl = (url: string): boolean => {
  */
 const parseTags = (tags: unknown): string[] | undefined => {
   if (!tags) return undefined;
-  if (Array.isArray(tags))
-    return tags.filter(Boolean).map(String);
+  if (Array.isArray(tags)) return tags.filter(Boolean).map(String);
   if (typeof tags === "string") {
     return tags
       .split(",")
@@ -158,10 +145,7 @@ const isResourceItemVNode = (vnode: VNode): boolean => {
       : typeof vnode.type === "string"
         ? vnode.type
         : "";
-  return (
-    typeName === "DocsResourceItem" ||
-    Boolean(vnode.props?.to)
-  );
+  return typeName === "DocsResourceItem" || Boolean(vnode.props?.to);
 };
 
 /**
@@ -185,9 +169,7 @@ const extractResourceFromVNode = (
     index,
     to,
     title: vnode.props?.title as string | undefined,
-    description: vnode.props?.description as
-      | string
-      | undefined,
+    description: vnode.props?.description as string | undefined,
     icon: vnode.props?.icon as string | undefined,
     external:
       vnode.props?.external !== undefined
@@ -214,29 +196,23 @@ const slotItems = computed<SlotResourceItem[]>(() => {
 });
 
 /** 解析后的完整资源列表（包含 title 和 description） */
-const resolvedItems = computed<ResolvedResourceItem[]>(
-  () => {
-    return slotItems.value.map((item) => {
-      // 从 navigation 查找文档本身的标题
-      const navTitle = !item.external
-        ? findTitleByPath(item.to)
-        : undefined;
+const resolvedItems = computed<ResolvedResourceItem[]>(() => {
+  return slotItems.value.map((item) => {
+    // 从 navigation 查找文档本身的标题
+    const navTitle = !item.external ? findTitleByPath(item.to) : undefined;
 
-      return {
-        ...item,
-        // 链接显示：优先使用用户传入的 title
-        linkTitle: item.title || navTitle || item.to,
-        // Popover 显示：优先使用文档本身的 title
-        docTitle: navTitle || item.title || item.to,
-        // 优先使用用户指定的，其次使用懒加载的
-        resolvedDescription:
-          item.description ||
-          descriptionCache.value[item.to] ||
-          undefined,
-      };
-    });
-  }
-);
+    return {
+      ...item,
+      // 链接显示：优先使用用户传入的 title
+      linkTitle: item.title || navTitle || item.to,
+      // Popover 显示：优先使用文档本身的 title
+      docTitle: navTitle || item.title || item.to,
+      // 优先使用用户指定的，其次使用懒加载的
+      resolvedDescription:
+        item.description || descriptionCache.value[item.to] || undefined,
+    };
+  });
+});
 
 /** 是否有自定义标题 slot */
 const hasTitleSlot = computed(() => {
@@ -261,11 +237,8 @@ const loadDocDescription = async (path: string) => {
   // 标记为加载中
   descriptionCache.value[path] = null;
 
-  const collection =
-    `docs_${locale.value}` as keyof PageCollections;
-  const doc = await queryCollection(collection)
-    .path(path)
-    .first();
+  const collection = `docs_${locale.value}` as keyof PageCollections;
+  const doc = await queryCollection(collection).path(path).first();
   descriptionCache.value[path] = doc?.description || "";
 };
 
@@ -275,26 +248,19 @@ const loadDocDescription = async (path: string) => {
  * - 内部链接：始终显示（支持懒加载 description）
  * - 外部链接：仅在有 tags 或 description 时显示
  */
-const shouldShowPopover = (
-  item: ResolvedResourceItem
-): boolean => {
+const shouldShowPopover = (item: ResolvedResourceItem): boolean => {
   // 移动端不显示 Popover
   if (!supportsHover.value) return false;
   // 内部链接始终显示（可以懒加载 description）
   if (!item.external) return true;
   // 外部链接仅在有 tags 或 description 时显示
-  return Boolean(
-    item.tags?.length || item.resolvedDescription
-  );
+  return Boolean(item.tags?.length || item.resolvedDescription);
 };
 
 /**
  * Popover 打开时触发懒加载
  */
-const handlePopoverOpen = (
-  open: boolean,
-  item: ResolvedResourceItem
-) => {
+const handlePopoverOpen = (open: boolean, item: ResolvedResourceItem) => {
   if (open && !item.external && !item.description) {
     loadDocDescription(item.to);
   }
@@ -309,8 +275,7 @@ const styles = {
   root: "not-prose mt-10 pt-6 border-t border-default",
   // 标题
   titleWrapper: "mb-2 resources-title",
-  defaultTitle:
-    "text-xs font-semibold text-primary uppercase tracking-wider",
+  defaultTitle: "text-xs font-semibold text-primary uppercase tracking-wider",
   // 列表
   list: "flex flex-col",
   linkWrapper: "block",
@@ -322,8 +287,7 @@ const styles = {
     "border border-default/60 shadow-xl shadow-black/5 dark:shadow-black/20",
   ].join(" "),
   tagsWrapper: "flex flex-wrap gap-1 mb-2",
-  popoverTitle:
-    "text-sm font-medium text-highlighted mb-1 leading-snug",
+  popoverTitle: "text-sm font-medium text-highlighted mb-1 leading-snug",
   popoverDesc: "text-xs text-muted leading-relaxed",
 };
 
@@ -363,16 +327,12 @@ const buttonUi = {
             mode="hover"
             :close-delay="100"
             :content="{
-              side: 'right',
               align: 'center',
               sideOffset: 12,
             }"
             arrow
             :ui="{ content: styles.popoverContent }"
-            @update:open="
-              (open: boolean) =>
-                handlePopoverOpen(open, item)
-            ">
+            @update:open="(open: boolean) => handlePopoverOpen(open, item)">
             <UButton
               :to="item.to"
               :target="item.external ? '_blank' : undefined"
@@ -382,9 +342,7 @@ const buttonUi = {
               size="md"
               :icon="item.icon"
               :trailing-icon="
-                item.external
-                  ? 'i-lucide-arrow-up-right'
-                  : undefined
+                item.external ? 'i-lucide-arrow-up-right' : undefined
               "
               :label="item.linkTitle"
               :ui="buttonUi" />
@@ -404,9 +362,7 @@ const buttonUi = {
                 </UBadge>
               </div>
               <!-- 文档标题 -->
-              <h4 :class="styles.popoverTitle">{{
-                item.docTitle
-              }}</h4>
+              <h4 :class="styles.popoverTitle">{{ item.docTitle }}</h4>
               <!-- 描述 -->
               <p
                 v-if="item.resolvedDescription"
@@ -427,9 +383,7 @@ const buttonUi = {
             size="md"
             :icon="item.icon"
             :trailing-icon="
-              item.external
-                ? 'i-lucide-arrow-up-right'
-                : undefined
+              item.external ? 'i-lucide-arrow-up-right' : undefined
             "
             :label="item.linkTitle"
             :ui="buttonUi" />

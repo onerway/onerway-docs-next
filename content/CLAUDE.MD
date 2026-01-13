@@ -53,10 +53,10 @@
 - 银行转账
 - 数字钱包
 
-| 环境 | API 地址 |
-|------|---------|
+| 环境 | API 地址                        |
+| ---- | ------------------------------- |
 | 沙盒 | https://sandbox-api.onerway.com |
-| 生产 | https://api.onerway.com |
+| 生产 | https://api.onerway.com         |
 ```
 
 **加粗重要文本**
@@ -125,23 +125,7 @@
 - 对专家没有成本（可以快速跳过）
 - 对新手有巨大价值（避免卡住或放弃）
 
-**示例：环境变量设置**
-```markdown
-## 配置 API 密钥
-
-1. 在 Dashboard 中获取你的 API 密钥
-2. 设置环境变量：
-
-::code-group
-```bash [macOS/Linux]
-export ONERWAY_API_KEY="your_api_key_here"
-```
-
-```powershell [Windows]
-$env:ONERWAY_API_KEY="your_api_key_here"
-```
-::
-```
+**示例**：环境变量设置应提供 macOS/Linux 和 Windows 两种方式。
 
 ### 3.3 使用准确的术语
 
@@ -158,33 +142,7 @@ $env:ONERWAY_API_KEY="your_api_key_here"
 - 示例应该自包含，避免跨页面引用
 - 提供多语言示例（适用于 API 文档）
 
-```markdown
-<!-- 好的示例结构 -->
-::code-group
-```javascript [Node.js]
-const onerway = require('onerway');
-const payment = await onerway.payments.create({
-amount: 1000,
-currency: 'USD'
-});
-```
-
-```python [Python]
-import onerway
-payment = onerway.Payment.create(
-amount=1000,
-currency='USD'
-)
-```
-
-```php [PHP]
-$payment = \Onerway\Payment::create([
-'amount' => 1000,
-'currency' => 'USD'
-]);
-```
-::
-```
+使用 `::code-group` 提供多语言示例（Node.js、Python、PHP 等）。
 
 ### 3.5 内容优先级
 
@@ -206,17 +164,7 @@ $payment = \Onerway\Payment::create([
 - 帮助读者建立上下文
 - 即使是专家也可能欣赏好的介绍
 
-```markdown
-<!-- 好的示例 -->
-# Webhook 通知
-
-Webhook 是现代 Web 应用中广泛使用的事件通知机制，从支付平台到
-聊天应用都在使用。Onerway 通过 Webhook 实时推送支付状态变更，
-让你的应用能够及时响应用户的支付行为。
-
-## 工作原理
-...
-```
+示例：以 Webhook 为例，先介绍背景（事件通知机制），再说明 Onerway 的具体实现。
 
 ## 四、Onerway 项目特定规范
 
@@ -241,6 +189,23 @@ description: 简短描述（用于 SEO 和摘要）
 - ❌ 错误：`title: 支付场景` + `## 支付场景`（重复）
 - ✅ 正确：`title: 支付场景` + 正文 + `## 选择产品类型`
 
+**⚠️ 文档长度限制（硬性规定）**
+
+单个文档页面**不得超过 800 行**。这是强制性要求，原因如下：
+- 超长文档难以浏览和维护
+- 影响页面加载性能
+- 读者难以快速找到所需信息
+
+如果文档超过 800 行，**必须**进行拆分：
+- 将内容拆分为多个子页面
+- 使用清晰的导航结构组织
+- 在父页面提供子页面概览和链接
+
+```bash
+# 检查文档行数
+wc -l content/en/path/to/file.md
+```
+
 ### 4.2 多语言一致性
 
 **保持中英文文档结构一致**
@@ -259,53 +224,7 @@ description: 简短描述（用于 SEO 和摘要）
 
 项目提供了丰富的内容组件，合理使用可以提升阅读体验：
 
-```markdown
-<!-- 代码示例 -->
-::code-group
-```bash [cURL]
-curl https://api.onerway.com/v1/payments
-```
-
-```javascript [Node.js]
-const payment = await onerway.payments.list();
-```
-::
-
-<!-- 链接切换 -->
-::link-switch{preset="dashboard"}
-::
-
-<!-- 手风琴折叠 - 推荐使用 #label slot + markdown 标题 -->
-::prose-accordion{multiple}
-  :::prose-accordion-item{icon="i-lucide-circle-help"}
-  #label
-  ### 常见问题标题
-
-  #content
-  这里是答案内容，支持完整 markdown 语法。
-  :::
-::
-
-<!-- 标签页 -->
-::tabs
-  ::tab-item{label="沙盒环境"}
-  沙盒环境配置...
-  ::
-
-  ::tab-item{label="生产环境"}
-  生产环境配置...
-  ::
-::
-
-<!-- 提示框 -->
-::note
-这是一个重要提示
-::
-
-::warning
-这是一个警告信息
-::
-```
+常用组件：`::code-group`（代码）、`::link-switch`（链接切换）、`::prose-accordion`（折叠）、`::tabs`（标签页）、`::note`/`::warning`（提示框）
 
 详见 `app/components/README.md` 了解所有可用组件。
 
@@ -341,169 +260,85 @@ MDC 支持两种组件形式：**块级组件**和**行内组件**。
 - 行内组件属性用花括号 `{...}` 传递
 - 行内组件不支持命名插槽和 YAML 块
 
-**常见行内组件示例**：
-
-```markdown
-<!-- ProseAnnotation: 为术语添加悬浮解释 -->
-The :prose-annotation[European Economic Area]{annotation="A regional single market..."} (EEA) includes...
-
-<!-- Badge 或其他行内增强 -->
-This feature is :badge[New]{color="green"} in version 2.0.
-```
+**行内组件示例**：`:prose-annotation[EEA]{annotation="..."}` 或 `:badge[New]{color="green"}`
 
 #### 嵌套层级
 
 MDC 使用冒号数量来表示组件的嵌套深度：
 
-| 冒号数量 | 嵌套层级 | 说明 | 示例 |
-|---------|---------|------|------|
-| `::` | Level 0 | 顶级组件 | `::card` |
-| `:::` | Level 1 | 嵌套在 `::` 内 | `:::card-body` |
-| `::::` | Level 2 | 嵌套在 `:::` 内 | `::::card-footer` |
-| `:::::` | Level 3 | 嵌套在 `::::` 内 | `:::::nested-item` |
+| 冒号数量 | 嵌套层级 | 说明             | 示例               |
+| -------- | -------- | ---------------- | ------------------ |
+| `::`     | Level 0  | 顶级组件         | `::card`           |
+| `:::`    | Level 1  | 嵌套在 `::` 内   | `:::card-body`     |
+| `::::`   | Level 2  | 嵌套在 `:::` 内  | `::::card-footer`  |
+| `:::::`  | Level 3  | 嵌套在 `::::` 内 | `:::::nested-item` |
 
-**嵌套示例**：
-
-```markdown
-::tabs
-  :::tab-item{label="选项1"}
-  这是选项1的内容
-  :::
-
-  :::tab-item{label="选项2"}
-  这是选项2的内容
-    ::::note
-    嵌套的提示框
-    ::::
-  :::
-::
-```
-
-**重要规则**：
-- 子组件的冒号数量必须比父组件多一个
-- 开始标记和结束标记的冒号数量必须相同
-- 嵌套层级必须正确对齐，否则会解析错误
+**规则**：子组件冒号数量比父组件多一个，开始和结束标记冒号数量必须相同。
 
 #### 属性写法
 
-**内联属性（简单值）**
+| 类型      | 语法           | 示例                 |
+| --------- | -------------- | -------------------- |
+| 字符串    | `key="value"`  | `type="warning"`     |
+| 布尔值    | `key=true`     | `dismissible=false`  |
+| 数组/对象 | `:key='[...]'` | `:items='["A","B"]'` |
+| 复杂数据  | YAML 块        | `---`...`---`        |
+
+**规则**：数组/对象**必须**加 `:` 前缀，外层单引号，内部 JSON 双引号。
+
+**⚠️ 强制使用 YAML 块的场景**
+
+当满足以下**任一条件**时，**必须**使用 YAML 块而非内联属性：
+- 属性数量 **≥ 3 个**
+- 任意属性值长度 **> 30 个字符**
 
 ```markdown
-<!-- 字符串 -->
-::alert{type="warning" icon="i-heroicons-exclamation"}
-内容
-::
+<!-- ❌ 错误：属性过多，难以阅读 -->
+:::docs-page-card{to="/payments" icon="i-lucide-credit-card" title="Accept online payments" description="Build a payment form or use a prebuilt payment page." badge="TODO"}
+:::
 
-<!-- 布尔值 -->
-::card{elevated=true dismissible=false}
-内容
-::
-```
-
-**YAML 属性块（复杂数据推荐）**
-
-```markdown
-::navigation
+<!-- ✅ 正确：使用 YAML 块 -->
+:::docs-page-card
 ---
-title: 快速链接
-items:
-  - label: 首页
-    icon: i-heroicons-home
-    to: /
-  - label: 文档
-    icon: i-heroicons-book-open
-    to: /docs
+to: /payments
+icon: i-lucide-credit-card
+title: Accept online payments
+description: Build a payment form or use a prebuilt payment page.
+badge: TODO
 ---
-::
+:::
 ```
 
-**数组和对象（内联）**
-
-```markdown
-<!-- ⚠️ 必须使用 : 前缀 -->
-::dropdown{:items='["选项A","选项B","选项C"]'}
-::
-
-::chart{:config='{"responsive":true,"maintainAspectRatio":false}'}
-::
-```
-
-**规则：**
-- 简单值（字符串、布尔）→ 直接写 `key="value"` 或 `key=true`
-- 数组/对象 → **必须**加 `:` 前缀：`:key='[...]'` 或 `:key='{...}'`
-- 外层用单引号 `'`，内部 JSON 用双引号 `"`
-- 复杂结构优先使用 YAML 块
+**判断标准**：
+| 条件               | 内联属性 | YAML 块 |
+| ------------------ | -------- | ------- |
+| 1-2 个短属性       | ✅        | 可选    |
+| ≥ 3 个属性         | ❌        | ✅ 必须  |
+| 任意属性 > 30 字符 | ❌        | ✅ 必须  |
+| 包含数组/对象      | ❌        | ✅ 必须  |
 
 #### 命名插槽
 
-```markdown
-::card
-#header
-标题内容
-#body
-主体内容
-#footer
-底部内容
-::
-```
-
-#### 最佳实践
-
-**✅ 推荐**
-
-```markdown
-<!-- 简单属性用内联 -->
-::badge{color="green"}NEW::
-
-<!-- 复杂结构用 YAML -->
-::prose-tabs
----
-variant: pill
-items:
-  - label: JavaScript
-    value: js
-  - label: TypeScript
-    value: ts
----
-:::prose-tabs-item{value="js"}
-JS 代码
-:::
-:::prose-tabs-item{value="ts"}
-TS 代码
-:::
-::
-```
-
-**❌ 避免**
-
-```markdown
-<!-- ❌ 数组忘记加 : -->
-::menu{items='["A","B"]'}
-::
-
-<!-- ❌ 复杂数据用内联（难读） -->
-::menu{:items='[{"label":"Home","to":"/","children":[{"label":"Sub","to":"/sub"}]}]'}
-::
-```
+使用 `#slot-name` 语法定义命名插槽，如 `#header`、`#body`、`#footer`。
 
 #### 快速参考
 
 **组件类型**
 
-| 组件类型 | 语法 | 使用场景 | 示例 |
-|---------|------|----------|------|
-| 块级组件 | `::name ... ::` | 独立内容块、复杂结构 | `::note\n内容\n::` |
+| 组件类型 | 语法                 | 使用场景               | 示例                                       |
+| -------- | -------------------- | ---------------------- | ------------------------------------------ |
+| 块级组件 | `::name ... ::`      | 独立内容块、复杂结构   | `::note\n内容\n::`                         |
 | 行内组件 | `:name[内容]{props}` | 文本内嵌增强、术语注释 | `:prose-annotation[EEA]{annotation="..."}` |
 
 **属性类型**
 
-| 数据类型 | 语法示例 | 前缀 |
-|---------|---------|------|
-| 字符串 | `type="info"` | 无 |
-| 布尔值 | `dismissible=true` | 无 |
-| 数组 | `:items='["A","B"]'` | `:` |
-| 对象 | `:config='{"key":"val"}'` | `:` |
-| 复杂数据 | YAML 块 | N/A |
+| 数据类型 | 语法示例                  | 前缀 |
+| -------- | ------------------------- | ---- |
+| 字符串   | `type="info"`             | 无   |
+| 布尔值   | `dismissible=true`        | 无   |
+| 数组     | `:items='["A","B"]'`      | `:`  |
+| 对象     | `:config='{"key":"val"}'` | `:`  |
+| 复杂数据 | YAML 块                   | N/A  |
 
 **核心原则：**
 - 块级用 `::`，行内用 `:` (冒号前需空格)
@@ -516,107 +351,27 @@ Nuxt UI 提供了 Callout 组件用于突出显示重要信息。支持快捷方
 
 **快捷方式（推荐）**
 
-| 快捷方式 | 颜色 | 图标 | 用途 |
-|---------|------|------|------|
-| `::note` | neutral | `i-lucide-info` | 补充信息、说明 |
-| `::tip` | success | `i-lucide-lightbulb` | 有用建议、最佳实践 |
-| `::warning` | warning | `i-lucide-triangle-alert` | 需要注意的事项 |
-| `::caution` | error | `i-lucide-octagon-alert` | 危险操作、不可撤销 |
+| 快捷方式    | 颜色    | 图标                      | 用途               |
+| ----------- | ------- | ------------------------- | ------------------ |
+| `::note`    | neutral | `i-lucide-info`           | 补充信息、说明     |
+| `::tip`     | success | `i-lucide-lightbulb`      | 有用建议、最佳实践 |
+| `::warning` | warning | `i-lucide-triangle-alert` | 需要注意的事项     |
+| `::caution` | error   | `i-lucide-octagon-alert`  | 危险操作、不可撤销 |
 
-```markdown
-::note
-这是补充信息。
-::
+用法：`::note`、`::tip`、`::warning`、`::caution`
 
-::tip
-这是一个有用的建议。
-::
+**自定义 Callout**：`::callout{color="info" icon="i-lucide-rocket"}`  
+可用 color：`primary`、`secondary`、`success`、`info`、`warning`、`error`、`neutral`
 
-::warning
-请注意这个操作可能产生意外结果。
-::
+**嵌套时增加冒号**：在 `:::` 组件内使用 `::::note`
 
-::caution
-此操作不可撤销。
-::
-```
+#### Accordion 折叠面板
 
-**完整形式（自定义）**
-
-使用 `::callout` 组件可自定义颜色和图标：
-
-```markdown
-::callout{color="info" icon="i-lucide-rocket"}
-自定义提示内容，支持完整 **Markdown** 语法。
-::
-```
-
-**可用 color 值**：`primary`、`secondary`、`success`、`info`、`warning`、`error`、`neutral`
-
-**嵌套用法**
-
-在其他组件内部使用时，需增加冒号数量：
-
-```markdown
-:::prose-accordion-item{icon="i-lucide-credit-card"}
-#content
-内容说明...
-
-  ::::note
-  嵌套的提示信息（4 个冒号）
-  ::::
-:::
-```
-
-**❌ 错误用法**
-
-```markdown
-<!-- ❌ type 属性不存在 -->
-::callout{type="warning"}
-...
-::
-
-<!-- ❌ 嵌套层级错误 -->
-:::accordion-item
-  ::note    <!-- 应该是 ::::note -->
-  ...
-  ::
-:::
-```
-
-#### Accordion 折叠面板组件
-
-**核心规则**：必须使用 `#label` 和 `#content` slot（不支持 `label` 属性）。推荐在 `#label` 中使用 markdown 标题以便 TOC 收录。
-
-```markdown
-::prose-accordion{multiple}
-  :::prose-accordion-item{icon="i-simple-icons-shopify"}
-  #label
-  ### Shopify 集成
-
-  #content
-  内容...
-  :::
-::
-```
-
-> ❌ 错误：`{label="Shopify"}` 属性不存在，会被忽略。
+必须使用 `#label` 和 `#content` slot（不支持 `label` 属性），推荐在 `#label` 中使用 markdown 标题以便 TOC 收录。
 
 #### See also / 相关资源
 
-文档末尾的相关链接统一使用 `DocsResources` 组件，支持 hover 预览和自动获取文档信息。
-
-```markdown
-::docs-resources
-  :::docs-resource-item{to="/get-started" icon="i-lucide-book" tags="快速入门"}
-  :::
-  :::docs-resource-item{to="https://example.com" icon="i-lucide-link"}
-  自定义标题
-  :::
-::
-```
-
-> 内部链接自动获取 title/description；外部链接需手动指定。
+使用 `::docs-resources` + `:::docs-resource-item{to="..." icon="..."}` 组件，内部链接自动获取 title/description。
 
 ### 4.5 链接规范
 
@@ -677,14 +432,12 @@ Nuxt UI 提供了 Callout 组件用于突出显示重要信息。支持快捷方
 
 通过代码块元信息传递配置参数：
 
-| 参数 | 类型 | 默认值 | 说明 |
-|------|------|--------|------|
+| 参数       | 类型                  | 默认值   | 说明                                         |
+| ---------- | --------------------- | -------- | -------------------------------------------- |
 | `zoomable` | `"true"` \| `"false"` | `"true"` | 是否启用拖拽缩放和全屏预览 (Alt + 拖拽/滚轮) |
-| `dottedBg` | `"true"` \| `"false"` | `"true"` | 是否显示点状网格背景 |
+| `dottedBg` | `"true"` \| `"false"` | `"true"` | 是否显示点状网格背景                         |
 
 #### 使用示例
-
-**基础流程图**
 
 ````markdown
 ```mermaid
@@ -695,114 +448,31 @@ B -->|否| D[结束]
 ```
 ````
 
-**时序图（禁用缩放）**
+配置参数通过代码块元信息传递，如 `zoomable="false"` 或 `dottedBg="false"`。
 
-````markdown
-```mermaid zoomable="false"
-sequenceDiagram
-客户端->>API: 发起支付请求
-API->>支付网关: 创建订单
-支付网关-->>API: 返回订单信息
-API-->>客户端: 返回支付页面
-```
-````
+#### 节点形状
 
-**状态图（禁用背景）**
-
-````markdown
-```mermaid dottedBg="false"
-stateDiagram-v2
-[*] --> 待支付
-待支付 --> 支付中: 用户点击支付
-支付中 --> 支付成功: 支付完成
-支付中 --> 支付失败: 支付异常
-支付成功 --> [*]
-支付失败 --> [*]
-```
-````
-
-#### 节点形状速查
-
-Flowchart 支持多种节点形状，**避免使用纯直角矩形**以提升视觉美感：
-
-| 语法 | 形状 | 适用场景 |
-|------|------|----------|
-| `([text])` | 胶囊形 | 开始/结束节点 |
-| `(text)` | 圆角矩形 ✅ | 操作/步骤（推荐） |
-| `{text}` | 菱形 | 决策/条件判断 |
-| `((text))` | 圆形 | 状态点/连接点 |
-| `{{text}}` | 六边形 | 准备/预处理 |
-| `[text]` | 直角矩形 ❌ | **避免使用** |
-
-```mermaid
-flowchart LR
-    A([开始]) --> B(操作步骤)
-    B --> C{条件判断}
-    C -->|是| D((状态点))
-    C -->|否| E([结束])
-```
+推荐：`([text])` 胶囊形、`(text)` 圆角矩形、`{text}` 菱形、`((text))` 圆形  
+避免：`[text]` 直角矩形
 
 #### 最佳实践
 
-**保持简洁**
-- 控制节点数量在 15 个以内
-- 节点文字简短清晰（3-8 个字）
-- 避免过深的嵌套层级（建议 ≤ 4 层）
+- 节点数量 ≤ 15 个，文字 3-8 个字
+- 中文文档用中文，英文文档用英文
+- 技术术语保持原文（API、Webhook）
 
-**语言一致性**
-- 中文文档使用中文标签和描述
-- 英文文档使用英文标签和描述
-- 技术术语保持原文（如 API、Webhook）
+**颜色规范**：浅色填充 + 深色边框/文字，确保明暗主题可读
 
-**颜色使用规范**
+| 语义 | 填充色    | 边框色    |
+| ---- | --------- | --------- |
+| 成功 | `#e8f5e9` | `#2e7d32` |
+| 信息 | `#e3f2fd` | `#1976d2` |
+| 警告 | `#fff9c4` | `#f9a825` |
+| 错误 | `#ffcdd2` | `#c62828` |
 
-使用浅色填充 + 深色边框/文字，确保明暗主题均可读：
-
-```markdown
-```mermaid
-flowchart LR
-    A([开始]) --> B{判断}
-    B -->|成功| C(成功节点)
-    B -->|失败| D(失败节点)
-    
-    style A fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px,color:#2e7d32
-    style B fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#1976d2
-    style C fill:#c8e6c9,stroke:#388e3c,stroke-width:2px,color:#388e3c
-    style D fill:#ffcdd2,stroke:#c62828,stroke-width:2px,color:#c62828
-\```
-```
-
-推荐配色（浅色填充 + 深色描边）：
-
-| 语义 | 填充色 | 边框/文字色 | 用途 |
-|------|--------|------------|------|
-| 成功/起点 | `#e8f5e9` | `#2e7d32` | 完成、通过、正常流程 |
-| 信息/决策 | `#e3f2fd` | `#1976d2` | 判断节点、信息提示 |
-| 进行中 | `#c8e6c9` | `#388e3c` | 处理中、执行步骤 |
-| 警告 | `#fff9c4` | `#f9a825` | 注意事项、备选方案 |
-| 错误/失败 | `#ffcdd2` | `#c62828` | 异常、失败分支 |
-
-**规则**：
-- ✅ 填充色用浅色（明度 > 90%）
-- ✅ 边框和文字用深色（明度 < 50%）
-- ✅ 确保对比度 ≥ 4.5:1（WCAG AA 标准）
-- ❌ 避免纯白/纯黑填充（深色主题下不可读）
-- ❌ 避免使用 `color:#ffffff`（明亮主题下不可见）
-
-**视觉层次**
-- 关键路径使用粗线或高亮
-- 异常分支用虚线或不同颜色
-- 重要节点添加图标或强调样式
-
-**拆分复杂图表**
-- 超过 20 个节点考虑拆分为多个图表
-- 使用多个小图而非一个大图
-- 在文字中补充说明图表之间的关系
-
-**交互说明**
-- 默认支持 Alt + 拖拽平移和 Alt + 滚轮缩放
-- 提供全屏按钮查看大图
-- 简单图表可禁用缩放 (`zoomable="false"`)
+**其他建议**：
+- 超过 20 节点拆分为多图
+- 默认支持 Alt + 拖拽/滚轮缩放，简单图表可用 `zoomable="false"` 禁用
 
 #### 主题适配
 
@@ -818,6 +488,7 @@ flowchart LR
 
 在发布文档前，检查以下项目：
 
+- [ ] 文档行数不超过 800 行（硬性规定）
 - [ ] 标题清晰且信息丰富
 - [ ] 包含正确的 frontmatter
 - [ ] 段落简短，易于浏览
@@ -827,6 +498,7 @@ flowchart LR
 - [ ] 没有硬编码敏感信息
 - [ ] 术语使用一致
 - [ ] MDC 组件语法正确（数组/对象加 `:` 前缀）
+- [ ] 多属性组件使用 YAML 块（≥3 个属性或属性值 >30 字符）
 - [ ] 图表简洁易懂，节点数量合理（建议 ≤ 15 个）
 - [ ] 图表标签使用正确的语言（中文文档用中文）
 - [ ] 复杂图表已拆分或配置了缩放功能

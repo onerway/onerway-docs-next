@@ -5,268 +5,287 @@
  *
  * 特点：
  * - 基于 UPageCard 封装，继承 Nuxt UI 设计语言
- * - 支持多种变体（elevated/flat/ghost）
- * - 支持 spotlight 高亮效果
+ * - 支持 Nuxt UI 原生 variant（solid/outline/soft/subtle/ghost/naked）
+ * - 支持 spotlight 高亮效果（悬浮动画通过 app.config.ts 全局配置）
  * - 支持内部链接和外部链接
- * - 完整的可访问性支持（键盘导航、ARIA 属性）
+ * - 支持标题旁显示 Badge 标签
  * - 支持自定义分析事件追踪
+ * - 支持文本截断（line-clamp）
  *
  * @example MDC 用法
  * ```mdc
- * ::docs-page-card{title="快速开始" description="5分钟上手" to="/get-started" icon="i-lucide-rocket"}
+ * <!-- 基础用法（≥3 属性使用 YAML 块） -->
+ * ::docs-page-card
+ * ---
+ * title: 快速开始
+ * to: /get-started
+ * icon: i-lucide-rocket
+ * ---
+ * ::
+ *
+ * <!-- 带 Badge 标签 -->
+ * ::docs-page-card
+ * ---
+ * title: 即将推出
+ * to: "#"
+ * badge: TODO
+ * ---
+ * ::
+ *
+ * <!-- Badge 对象配置 -->
+ * ::docs-page-card
+ * ---
+ * title: 新功能
+ * to: /new
+ * badge:
+ *   label: New
+ *   color: success
+ * ---
+ * ::
+ *
+ * <!-- 简单用法（<3 属性可内联） -->
+ * ::docs-page-card{title="标题" to="/path"}
+ * 卡片描述内容
  * ::
  * ```
  */
 import type { RouteLocationRaw } from "vue-router";
+import type { PageCardProps, BadgeProps } from "#ui/types";
 
-type SpotlightColor =
-  | "primary"
-  | "secondary"
-  | "info"
-  | "success"
-  | "warning"
-  | "error";
-type CardVariant = "elevated" | "flat" | "ghost";
+// ============================================================================
+// Types（从 Nuxt UI 派生，确保类型同步）
+// ============================================================================
 
-interface DocsPageCardProps {
+/** Nuxt UI PageCard 原生 variant */
+type NativeVariant = NonNullable<PageCardProps["variant"]>;
+
+/** Spotlight 颜色，从 Nuxt UI PageCardProps 提取 */
+type SpotlightColor = NonNullable<PageCardProps["spotlightColor"]>;
+
+/** PageCard 方向，从 Nuxt UI PageCardProps 提取 */
+type Orientation = NonNullable<PageCardProps["orientation"]>;
+
+/** Badge 颜色，从 Nuxt UI BadgeProps 提取 */
+type BadgeColor = NonNullable<BadgeProps["color"]>;
+
+/** Badge 变体，从 Nuxt UI BadgeProps 提取 */
+type BadgeVariant = NonNullable<BadgeProps["variant"]>;
+
+/** line-clamp 允许的值（必须显式声明以支持 Tailwind JIT） */
+type LineClampValue = 1 | 2 | 3 | 4 | 5 | 6;
+
+/** Badge 配置对象 */
+interface BadgeConfig {
+  label: string;
+  color?: BadgeColor;
+  variant?: BadgeVariant;
+}
+
+/** 分析事件载荷 */
+interface AnalyticsPayload {
+  title?: string;
+  to?: string | RouteLocationRaw;
+  external: boolean;
+}
+
+export interface DocsPageCardProps {
   title?: string;
   description?: string;
   to?: string | RouteLocationRaw;
   spotlight?: boolean;
   spotlightColor?: SpotlightColor;
   icon?: string;
-  ariaLabel?: string;
+  /**
+   * 标题旁显示的 Badge
+   * - 字符串：直接作为 label 显示
+   * - 对象：支持 label、color、variant 配置
+   */
+  badge?: string | BadgeConfig;
+  /** 覆盖 UPageCard 的 ui slots 样式 */
   uiOverride?: Record<string, string>;
-  variant?: CardVariant;
-  clickable?: boolean;
+  /**
+   * Nuxt UI 原生卡片变体
+   * @default "outline"
+   */
+  variant?: NativeVariant;
   disabled?: boolean;
   external?: boolean;
-  lineClampTitle?: number;
-  lineClampDescription?: number;
-  externalIndicator?: boolean;
-  externalA11yLabel?: string;
+  lineClampTitle?: LineClampValue;
+  lineClampDescription?: LineClampValue;
   reverse?: boolean;
-  orientation?: "horizontal" | "vertical";
-  analytics?:
-    | Record<string, unknown>
-    | ((payload: {
-        title?: string;
-        to?: string | RouteLocationRaw;
-        external: boolean;
-      }) => void);
+  orientation?: Orientation;
+  /** 分析事件：可以是回调函数或元数据对象 */
+  analytics?: Record<string, unknown> | ((payload: AnalyticsPayload) => void);
 }
 
-const props = withDefaults(
-  defineProps<DocsPageCardProps>(),
-  {
-    spotlight: false,
-    spotlightColor: "secondary",
-    variant: "elevated",
-    clickable: undefined,
-    disabled: false,
-    external: false,
-    reverse: false,
-    orientation: "vertical",
-  }
-);
+const props = withDefaults(defineProps<DocsPageCardProps>(), {
+  spotlight: true,
+  spotlightColor: "primary",
+  variant: "outline",
+  disabled: false,
+  external: false,
+  reverse: false,
+  orientation: "vertical",
+});
 
 const emit = defineEmits<{
-  (
-    e: "activate",
-    payload: {
-      event: Event;
-      title?: string;
-      to?: string | RouteLocationRaw;
-      external: boolean;
-    }
-  ): void;
-  (
-    e: "analytics",
-    payload: {
-      title?: string;
-      to?: string | RouteLocationRaw;
-      external: boolean;
-    }
-  ): void;
+  click: [event: MouseEvent];
+  analytics: [payload: AnalyticsPayload];
 }>();
 
-const isClickable = computed<boolean>(() => {
-  if (props.disabled) return false;
-  if (props.clickable !== undefined) return props.clickable;
-  return Boolean(props.to);
-});
+// ============================================================================
+// Constants
+// ============================================================================
 
-const computedAriaLabel = computed<string | undefined>(
-  () => {
-    return props.ariaLabel ?? props.title ?? undefined;
-  }
-);
+/**
+ * 显式映射 line-clamp 类名，确保 Tailwind JIT 能正确编译
+ * 动态模板字符串如 `line-clamp-${n}` 不会被 JIT 检测到
+ */
+const LINE_CLAMP_MAP: Record<LineClampValue, string> = {
+  1: "line-clamp-1",
+  2: "line-clamp-2",
+  3: "line-clamp-3",
+  4: "line-clamp-4",
+  5: "line-clamp-5",
+  6: "line-clamp-6",
+};
 
-const containerClass = computed<string>(() => {
-  const base = [
+// ============================================================================
+// Computed Properties
+// ============================================================================
+
+/** 容器样式类 */
+const containerClass = computed(() => {
+  const classes = [
     "col-span-1",
-    "transition-all duration-300",
-    // Respect reduced motion
+    // 尊重用户的 reduced motion 偏好
     "motion-reduce:transition-none motion-reduce:transform-none",
-    "group",
   ];
 
-  if (props.variant === "elevated") {
-    base.push(
-      "shadow-md hover:shadow-xl hover:-translate-y-1"
-    );
-  } else if (props.variant === "flat") {
-    // Keep flat minimal without hardcoded grayscale to preserve dark mode
-  } else if (props.variant === "ghost") {
-    // Ghost keeps minimal hover without hardcoded background to preserve dark mode
+  if (props.disabled) {
+    classes.push("opacity-60 pointer-events-none");
   }
 
-  if (isClickable.value) base.push("cursor-pointer");
-  if (props.disabled)
-    base.push("opacity-60 pointer-events-none");
-
-  // Focus styles rely on underlying link/button semantics; keep a visible outline for non-link cases
-  base.push(
-    "focus-visible:outline-primary",
-    "focus-within:ring-2",
-    "focus-within:ring-primary/50",
-    "focus-within:ring-offset-0"
-  );
-
-  return base.join(" ");
+  return classes.join(" ");
 });
 
-const defaultTitleUi = computed<string>(() => {
-  // Title emphasis and smooth transition, coordinated with group hover
-  return "text-primary group-hover:text-default transition-colors duration-200";
-});
-
-const mergedUi = computed<Record<string, string>>(() => {
+/** 合并 UPageCard ui 配置 */
+const mergedUi = computed(() => {
   const overrides = props.uiOverride || {};
-  const combinedTitle = [
-    defaultTitleUi.value,
-    overrides.title,
-  ]
-    .filter(Boolean)
-    .join(" ");
-  const descriptionClamp = props.lineClampDescription
-    ? `line-clamp-${props.lineClampDescription}`
-    : "";
-  const combinedDescription = [
-    overrides.description,
-    descriptionClamp,
-  ]
-    .filter(Boolean)
-    .join(" ");
+
+  // 仅在有 lineClamp 时添加样式，其他样式由 app.config.ts 全局配置
   const titleClamp = props.lineClampTitle
-    ? `line-clamp-${props.lineClampTitle}`
+    ? LINE_CLAMP_MAP[props.lineClampTitle]
     : "";
-  const finalTitle = [combinedTitle, titleClamp]
-    .filter(Boolean)
-    .join(" ");
+  const descriptionClamp = props.lineClampDescription
+    ? LINE_CLAMP_MAP[props.lineClampDescription]
+    : "";
+
   return {
     ...overrides,
-    title: finalTitle,
-    ...(combinedDescription
-      ? { description: combinedDescription }
+    ...(titleClamp || overrides.title
+      ? { title: [overrides.title, titleClamp].filter(Boolean).join(" ") }
+      : {}),
+    ...(descriptionClamp || overrides.description
+      ? {
+          description: [overrides.description, descriptionClamp]
+            .filter(Boolean)
+            .join(" "),
+        }
       : {}),
   };
 });
 
-const computedTarget = computed<string | undefined>(() => {
-  return props.external ? "_blank" : undefined;
-});
+/** 外部链接属性 */
+const linkAttrs = computed(() =>
+  props.external
+    ? { target: "_blank" as const, rel: "noopener noreferrer" }
+    : {}
+);
 
-const computedRel = computed<string | undefined>(() => {
-  return props.external ? "noopener noreferrer" : undefined;
-});
+/** 标准化 Badge 配置 */
+const normalizedBadge = computed(() => {
+  if (!props.badge) return null;
 
-const roleAttr = computed<string | undefined>(() => {
-  if (props.disabled) return undefined;
-  if (!props.to && isClickable.value) return "button";
-  return undefined;
-});
-
-const tabIndexAttr = computed<number | undefined>(() => {
-  if (props.disabled) return -1;
-  if (!props.to && isClickable.value) return 0;
-  return undefined;
-});
-
-const activate = (event: Event) => {
-  if (props.disabled) return;
-  const payload = {
-    title: props.title,
-    to: props.to,
-    external: !!props.external,
-  };
-  emit("activate", { event, ...payload });
-  if (typeof props.analytics === "function") {
-    props.analytics(payload);
-  } else if (
-    props.analytics &&
-    typeof props.analytics === "object"
-  ) {
-    emit("analytics", payload);
+  if (typeof props.badge === "string") {
+    return {
+      label: props.badge,
+      color: "neutral" as BadgeColor,
+      variant: "subtle" as BadgeVariant,
+    };
   }
-};
 
+  return {
+    label: props.badge.label,
+    color: props.badge.color ?? ("neutral" as BadgeColor),
+    variant: props.badge.variant ?? ("subtle" as BadgeVariant),
+  };
+});
+
+// ============================================================================
+// Event Handlers
+// ============================================================================
+
+/**
+ * 处理点击事件
+ * UPageCard 内部的 ULink 已处理键盘导航，这里只需处理 click
+ */
 const handleClick = (event: MouseEvent) => {
   if (props.disabled) {
     event.preventDefault();
     event.stopPropagation();
     return;
   }
-  activate(event);
-};
 
-const handleKeydown = (event: KeyboardEvent) => {
-  if (props.disabled) return;
-  if (
-    !props.to &&
-    isClickable.value &&
-    (event.key === "Enter" || event.key === " ")
-  ) {
-    event.preventDefault();
-    activate(event);
-  }
-};
+  emit("click", event);
 
-// Extend aria label when external indicator is requested and external
-const extendedAriaLabel = computed<string | undefined>(
-  () => {
-    const base = computedAriaLabel.value;
-    if (props.external && props.externalIndicator) {
-      const suffix = props.externalA11yLabel
-        ? ` ${props.externalA11yLabel}`
-        : "";
-      return base ? `${base}${suffix}` : undefined;
+  // Analytics 处理
+  if (props.analytics) {
+    const payload: AnalyticsPayload = {
+      title: props.title,
+      to: props.to,
+      external: props.external,
+    };
+
+    if (typeof props.analytics === "function") {
+      props.analytics(payload);
+    } else {
+      emit("analytics", payload);
     }
-    return base;
   }
-);
+};
 </script>
 
 <template>
   <UPageCard
-    :title="title"
+    :title="badge ? undefined : title"
     :description="description"
-    :to="to as any"
+    :to="disabled ? undefined : (to as any)"
     :orientation="orientation"
     :icon="icon as any"
     :spotlight="spotlight"
     :spotlight-color="spotlightColor"
+    :variant="variant"
     :ui="mergedUi"
-    :aria-label="extendedAriaLabel"
     :aria-disabled="disabled ? 'true' : undefined"
-    :tabindex="tabIndexAttr"
-    :target="computedTarget"
-    :rel="computedRel"
     :class="containerClass"
-    :role="roleAttr"
     :reverse="reverse"
-    @click="handleClick"
-    @keydown="handleKeydown">
+    v-bind="linkAttrs"
+    @click="handleClick">
+    <!-- 自定义标题 slot：当有 badge 时渲染标题 + badge -->
+    <template
+      v-if="badge && title"
+      #title>
+      <span class="inline-flex items-center gap-2">
+        <span>{{ title }}</span>
+        <UBadge
+          :label="normalizedBadge!.label"
+          :color="normalizedBadge!.color"
+          :variant="normalizedBadge!.variant"
+          size="sm" />
+      </span>
+    </template>
+
     <template #default>
       <slot />
     </template>

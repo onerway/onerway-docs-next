@@ -88,6 +88,7 @@ export default defineAppConfig({
         root: "transition-all duration-300 ease-out hover:-translate-y-1 group",
         title:
           "text-primary group-hover:text-highlighted transition-colors duration-200",
+        description: "pt-4",
       },
       variants: {
         spotlight: {

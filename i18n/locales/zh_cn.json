@@ -1,4 +1,14 @@
 {
+  "a11y": {
+    "mainContent": "主要内容"
+  },
+  "admin": {
+    "title": "文档管理后台",
+    "searchPlaceholder": "搜索文档...",
+    "searchTooltip": "搜索文档",
+    "backToSite": "返回文档站",
+    "switchLanguage": "切换语言"
+  },
   "header": {
     "api": {
       "title": "API 参考",

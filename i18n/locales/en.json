@@ -1,4 +1,14 @@
 {
+  "a11y": {
+    "mainContent": "Main content"
+  },
+  "admin": {
+    "title": "Docs Admin",
+    "searchPlaceholder": "Search docs...",
+    "searchTooltip": "Search docs",
+    "backToSite": "Back to docs",
+    "switchLanguage": "Switch language"
+  },
   "header": {
     "api": {
       "title": "API Reference",

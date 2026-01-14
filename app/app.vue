@@ -82,9 +82,7 @@ provide(NAVIGATION_KEY, navigation);
   <UApp :locale="uiLocale">
     <NuxtLoadingIndicator />
 
-    <AppHeader />
-
-    <UMain class="pt-layout">
+    <UMain>
       <NuxtLayout>
         <NuxtPage />
       </NuxtLayout>

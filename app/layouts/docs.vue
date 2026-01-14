@@ -13,9 +13,7 @@ const navigation = inject(NAVIGATION_KEY);
 
 // 使用 useState 获取当前页面配置
 // useState 可以在 layout（父组件）和 page（子组件）之间共享状态
-const page = useState<DocPage | null>(
-  CURRENT_PAGE_STATE_KEY
-);
+const page = useState<DocPage | null>(CURRENT_PAGE_STATE_KEY);
 
 // 转换导航树为 NavigationMenu 所需的数据结构
 // currentModuleKey 用于强制重新渲染 NavigationMenu，确保 defaultOpen 生效
@@ -24,13 +22,14 @@ const { currentModuleMenu, currentModuleKey } = useDocsNav(
 );
 
 // 处理 trigger 类型菜单项的"展开 + 跳转"功能
-const { handleClick: handleNavigationClick } =
-  useNavigationMenuTriggerClick();
+const { handleClick: handleNavigationClick } = useNavigationMenuTriggerClick();
 </script>
 
 <template>
   <!-- 外层容器，垂直排列 header、主体和 footer -->
-  <UContainer>
+  <div>
+    <AppHeader />
+
     <!-- 主体区域：DashboardGroup 管理 sidebar 和正文 -->
     <UDashboardGroup unit="px">
       <!-- 左侧侧边栏：依据 front‑matter 的 showNavigation 控制是否显示 -->
@@ -90,5 +89,5 @@ const { handleClick: handleNavigationClick } =
         </template>
       </UDashboardPanel>
     </UDashboardGroup>
-  </UContainer>
+  </div>
 </template>

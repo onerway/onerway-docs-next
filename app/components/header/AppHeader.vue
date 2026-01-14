@@ -12,37 +12,24 @@
  * - 从 injection 获取导航数据
  */
 import type { DropdownMenuItem } from "@nuxt/ui";
-import type { ContentNavigationItem } from "@nuxt/content";
-import type { Ref } from "vue";
 import { NAVIGATION_KEY } from "~/types/injection-keys";
 
 const { header } = useAppConfig();
-const { t, locale, locales, setLocale } = useI18n();
+const { t } = useI18n();
 
 // 使用类型安全的 injection key 获取导航树
-// NAVIGATION_KEY 已定义正确的泛型类型，inject 返回 Ref<ContentNavigationItem[]>
-const navigation = inject(NAVIGATION_KEY);
+// NAVIGATION_KEY 由 app.vue 提供，保证在组件挂载时已存在
+const navigation = inject(NAVIGATION_KEY)!;
 
-// 为移动端导航提供类型安全的 ref
-const navigationForMobile = computed(
-  () => navigation as Ref<ContentNavigationItem[]>
-);
+// 转换为非空 Ref 供 composable 使用
+const navigationRef = computed(() => navigation.value ?? []);
 
-const { topLevelModuleLinks } = useDocsNav(
-  navigation as Ref<ContentNavigationItem[]>,
-  {
-    includeModules: true,
-  }
-);
+const { topLevelModuleLinks } = useDocsNav(navigationRef, {
+  includeModules: true,
+});
 
-// 语言切换菜单项
-const languageItems = computed<DropdownMenuItem[][]>(() => [
-  locales.value.map((l) => ({
-    label: t(`header.language.${l.code}`),
-    icon: locale.value === l.code ? "i-lucide-check" : undefined,
-    onSelect: () => setLocale(l.code),
-  })),
-]);
+// 语言切换（使用 composable 复用逻辑）
+const { languageItems, currentLanguageLabel } = useLanguageSwitcher();
 
 // API 链接菜单项
 const apis = computed<DropdownMenuItem[][]>(() => [
@@ -91,7 +78,7 @@ const apis = computed<DropdownMenuItem[][]>(() => [
       <!-- 移动端导航组件 -->
       <AppHeaderMobileNav
         v-if="navigation"
-        :navigation="navigationForMobile" />
+        :navigation="navigation" />
     </template>
 
     <!-- Right 插槽 - 操作按钮 -->
@@ -106,7 +93,7 @@ const apis = computed<DropdownMenuItem[][]>(() => [
         :content="{ align: 'end' }"
         :ui="{ content: 'w-(--reka-dropdown-menu-trigger-width)' }">
         <UButton
-          :label="t(`header.language.${locale}`)"
+          :label="currentLanguageLabel"
           icon="i-lucide-languages"
           trailing-icon="i-lucide-chevron-down"
           color="neutral"

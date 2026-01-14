@@ -11,16 +11,14 @@
  * - 作为 AppHeader 的子组件在移动端抽屉中使用
  * - 底部固定 API 入口链接
  */
-import type {
-  NavigationMenuItem,
-  PageLink,
-} from "@nuxt/ui";
+import type { NavigationMenuItem, PageLink } from "@nuxt/ui";
 import type { ContentNavigationItem } from "@nuxt/content";
 import { navigationMenuResponsiveUi } from "~/composables/useNavigationMenuResponsiveUi";
 import { useNavigationMenuTriggerClick } from "~/composables/useNavigationMenuTriggerClick";
 
 const props = defineProps<{
-  navigation: Ref<ContentNavigationItem[]>;
+  /** 导航树数据 */
+  navigation: ContentNavigationItem[];
 }>();
 
 const route = useRoute();
@@ -38,15 +36,14 @@ const apis = computed<PageLink[]>(() =>
   }))
 );
 
+// 将 props 转换为响应式 Ref 供 composable 使用
+const navigationRef = computed(() => props.navigation);
+
 // 获取完整导航数据（包括顶层模块）
-const {
-  topLevelModules,
-  currentModule,
-  currentModuleMenu,
-  getCurrentModule,
-} = useDocsNav(props.navigation, {
-  includeModules: true,
-});
+const { topLevelModules, currentModule, currentModuleMenu, getCurrentModule } =
+  useDocsNav(navigationRef, {
+    includeModules: true,
+  });
 
 // 视图模式状态
 type ViewMode = "modules" | "submenu";
@@ -116,14 +113,12 @@ function backToModules() {
 // 当前子菜单数据（响应式）
 const currentSubmenuItems = computed(
   () =>
-    (selectedModule.value
-      ?.children as NavigationMenuItem[]) ||
+    (selectedModule.value?.children as NavigationMenuItem[]) ||
     currentModuleMenu.value
 );
 
 // trigger + 跳转处理器（无参数，从 data-nav-to 获取路径）
-const { handleClick: handleTriggerClick } =
-  useNavigationMenuTriggerClick();
+const { handleClick: handleTriggerClick } = useNavigationMenuTriggerClick();
 </script>
 
 <template>
